@@ -41,10 +41,80 @@ Mithilfe des Prime-Path Covering erreichen wir insgesamt diese Routen für Tests
 * 0 - 1 - 2 - 3
 * 0 - 1 - 5 - 6
 
-In diesem relativ simplen Graphen werden somit schon 2 weitere Testrouten entdeckt. Jeder Graph, der eine komplexere Struktur bekommt würde hier auch eine wesentlich höhere 
+Die Wahl der maximalen Rekursionstiefe hat einen signifikanten Einfluss auf die 
+Qualität der Tests, jedoch wurde im Paper keine Möglichkeit angegeben, die Rekursionstiefe für eine gute Coverage abzuschätzen. 
+Mit dem Ansatz dieses Problem über Prime-Path Covering zu lösen entfällt die Wahl eines solchen Parameters komplett.
+In diesem relativ simplen Graphen werden somit schon 2 weitere Testrouten entdeckt.
+Jeder Graph, der eine komplexere Struktur bekommt, würde hier auch eine wesentlich höhere 
 Anzahl an Test mit der zweiten Methode generieren da eben in der Property-Based Methode nur maximal Pfade der Länge 3 überhaupt berücksichtigt werden können. Mit Prime-Path Covering ist es möglich
 Graphen jeder Größe mit Voller Coverage zu testen. Die Tests werden unter Umständen zwar riesig, jedoch ist eine Terminierung des Algorithmus garantiert, da der längste Prime-Path maximal eine Länge 
 haben kann, die der Anzahl der Knoten im Graphen entspricht (Beweis hierfür auch später).
 
 Diese Arbeit soll das Property-Based Testing um Graphenspezifisches Wissen erweitern, sodass eine größere, sichere Coverage erreicht werden kann. 
+Im Paper wurde ein eigens definiertes Schema und die Gitlab GraphQL-API automatisch getestet und Benchmarks für die Tests erstellt. 
+Um sicherzustellen, dass die spezifischere Methode dieser Arbeit auch eine Verbesserung bringt, soll die Methode die exakt selben 
+Schemas testen und dann soll ein Vergleich erfolgen. Insbesondere die Anzahl der generierten Tests ist hierbei interessant. 
 
+Die Verifikation der Tests erfolgt mit einem 3 Stufen Modell. Im ursprünglichen Paper wurden hierfür die Stufen
+
+* HTTP - Status
+* GraphQL - Status
+* Result - Type 
+
+gewählt. Die Verifikation soll hier auch erweitert werden durch eine weitere Stufe, die sicherstellt, dass nicht nur der
+Result-Type einer Anfrage stimmt, sondern, dass auch das Result mit seinen Inhalten stimmt. Hierzu soll ein Datengenerator das 
+Schema mit Daten füllen und die Integrität überprüfen. Hierbei ist vor allem Interessant zu sehen ob Kreise richtig aufgelöst werden.
+Als Beispiel soll folgendes Schema gelten: 
+
+```
+type User {
+id: ID!
+location: Location
+}
+
+type Location {
+id: ID!
+user: User
+}
+```
+Hierbei muss dann überprüft werden, ob diese Querys dasselbe Ergebnis zurückliefern:
+```
+{
+  # query 1
+  user(id: ID) {
+    id
+    location {
+      id
+    }
+  }
+
+  # query 2
+  location(id: ID) {
+    id
+    user {
+      id
+    }
+  }
+}
+```
+und ob diese Query sich in sich selbst auflöst: 
+```
+# query 3
+{
+location(id: ID) {
+    id
+    user {
+        id
+        location{
+            id
+            }
+        }
+    }
+}    
+
+```
+Durch erweitern der Verifikation wird ermöglicht die Tests noch spezifischer und konkreter auszuführen. 
+Denn GraphQL stellt nur die Schnittstelle zur Verfügung. Die Programmierung hinter der Schnittstelle ist zu testen und es ist 
+durchaus denkbar, dass dort Fehler in Zuordnungen gemacht werden und somit unter anderem Kreise nicht richtig aufgelöst werden.
+Insbesondere eine Verifikation von query3 stellt sicher, dass Kreise sicher bearbeitet werden von der API denn ein solcher getester Kreis
+sichert zu, dass Objekt vom Start und Ende des Kreises dasselbe sind. 
