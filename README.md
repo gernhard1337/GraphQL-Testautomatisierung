@@ -10,7 +10,7 @@ Dieses Paper kümmert sich vor allem um Property-Based Testing, einen Ansatz der
 Objektes betrachtet. Da GraphQL-Schemas aber auch andere Objekte als Propertys haben können müssen diese aufgelöst werden was zu Problemen
 führen kann, da z.B. Kreise hier eine endlose Auflösung zur Folge haben können. Um diese Problem zu lösen wurde im Paper die Rekursionstiefe
 auf 3 festgelegt. Dies bedeutet, dass keine optimale Coverage jeden GraphQL-Schemas mit dieser Methode erreicht werden kann. 
-Man stelle sich ein GraphQL-Schema vor, welches folgende Struktur hat (i.A. ist der Graph hier eher ein Subgraph): 
+Man stelle sich ein GraphQL-Schema vor, welches folgende Struktur hat (i.A. ist der Graph hier eher ein Subgraph eines größeren Schemas): 
 ![zyklischer Graph](docs/images/graphs/graph.png)
 Ein GraphQL-Schema hat verschiedene Einstiegspunkte von welchem beginnend aus die Anfragen gestellt werden können. 
 Mit der aktuellen Methode ist es nicht möglich, ein volles Testen des Graphens zu erreichen. 
