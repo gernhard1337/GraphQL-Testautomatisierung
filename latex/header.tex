@@ -1,0 +1,71 @@
+% Diese Datei enthält Einstellungen und Paketimporte.
+% Zur besseren Ordnung sollten Sie weitere Einstellungen bzw. Importe dieser Datei anfügen.
+
+% Paketimporte
+\documentclass[11pt,a4paper,german]{scrreprt}
+\usepackage[utf8]{inputenc}  % Encoding
+\usepackage{babel}  % Unterstützung verschiedener Sprachen
+\usepackage{graphicx}  % Einbindung von Grafiken
+\usepackage{amsmath}  % Verschiedene Symbole
+\usepackage{amssymb}  % Verschiedene Symbole
+\usepackage{latexsym}  % Verschiedene Symbole
+\usepackage{booktabs}  % Schönere Tabellen
+\usepackage{multicol}  % Flexiblere Tabellen
+\usepackage[printonlyused]{acronym}  % Abkürzungsverwaltung
+\usepackage{hyperref}  % Klickbare URLs, Titel und PDF-Metadaten
+\usepackage{lipsum}  % Platzhaltertext (kann entfernt werden)
+\usepackage[backend=bibtex,style=ieee]{biblatex}  % Moderne Literaturverwaltung
+\usepackage{tikz} % Graphen zeichnen
+\usetikzlibrary{positioning,shapes,shadows,arrows}
+
+% Einstellungen
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\makeatletter
+
+\newcommand\frontmatter{
+	\cleardoublepage
+	\pagenumbering{roman}}
+
+\newcommand\mainmatter{
+	\cleardoublepage
+	\pagenumbering{arabic}}
+
+\newcommand\backmatter{
+  \if@openright
+    \cleardoublepage
+  \else
+    \clearpage
+  \fi
+   }
+
+\makeatother
+
+% Laden der Literaturdaten
+\addbibresource{quellen.bib}
+
+% Definition der Dokumentendaten
+\input{data.tex}  % In dieser Datei die Daten der Arbeit eingeben.
+
+\titlehead{{Brandenburgische Technische Universität Cottbus-Senftenberg\\ Institut für Informatik\\ Fachgebiet Praktische Informatik/Softwaresystemtechnik}}
+\subject{Masterarbeit\\ \vspace{0.5cm}\includegraphics[width=0.5\textwidth]{img/btu-logo.pdf}}
+\title{\TitelDeutsch \\ {\normalsize \TitelEnglisch}}
+\author{\AuthorName \\ MatrikelNr.: \MatrikelNr \\Studiengang: \Studiengang}
+\date{\textit{Datum der Themenausgabe: \DatumThemenausgabe} \\ \textit{Datum der Abgabe: \DatumAbgabe}}
+\publishers{1. Betreuer: \BetreuerEins \\ 2. Betreuer: \BetreuerZwei}
+
+\hypersetup{pdfauthor={\AuthorName}}
+\hypersetup{pdftitle={\TitelDeutsch}}
+
+\tikzstyle{abstract}=[rectangle, draw=black, rounded corners, fill=blue!40, drop shadow,
+text centered, anchor=north, text=white, text width=3cm]
+\tikzstyle{comment}=[rectangle, draw=black, rounded corners, fill=green, drop shadow,
+text centered, anchor=north, text=white, text width=3cm]
+\tikzstyle{myarrow}=[->, >=open triangle 90, thick]
+\tikzstyle{line}=[-, thick]

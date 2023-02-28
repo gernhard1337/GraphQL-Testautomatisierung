@@ -4,3 +4,7 @@ Testen von GraphQL:
 https://github.com/EasyGraphQL/easygraphql-tester
 Api-Server zum testen simulieren:
 https://github.com/ladjs/supertest
+Graph-Ql Funktionsweise:
+https://www.prisma.io/blog/graphql-server-basics-the-schema-ac5e2950214e
+GraphQL-Server:
+https://www.apollographql.com/docs/apollo-server/

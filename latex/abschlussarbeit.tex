@@ -1,0 +1,43 @@
+\usepackage[T1]{fontenc}% Mustervorlage für Abschlussarbeiten am LS DBIS
+% Author: Alexander Stahl (stahlale@b-tu.de)
+% Zuletzt aktualisiert am 10.02.2022
+
+% Hinweis: Die Daten zur Arbeit speichern Sie in der Datei "data.tex".
+
+\input{header.tex} % Header beinhaltet alle Einstellungen und Pakete. Bei Bedarf erweitern.
+
+\begin{document}
+  \frontmatter % kennzeichnet den vorderen Teil der Arbeit
+  \maketitle % Titelseite generieren
+
+  % Eidesstattliche Erklärung über Selbstständigkeit
+  \input{selbststaendigkeitserklaerung.tex}
+
+  % Automatische Generierung verschiedener Verzeichnisse
+  % Inhaltsverzeichnis
+  \tableofcontents
+  \mainmatter
+  % Es folgt der Haupttext der Arbeit. Passen Sie die Überschriften der Kapitel entsprechend an.
+  % Beachten Sie, dass die hier angegebene Gliederung nur ein Vorschlag ist.
+  % Außerdem wird empfohlen, jedes Kapitel in eine eigene Datei auszulagern und hier nur mittels \input einzubinden.
+  \include{content/einleitung/Abstract}
+  \include{content/einleitung/Einleitung}
+  % Beispiel: \input{kapitel1.tex}
+
+
+
+  \backmatter % kennzeichnet den hinteren Teil der Arbeit
+  \include{content/glossar/glossar}
+  \appendix % Anhang
+
+  \cleardoublepage
+  \addcontentsline{toc}{chapter}{Literaturverzeichnis}
+  % \nocite{*}  % Hier das Kommentarzeichen entfernen, um alle Quellen auszugeben.
+  \printbibliography[title={Literaturverzeichnis}]  % Generiert das Literaturverzeichnis
+
+  \vfill
+  \begin{center}
+   \emph{Onlineressourcen wurden im Juli 2021 auf ihre Verfügbarkeit hin überprüft.}
+  \end{center}
+
+\end{document}
