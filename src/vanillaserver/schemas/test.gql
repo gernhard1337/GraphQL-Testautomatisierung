@@ -1,5 +1,0 @@
-type Person{
-    name: String
-    salary: Int
-    age: Int
-}

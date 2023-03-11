@@ -2,3 +2,5 @@
 /src/vanillaserver/package-lock.json
 /src/node_modules/
 /out/
+/src/vanillaserver/node_modules/
+/src/apolloserver/node_modules/

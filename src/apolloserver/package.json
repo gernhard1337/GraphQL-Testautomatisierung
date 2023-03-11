@@ -1,17 +1,22 @@
 {
   "name": "apolloserver",
   "version": "1.0.0",
-  "description": "test",
+  "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "tsc",
+    "start": "npm run compile && node ./dist/index.js"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@apollo/server": "^4.4.0",
+    "@apollo/server": "^4.4.1",
     "graphql": "^16.6.0"
   },
-  "type": "module"
+  "devDependencies": {
+    "@types/node": "^18.15.0",
+    "typescript": "^4.9.5"
+  }
 }
