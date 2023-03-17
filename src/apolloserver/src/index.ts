@@ -3,42 +3,59 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 
 const typeDefs = `#graphql
 type Book {
+    id: Int
     title: String
     author: Author
 }
 type Author {
+    id: Int
     name: String
     wrote: [Book]
 }
-
-
 
 # The "Query" type is special: it lists all of the available queries that
 # clients can execute, along with the return type for each. In this
 # case, the "books" query returns an array of zero or more Books (defined above).
 type Query {
+    # all books
     books: [Book]
-    bookWrittenBy(title: String!): Book
+    # all authors 
+    authors: [Author]
+    # a single book from a author name
+    bookWrittenBy(name: String!): Book
+    # all books from a author
+    booksWrittenBy(name: String!): [Book]
+    # a author for a book title
+    writtenBy(title: String!): Author
 }
 `;
 
 const books = [
     {
+        id: 1,
         title: 'The Awakening',
-        author: 'Kate Chopin',
+        author: 1,
     },
     {
+        id: 2,
         title: 'City of Glass',
-        author: 'Paul Auster',
+        author: 2,
     },
 ];
 
 const authors = [
     {
+        name: "Paul Auster",
+        id: 1
+    },
+    {
         name: "Kate Chopin",
         id: 2
     },
-    {}
+    {
+        name: "Ken Folet",
+        id: 3
+    }
 ]
 
 
@@ -47,6 +64,37 @@ const authors = [
 const resolvers = {
     Query: {
         books: () => books,
+        authors: () => authors,
+        bookWrittenBy(parent, args, contextValue, info){
+            var author = authors.filter(function (author) {
+                return author.name = args.name;
+            })[0];
+            var authorid = author.id;
+            var writtenBook = books.filter(function (book) {
+                return book.author == authorid;
+            })[0];
+            return writtenBook;
+        },
+
+        booksWrittenBy(parent, args, contextValue, info){
+            console.log(args.name);
+            return books.filter(function (book) {
+                return book.author == args.name;
+            })
+        },
+
+        writtenBy(parent, args, contextValue, info){
+            console.log(args.title);
+            var book = books.filter(function (book) {
+                return book.title == args.title;
+            })[0];
+
+            var authorid = book.author;
+
+            return authors.filter(function (author) {
+                return author.id == authorid;
+            })[0]
+        }
     },
 };
 
