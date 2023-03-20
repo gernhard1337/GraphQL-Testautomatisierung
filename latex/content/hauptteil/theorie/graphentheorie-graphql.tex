@@ -1,0 +1,159 @@
+\section*{Zusammenhang Graphentheorie und GraphQL}
+
+GraphQL erlaubt es uns, Typen zu definieren. Ein Type beinhaltet immer mindestens eine Property. Ein Type kann mit einem
+Knoten eines Graphens gleichgesetzt werden. Man nehme zum Beispiel ein Buch und definiere hierfür einen Type
+
+\begin{verbatim}
+    type Book {
+        id: Int
+        title: String
+    }
+\end{verbatim}
+
+Es exisitiert jetzt ein Objekt Book mit den Eigenschaften id als Integer und title als String.
+Repräsentiert als Graphen hätten wir jetzt folgende Struktur
+
+\begin{figure}[!htbp]
+    \begin{center}
+        \begin{tikzpicture}
+            \node (1)[abstract, rectangle split, rectangle split parts=2] at (4,8)
+                {
+                    \textbf{Book}
+                    \nodepart{second} \begin{description}
+                                          \item[id:] Integer
+                                          \item[title:] String
+                                      \end{description}
+                };
+        \end{tikzpicture}
+    \caption{Graph mit 1 Type}
+    \end{center}
+    \label{fig:1type}
+\end{figure}
+
+Eine Property kann entweder ein Standarddatentyp sein oder auf einen Type verweisen, dies kann der eigene Type oder auch
+ein anderer Type sein. Fügen wir unserem Beispiel des Buches eine Property hinzu mit dem Type Author wobei der Author selbst
+wie folgt definiert wird:
+
+\begin{verbatim}
+    type Book {
+        id: Int
+        title: String
+        author: Author
+    }
+    type Author {
+        id: Int
+        name: String
+    }
+\end{verbatim}
+
+So haben wir einen Graphen definiert, indem jedem Buch noch ein Author hinzugefügt wird. Hierdurch ergibt sich folgender Graph
+
+\begin{figure2}
+    \begin{center}
+        \begin{tikzpicture}
+            \node (1)[abstract, rectangle split, rectangle split parts=2] at (0,0)
+                {
+                \textbf{Book}
+                \nodepart{second} \begin{description}
+                                      \item[id:] Integer
+                                      \item[title:] String
+                                      \item[author:] Author
+                \end{description}
+                };
+            \node (2)[abstract, rectangle split, rectangle split parts=2] at (10,0)
+                {
+                \textbf{Author}
+                \nodepart{second} \begin{description}
+                                      \item[id:] Integer
+                                      \item[name:] String
+                \end{description}
+                };
+
+            \draw [->] (1) edge node[top] { author } (2);
+        \end{tikzpicture}
+        \caption{Graph mit 2 Types}
+    \end{center}
+    \label{fig:2types}
+\end{figure2}
+
+Stand jetzt, sind noch keine zirkulären Abfragen möglich. Bauen wir nun ein zirkuläres Verhalten ein indem wir dem Type
+Author noch die Property "written" (also alle seine geschriebenen Bücher) hinzufügen
+
+\begin{verbatim}
+    type Book {
+        id: Int
+        title: String
+        author: Author
+    }
+    type Author {
+        id: Int
+        name: String
+        written: [Books!]
+    }
+\end{verbatim}
+
+so ergibt sich, dass wir einen zirkulären Graphen haben mit folgender Struktur
+
+\begin{figure2}
+    \begin{center}
+        \begin{tikzpicture}
+            \node (1)[abstract, rectangle split, rectangle split parts=2] at (0,0)
+                {
+                \textbf{Book}
+                \nodepart{second} \begin{description}
+                                      \item[id:] Integer
+                                      \item[title:] String
+                                      \item[author:] Author
+                \end{description}
+            };
+            \node (2)[abstract, rectangle split, rectangle split parts=2] at (10,0)
+                {
+                \textbf{Author}
+                \nodepart{second} \begin{description}
+                                      \item[id:] Integer
+                                      \item[name:] String
+                                      \item[written:] [Book]
+                \end{description}
+            };
+
+            \draw [ -> ] (1) edge[bend left=60] node[top] { author } (2);
+            \draw [ -> ] (2) edge node[bottom] {written} (1);
+        \end{tikzpicture}
+        \caption{Graph mit 2 Types}
+    \end{center}
+    \label{fig:2typescirc}
+\end{figure2}
+
+Jetzt ist es möglich, zirkuläre Abfragen in folgender Form zu stellen:
+
+\begin{verbatim}
+    {
+        book{
+            author{
+                book{
+                    author{
+                        name
+                    }
+                }
+            }
+        }
+    }
+\end{verbatim}
+
+oder auch
+
+\begin{verbatim}
+    {
+        book{
+            author{
+                name
+                   }
+            }
+    }
+\end{verbatim}
+
+vorrausgesetzt der abzufragende Author hat nur ein Buch geschrieben.
+Auf Grundlage dieser hier definierten Bildungsstrukturen können dann Graphen beliebiger Größe definiert werden.
+
+
+

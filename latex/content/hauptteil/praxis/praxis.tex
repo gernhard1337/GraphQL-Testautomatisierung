@@ -1,0 +1,22 @@
+\section*{Praxis}
+
+Im folgenden wird die praktische Umsetzung der vorher erarbeiteten Theorie behandelt.
+Hierzu wurde/wird ein Tool geschrieben, das aufgrund eines GraphQL-Schemas automatisiert Tests erzeugt.
+Diese Tests werden dann ausgeführt und ausgewertet mit den entsprechenden Verbesserungen.
+
+\subsection*{Toolchain}
+
+Da GraphQL ein Standard für diverse Sprachen ist und das "mocken" von Daten essentiell zum testen ist, kann
+der Teil der Testgenerierung und Auswertung nur sprachspezifisch stattfinden. Es können somit nicht alle
+Sprachen berücksichtigt werden.
+Da GraphQL vor allem in der Webentwicklung verwendet wird, bezieht sich das Testtool auf JavaScript/TypeScript
+mit der Testbibliothek Jest.
+Als Server für die Verarbeitung wird ApolloServer genutzt, es ist jedoch denkbar,
+dass man jeden Server einsetzen kann insofern dieser eine executeOperation() implementiert die einen
+String als Query akzeptiert.
+Die benötigte Toolchain ist also sehr klein, sie benötigt nur Jest für die Ausführung der generierten Tests und
+ApolloServer für die Ausführung der GraphQL-Resolver.
+
+\subsection*{Requirements an das Tool}
+
+To Do

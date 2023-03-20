@@ -118,3 +118,8 @@ Denn GraphQL stellt nur die Schnittstelle zur Verfügung. Die Programmierung hin
 durchaus denkbar, dass dort Fehler in Zuordnungen gemacht werden und somit unter anderem Kreise nicht richtig aufgelöst werden.
 Insbesondere eine Verifikation von query3 stellt sicher, dass Kreise sicher bearbeitet werden von der API denn ein solcher getester Kreis
 sichert zu, dass Objekt vom Start und Ende des Kreises dasselbe sind. 
+
+
+Techstack
+
+
