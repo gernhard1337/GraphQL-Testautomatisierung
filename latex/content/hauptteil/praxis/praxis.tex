@@ -14,7 +14,10 @@ mit der Testbibliothek Jest.
 Als Server für die Verarbeitung wird ApolloServer genutzt, es ist jedoch denkbar,
 dass man jeden Server einsetzen kann insofern dieser eine executeOperation() implementiert die einen
 String als Query akzeptiert.
-Die benötigte Toolchain ist also sehr klein, sie benötigt nur Jest für die Ausführung der generierten Tests und
+Um Daten zu generieren wird auf das Tool Factory.ts zurückgegriffen (kann sich noch ändern), dieses
+ermöglicht es "Baupläne" anzulegen und dann beliebig viele Objekte zu erschaffen.
+Die benötigte Toolchain ist also sehr klein, sie benötigt nur Factory.ts für die Datengenerierung,
+Jest für die Ausführung der generierten Tests und
 ApolloServer für die Ausführung der GraphQL-Resolver.
 
 \subsection*{Requirements an das Tool}
