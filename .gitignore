@@ -4,3 +4,10 @@
 /out/
 /src/vanillaserver/node_modules/
 /src/apolloserver/node_modules/
+/latex/abschlussarbeit.pdf
+/latex/abschlussarbeit.aux
+/latex/abschlussarbeit.toc
+/latex/abschlussarbeit.out
+/latex/abschlussarbeit-blx.bib
+/latex/abschlussarbeit.log
+/latex/abschlussarbeit.run.xml
