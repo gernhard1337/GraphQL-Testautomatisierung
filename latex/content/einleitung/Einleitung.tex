@@ -1,12 +1,12 @@
 %! Author = Tom
 %! Date = 07.12.2022
-\section{Einleitung}
+\chapter{Einleitung}
 
 In diesem Kapitel wird an das Thema und die Motivation dieser Arbeit herangeführt.
 Außerdem wird definiert, welche Ziele diese Arbeit erreichen soll und eine grobe Übersicht über die
 Kapitelstruktur gegeben.
 
-\subsection{Motivation}
+\section{Motivation}
 
 Mit einer steigenden Nutzung von GraphQL wird es immer wichtiger, geeignete Tests für GraphQL-API's zu entwickeln damit eine
 gute Softwarequalität sichergestellt werden kann. Idealerweise können diese Testtools solche API's automatisch testen,
@@ -16,8 +16,9 @@ In einem Paper "Automatic Property-based Testing of GraphQL-API's" (hier Quelle)
 automatisches Testtool schon umzusetzen. Allerdings hat dieses Paper zwei große Verbesserungspunkte. 
 Einerseits die Art, wie die Tests generiert werden, andererseits die Auswertung der Tests.
 Der allgemeine Ablauf des bestehenden Tools ist wie folgt:
-
-\includegraphics{content/einleitung/toolchain}
+\begin{center}
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{content/einleitung/toolchain}
+\end{center}
 
 Verbesserungen in dieser Arbeit sind insbesondere in den Punkten 2,3 und 6 geplant.
 
@@ -27,7 +28,7 @@ Verbesserungen in dieser Arbeit sind insbesondere in den Punkten 2,3 und 6 gepla
     \item[Verify response properties (Punkt 6)] Kapitel Testauswertung
 \end{description}
 
-\subsubsection*{Testgenerierung}
+\subsection{Testgenerierung}
 
 Bei der Testgenerierung wurde mit den zyklischen Strukturen in GraphQL Schemas so
 umgegangen, dass eine Rekursionstiefe definiert wurde, damit man das Problem des unendlichen Testraumes beheben kann.
@@ -40,7 +41,7 @@ eine zyklische Struktur haben und somit kann algoritmisch das Problem des Papers
 In dieser Arbeit sollen diese graphspezifischen Algorithmen implementiert werden und dann mittels Datengeneratoren eigenständig
 Tests erzeugen.
 
-\subsubsection*{Testauswertung}
+\subsection{Testauswertung}
 
 Die Auswertung der Tests ist im Paper darauf basierend, dass die zu testende API vor allem auch funktionale Korrektheit überprüft wird,
 dies bedeutet insbesondere, dass hier die HTTP-Status Codes von Anfragen ausgewertet werden sowie GraphQL eigene Statusmeldungen untersucht werden.
@@ -50,7 +51,7 @@ soll das Programm mittels eines Orakels verbessert werden. Dies bedeutet, dass d
 gestellt werden können, die sich dann auch logisch ineinander auflösen. Hierbei ist insbesondere zu beachten, dass Kreisstrukturen sich in gewisser Weise
 in sich selbst auflösen, d.h. Eingabeobjekt = Ausgabeobjekt.
 
-\subsection{Umsetzung}
+\section{Umsetzung}
 
 Zuallererst wird in dieser Arbeit etwas Theorie definiert und in Bezug gesetzt. Angefangen mit einer allgemeinen Definition
 eines Graphens im mathematischen Sinne und GraphQL als Schnittstelle, wird dann ein Bezug dieser beiden Themen

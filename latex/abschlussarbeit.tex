@@ -15,22 +15,29 @@
 
   % Automatische Generierung verschiedener Verzeichnisse
   % Inhaltsverzeichnis
-  \addcontentsline{toc}{section}{Table of Contents}
   \tableofcontents
   \mainmatter
+  % \mainmatter
   % Es folgt der Haupttext der Arbeit. Passen Sie die Überschriften der Kapitel entsprechend an.
   % Beachten Sie, dass die hier angegebene Gliederung nur ein Vorschlag ist.
   % Außerdem wird empfohlen, jedes Kapitel in eine eigene Datei auszulagern und hier nur mittels \input einzubinden.
+  % Einleitung
   \include{content/einleitung/Abstract}
   \include{content/einleitung/Einleitung}
-  % Beispiel: \input{kapitel1.tex}
+  % Hauptteil
   \include{content/hauptteil/theorie/theorie}
   \include{content/hauptteil/theorie/Graphentheorie}
+  \include{content/hauptteil/theorie/Graphql}
   \include{content/hauptteil/theorie/graphentheorie-graphql}
   \include{content/hauptteil/theorie/Testen}
+
+  \include{content/hauptteil/related Work/relatedWork}
+
   \include{content/hauptteil/praxis/praxis}
 
+  %Schluss
 
+  %Anhang
   \backmatter % kennzeichnet den hinteren Teil der Arbeit
   \include{content/glossar/glossar}
   \appendix % Anhang
