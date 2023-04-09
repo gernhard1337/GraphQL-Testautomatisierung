@@ -1,6 +1,6 @@
 \chapter{related Work / ähnliche Arbeiten}
 
-Da Software-Testing ein stetig wachsendes Thema ist und der allgemeine Konsens "man kann nicht genug testen" existiert ist
+Da Software-Testing ein stetig wachsendes Thema ist und der allgemeine Konsens \"man kann nicht genug testen\" existiert ist
 es klar, dass diverse Arbeiten in Richtung Testautomatisierung erstellt wurden. In diesem Abschnitt sollen ähnliche Arbeiten
 genannt werden sowie Unterschiede zu diesen Arbeiten benannt werden.
 
@@ -46,6 +46,27 @@ Durch Deviation Testing werden bestehende Tests nur erweitert allerdings muss ei
 ein zufriedenstellendes Ergebnis erzeugt. Eine Edge-Coverage in einem komplexen Graphen ist allerdings sehr wahrscheinlich
 schwer umsetzbar mit manuellem Test schreiben. Eine Paarung von Edge-Coverage mit Deviation-Testing wäre sicherlich Interessant.
 Genau so wäre es interessant Deviation Testing als Teil unserer Arbeit zu nutzen indem mit diesem Tool die Tests erweitert werden.
-(initialer Plan war es, einfach immer alle Felder eines Nodes zu testen, hierdurch wäre es möglich auch alle Varianten noch zu testem)
+(initialer Plan war es, einfach immer alle Felder eines Nodes zu testen, hierdurch wäre es möglich auch alle Varianten noch zu testen)
+
+\section{AutoGraphQL}
+
+Klassisches Testen von Anwendungen beeinhaltet, dass möglichst das komplette System getestet wird bevor es verwendet wird.
+Im Paper "Harvesting Production GraphQL Queries to Detect Schema Faults" wird ein gänzlich anderer Ansatz verfolgt.
+Hierbei ist es nicht wichtig die gesamte GraphQL-API vor der Veröffentlichung zu testen sondern
+echte Queries die in Production ausgeführt werden zu sammeln.
+Der Ansatz der hierbei verfolgt wird begründet sich daraus,
+dass ein Testraum für GraphQL potentiell unendlich sein kann und es sehr wahrscheinlich ist, dass nur ein kleiner
+Teil der API wirklich intensiv genutzt wird, sodass auch nur dieser Teil wirklich stark durch Tests abgedeckt werden muss.
+AutoGraphQL läuft hierbei in zwei Phasen wobei in der ersten Phase alle einzigartigen Anfragen geloggt werden.
+In der zweiten Phase werden dann aus den geloggten Anfragen Tests generiert.
+Hierbei wird für jede geloggte Query genau ein Test-Case erstellt.
+Bei dieser Art des Testens wird insbesondere darauf Wert gelegt, dass es keine Fehler im GraphQL Schema gibt.
+Dies ist ein wichtiger Teil um GraphQL-API's zu testen allerdings noch kein vollständiger Test denn hier wird außer Acht gelassen,
+dass eine Query konform zum GraphQL-Schema sein kann aber trotzdem falsch indem zum Beispiel falsche Daten zurückgegeben werden
+durch falsche Referenzierung oder ähnlichem.
+In dem zu entwickelndem Tool sollten alle Querys die von AutoGraphQL geloggt werden auch berücksichtig werden da sie durch
+den Prime-Path Algorithmus auch ermittelt werden.
+Es kann allerdings sinnvoll sein AutoGraphQL als Monitoring-Software mitlaufen zu lassen und weitere etwaige Fehler hiermit zu loggen
+und automatisch daraus Test-Cases erstellen zu können damit zukünftig keine Fehler dieser Art mehr passieren.
 
 
