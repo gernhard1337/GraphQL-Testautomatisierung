@@ -20,5 +20,33 @@ Die benötigte Toolchain ist also sehr klein, sie benötigt nur Factory.ts für 
 Jest für die Ausführung der generierten Tests und
 ApolloServer für die Ausführung der GraphQL-Resolver.
 
+\section{Ablauf der Generierung}
+
+\begin{center}
+    \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw}]
+        \node[main] at (5,10) (1) { GraphQL-API };
+        \node[main] at (0,8) (2) { Query Resolvers };
+        \node[main] at (10,8) (3) { GraphQL - Schema};
+        \node[main] at (10,6) (4) { Graph };
+        \node[main] at (10,4) (5) { Prime-Paths };
+        \node[main] at (10,2) (6) { Prime-Paths zu Query };
+        \node[main] at (0,6) (8) { Daten für Resolver-Coverage };
+        \node[main] at (0,4) (9) { Query Generation };
+        \node[main] at (0,2) (10) { Auswertung mit Jest };
+        \node[main] at (0,0) (11) { Test Report };
+        \draw [->] (1) to node [midway,below]{ Query für Schema } (3);
+        \draw [->] (1) to node [midway,below]{ extracting Resolver Code } (2);
+        \draw [->] (3) to node [midway,below]{ Graph extrahieren aus Schema } (4);
+        \draw [->] (4) to node [midway,below]{ Prime-Path Algorithmus anwenden } (5);
+        \draw [->] (5) to node [midway,below]{ mapping } (6);
+        \draw [->] (2) to node [midway,below]{ FullCovering von Code ermitteln } (8);
+        \draw [->] (8) to node [midway,below]{ Querys mit ermittelten Daten für Coverage füllen } (9);
+        \draw [->] (6) to node [midway,below]{ ermittelte Querys erstellen } (9);
+        \draw [->] (9) to node [midway,below]{ Daten mittel fakedatabase mocken } (10);
+        \draw [->] (10) to node [midway,below]{ Auswertung } (11);
+    \end{tikzpicture}
+\end{center}
+
+
 \section{Requirements an das Tool}
 

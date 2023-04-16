@@ -1,4 +1,4 @@
-\chapter{related Work / ähnliche Arbeiten}
+\chapter{related Work / verwandte Arbeiten}
 
 Da Software-Testing ein stetig wachsendes Thema ist und der allgemeine Konsens \"man kann nicht genug testen\" existiert ist
 es klar, dass diverse Arbeiten in Richtung Testautomatisierung erstellt wurden. In diesem Abschnitt sollen ähnliche Arbeiten
@@ -24,7 +24,7 @@ Im Vergleich mit unserer geplanten Arbeit mittels des Prime-Path-Algorithmus erg
 unter anderem: Nutzung eines evolutionären Algorithmus Many-Independent-Objective (MIO).
 Im Paper selbst wird davon ausgegangen, dass andere evolutionäre Algorithmen unter Umständen passender wären als der MIO Algorithmus
 für die Testgenerierung. Jedoch ist ein evolutionärer Algorithmus auch immer ein stochastisch, heuristisch sich dem Optimum annähernder Algorithmus. (Beleg hierfür)
-Im Gegensatz dazu ist der Ansatz dieser Arbeit ein natürlicher Algorithmus der beweisbar ideale Lösungen auf direkte Art bietet
+Im Gegensatz dazu ist der Ansatz dieser Arbeit ein deterministischer Algorithmus der beweisbar ideale Lösungen auf direkte Art bietet
 und im ersten Durchlauf direkt sein ideales Ergebnis ermittelt. Die ideale Lösung bezieht sich hierbei auf bestimmte
 Code-Coverage Kriterien die durch unseren Algorithmus erfüllt werden.  Inwiefern der evolutionäre Algorithmus diese
 Kriterien erfüllt bleibt offen, es ist jedoch davon auszugehen, dass er sich einer idealen Lösung dieser Kriterien nur
@@ -68,5 +68,23 @@ In dem zu entwickelndem Tool sollten alle Querys die von AutoGraphQL geloggt wer
 den Prime-Path Algorithmus auch ermittelt werden.
 Es kann allerdings sinnvoll sein AutoGraphQL als Monitoring-Software mitlaufen zu lassen und weitere etwaige Fehler hiermit zu loggen
 und automatisch daraus Test-Cases erstellen zu können damit zukünftig keine Fehler dieser Art mehr passieren.
+
+\section{Vergleich der Arbeiten}
+
+\begin{center}
+    \begin{tabular}{| c | c | c | c | c |}
+        \hline
+        Arbeit &  Überdeckungskriterien & Orakel & Testverarbeitung & Testgranularität \\
+        \hline
+        EvoMaster & & & & \\
+        \hline
+        Deviation-Testing & & & & \\
+        \hline
+        AutoGraphQL & & & & \\
+        \hline
+
+
+    \end{tabular}
+\end{center}
 
 

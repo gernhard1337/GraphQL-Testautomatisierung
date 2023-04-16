@@ -100,10 +100,9 @@ Fügen wir dem Author nun auch noch die Property written hinzu, so ergibt sich e
 
 so ergibt sich, dass wir einen zirkulären Graphen haben mit folgender Struktur
 
-\begin{figure2}
-    \begin{center}
-        \begin{tikzpicture}
-            \node (1)[abstract, rectangle split, rectangle split parts=2] at (0,0)
+\begin{center}
+    \begin{tikzpicture}
+        \node (1)[abstract, rectangle split, rectangle split parts=2] at (0,0)
                 {
                 \textbf{Book}
                 \nodepart{second} \begin{description}
@@ -123,10 +122,9 @@ so ergibt sich, dass wir einen zirkulären Graphen haben mit folgender Struktur
 
             \draw [ -> ] (1) to [bend right] node [midway,below]{ author } (2);
             \draw [ -> ] (2) to node [midway,below]{written} (1);
-        \end{tikzpicture}
-    \end{center}
-    \label{fig:2typescirc}
-\end{figure2}
+    \end{tikzpicture}
+\end{center}
+
 
 Dieses Schema ist ein Bauplan für einen sehr einfachen, zirkulären Graphen der durch GraphQL abgebildet wird.
 In Realität können die Graphstrukturen die aus diesem Bauplan resultieren sehr unterschiedlich sein.
