@@ -71,20 +71,42 @@ und automatisch daraus Test-Cases erstellen zu können damit zukünftig keine Fe
 
 \section{Vergleich der Arbeiten}
 
+\newcolumntype{C}{>{\Centering\arraybackslash}X}
 \begin{center}
-    \begin{tabular}{| c | c | c | c | c |}
-        \hline
-        Arbeit &  Überdeckungskriterien & Orakel & Testverarbeitung & Testgranularität \\
-        \hline
-        EvoMaster & & & & \\
-        \hline
-        Deviation-Testing & & & & \\
-        \hline
-        AutoGraphQL & & & & \\
-        \hline
-
-
-    \end{tabular}
+    \begin{table}[!ht]
+        \begin{tabularx}{\textwidth}{|C|C|C|C|C|}
+            \hline
+            \textbf{ Arbeit / Kriterium} &  \textbf{EvoMaster} & \textbf{Deviation-Testing} & \textbf{AutoGraphQL} \\
+            \hline
+            Überdeckungs- kriterien & Heuristische Suche & Erweiterung von bestehenden Tests & Tracken von Querys und daraus Tests generieren \\
+            \hline
+            Orakel & simples Raten &  & \\
+            \hline
+            Testverarbeitung & & & \\
+            \hline
+            Testgranularität & & & \\
+            \hline
+        \end{tabularx}
+    \end{table}
 \end{center}
+
+\section{Andere Arbeiten}
+Hier ist eine kurze Übersicht über andere Arbeiten, dieses Kapitel ist sehr unwahrscheinlich in einer Abgabeversion.
+Es dient eher als Notizensammlung in einer hübscheren Form.
+
+\subsection{Empirical Study of GraphQL Schemas}
+Eine umfangreiche Untersuchung von Praktiken in GraphQL. Unterteilt in verschiedene Metriken wie z.B.
+Anzahl der Objekttypen, Querys etc.
+Interessant ist allerdings die Untersuchung von zyklischen Schemas. Insbesondere, wie groß diese Zyklen
+werden können und wie sie begrenzt werden. Dies ist interessant für spätere Auswertungen. Allerdings bringt
+diese Arbeit nicht viel für das direkte Testen.
+
+\subsection{LinGBM Performance Benchmark to Build GraphQL Servers}
+Eher eine Untersuchung wie GraphQL-APIs unter Last performen bzw. wie Effizient sie sind.
+Der benutzte Query-Generator kann interessant sein aber es ist schwer einschätzbar wie dieser in unserem Kontext genutzt werden
+kann.
+
+\subsection{GraphQL A Systematic Mapping Study}
+Richtig gute Übersicht wie GraphQL "Unter der Haube" funktioniert
 
 

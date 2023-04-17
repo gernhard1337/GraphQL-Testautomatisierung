@@ -175,6 +175,10 @@ diverse Möglichkeiten haben je nach den unterliegenden Daten.
                                       \item[name:] String
                 \end{description}
             };
+            \draw [->] (4) to node [midway]{ schrieb } (1);
+            \draw [->] (4) to node [midway]{ schrieb } (2);
+            \draw [->] (5) to node [midway]{ schrieb } (3);
+
         \end{tikzpicture}
     \caption{3 Bücher, 2 Autoren}
     \end{center}
@@ -234,12 +238,18 @@ diverse Möglichkeiten haben je nach den unterliegenden Daten.
             };
             \node (7)[abstract, rectangle split, rectangle split parts=2] at (10,5)
                 {
-                \textbf{Book}
+                \textbf{Author}
                 \nodepart{second} \begin{description}
                                       \item[id:] Integer
-                                      \item[title:] String
+                                      \item[name:] String
                 \end{description}
             };
+            \draw [->] (7) to node [midway]{ schrieb } (1);
+            \draw [->] (7) to node [midway]{ schrieb } (2);
+            \draw [->] (7) to node [midway]{ schrieb } (3);
+            \draw [->] (7) to node [midway]{ schrieb } (4);
+            \draw [->] (7) to node [midway]{ schrieb } (5);
+            \draw [->] (7) to node [midway]{ schrieb } (6);
         \end{tikzpicture}
         \caption{6 Bücher, 1 Autor}
     \end{center}
