@@ -1,0 +1,219 @@
+\chapter{Testentwurf}
+
+Der allgemeine Testentwurf besteht aus zwei einzelnen Phasen.
+In der ersten Phase wird die GraphQL-API analysiert und die Prime-Paths generiert.
+So haben wir grundlegendes Wissen darüber, welche Querys ausgeführt werden müssen damit jeder Bereich
+der API abgedeckt ist.
+In der zweiten Phase \ldots
+
+\section{erste Phase / GraphQL Analyse}
+
+Grundlage der Analyse einer GraphQL-API ist ihr Schema.
+Die gesamte erste Phase bezieht sich nur auf das Schema denn aus diesem können wir alle grundlegenden
+Test-Cases ermitteln die nötig sind um eine Überdeckung der Anfragen zu ermitteln.
+Es sei hier gesagt, dass nur die Überdeckung der Anfragen nicht bedeutet, dass die API hiermit vollständig getestet wird,
+hierdurch werden nur alle Anfragen erstellt, sodass jeder Knoten und jede Kante im definierten Schema mindestens
+einmal Betrachtung findet in einem Test.
+Die dahinterliegenden Resolver benötigen weitere Abdeckung hierzu jedoch mehr in Phase 2.
+
+\subsection{GraphQL in Graph übersetzen}
+
+Um ein GraphQL Schema in einen Graphen zu übersetzen, bedarf es mehrerer Schritte.
+Im GraphQL Standard implementiert jeder GraphQL-Client eine {\tt parse()} Funktion.
+Diese werden wir auch nutzen, da wir hierdurch einen Graphen erhalten der für unsere Berechnungen auf dem
+Graphen passend ist.
+Die {\tt parse()} Funktion führt im wesentlichen zwei Schritte aus:
+
+\begin{description}
+    \item[Lexikalische Analyse] Schema in Token zerlegen
+    \item[Syntaktische Analyse] Token in passende Graph-Repräsentation übersetzen
+\end{description} (Quelle X.Y.Z)
+
+Endergebnis ist ein Abstract Syntax Tree (AST) (Quelle einfügen).
+Ein AST sieht je nach GraphQL-Client Plattform unterschiedlich, jedoch sehr ähnlich aus.
+Folgendes, sehr simples Schema:
+
+\begin{verbatim}
+    type Query {
+      user(id: Int): User
+    }
+
+    type User {
+      id: Int
+      name: String
+    }
+\end{verbatim}
+
+wird in folgenden AST übersetzt (in Java-/Type-script ist der AST in json Format):
+
+\begin{lstlisting}[language=json,firstnumber=1]
+{
+  "kind": "Document",
+  "definitions": [
+    {
+      "kind": "ObjectTypeDefinition",
+      "name": {
+        "kind": "Name",
+        "value": "Book"
+      },
+      "fields": [
+        {
+          "kind": "FieldDefinition",
+          "name": {
+            "kind": "Name",
+            "value": "id"
+          },
+          "type": {
+            "kind": "NamedType",
+            "name": {
+              "kind": "Name",
+              "value": "Int"
+            }
+          }
+        },
+        {
+          "kind": "FieldDefinition",
+          "name": {
+            "kind": "Name",
+            "value": "title"
+          },
+          "type": {
+            "kind": "NamedType",
+            "name": {
+              "kind": "Name",
+              "value": "String"
+            }
+          }
+        },
+        {
+          "kind": "FieldDefinition",
+          "name": {
+            "kind": "Name",
+            "value": "author"
+          },
+          "type": {
+            "kind": "NamedType",
+            "name": {
+              "kind": "Name",
+              "value": "Author"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ObjectTypeDefinition",
+      "name": {
+        "kind": "Name",
+        "value": "Author"
+      },
+      "fields": [
+        {
+          "kind": "FieldDefinition",
+          "name": {
+            "kind": "Name",
+            "value": "id"
+          },
+          "type": {
+            "kind": "NamedType",
+            "name": {
+              "kind": "Name",
+              "value": "Int"
+            }
+          }
+        },
+        {
+          "kind": "FieldDefinition",
+          "name": {
+            "kind": "Name",
+            "value": "name"
+          },
+          "type": {
+            "kind": "NamedType",
+            "name": {
+              "kind": "Name",
+              "value": "String"
+            }
+          }
+        },
+        {
+          "kind": "FieldDefinition",
+          "name": {
+            "kind": "Name",
+            "value": "written"
+          },
+          "type": {
+            "kind": "ListType",
+            "type": {
+              "kind": "NonNullType",
+              "type": {
+                "kind": "NamedType",
+                "name": {
+                  "kind": "Name",
+                  "value": "Books"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
+\end{lstlisting}
+
+Die Ausgabe in diesem AST verrät uns für jede "ObjectTypeDefinition" das wir hier einen Knoten des Graphens haben
+und in dem "Fields" eintrag kann man alle möglichen Verbindungen des Knotens finden.
+
+\subsection{Pfadgenerierung}
+
+Da wir im vorherigen Schritt eine geeignete Darstellung gefunden haben, um unseren Graphen zu repräsentieren können wir
+nun im ersten Schritt alle Pfade innerhalb dieses Graphens finden.
+Um die Pfade zu ermitteln müssen wir lediglich wissen, welche Typen ein einzelner Knoten haben kann.
+In Kapitel (GraphQL Kapitel verlinken) wurde bereits auf alle möglichen Typen eingegangen.
+Hierbei sind für die Pfadgenerierung nur diese wichtig:
+\begin{center}
+  \begin{description}
+    \item[FieldDefiniton]
+    \item[NonNullType]
+    \item[ListType]
+    \item[ObjectTypeDefinition]
+  \end{description} (Quelle X.Y.Z)
+\end{center}
+Mittels dieser Typen können wir alle Pfade aufbauen.
+Jeder Knoten des Graphens hat im AST eine Definition.
+Innerhalb dieser Definition benötigen wir die Felder:
+\begin{center}
+  \begin{description}
+    \item[kind]
+    \item[name]
+    \item[type]
+    \item[ObjectTypeDefinition]
+  \end{description} (Quelle X.Y.Z)
+\end{center}
+Mittels folgendem Pseudo-Code ist es dann möglich, alle Pfade zu ermitteln (konkrete Implementierung in Praxis-Teil):
+
+\begin{verbatim}
+  0. Importiere funktionen buildSchema(), parse() und printSchema()
+  1. Lese GraphQL-Schema String
+  2. Erstelle AST
+  3. pfade = []
+  4. Für alle Definitionen im AST mache:
+    4.1 Wenn Definition.kind == "ObjectTypeDefinition"
+        4.1.1 ermitteltePfade = ermittel alle Pfade ausgehend von diesem Knoten
+        4.1.2 pfade[] = ermitteltePfade
+    sonst ist Definition BasisDatentyp -> Pfadende
+  5. return pfade
+\end{verbatim}
+
+\subsection{Filtern der Prime-Paths}
+
+Da wir nun eine Liste aller möglichen Pfade haben, müssen wir diese nur noch nach PrimePaths filtern.
+Wie in (Kapitel verlinken) bereits erwähnt, sind PrimePaths die längsten Pfade, die kein Teilpfad eines anderen Pfades sind.
+Hierzu können wir eine einfache Funktion entwickeln, die alle "nicht Prime Paths" herausfiltert.
+Diese Funktion muss hierfür jeden errechneten Pfad einmal überprüfen ob dieser Pfad ein Teilpfad eines anderen Pfades ist.
+Sollte der Pfad ein Teilpfad sein, so ist dieser kein PrimePath andernfalls handelt es sich um einen PrimePath und
+dieser wird behalten. Konkrete Implementierung ist hierfür im Praxis-Teil zu finden (Link zum Kaptitel).
+
+\section{zweite Phase / Pfade untersuchen und tests für resolver entwickeln}
