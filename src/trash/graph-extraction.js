@@ -41,45 +41,6 @@ function extractQueryTypeFields(ast) {
     return queryType ? queryType.fields : [];
 }
 
-function getPaths(astNode, currentPath = []) {
-    const paths = [];
-
-    if (astNode.kind === "FieldDefinition") {
-        paths.push(currentPath);
-
-        if (astNode.type.kind === "NamedType" && astNode.type.name.value !== "String" && astNode.type.name.value !== "Int" && astNode.type.name.value !== "Float" && astNode.type.name.value !== "Boolean" && astNode.type.name.value !== "ID") {
-            const objectTypeDefinition = ast.definitions.find(
-                (definition) =>
-                    definition.kind === "ObjectTypeDefinition" &&
-                    definition.name.value === astNode.type.name.value
-            );
-            if (objectTypeDefinition) {
-                objectTypeDefinition.fields.forEach((field) => {
-                    const newPath = [...currentPath, field.name.value];
-                    paths.push(...getPaths(field, newPath));
-                });
-            }
-        }
-    }
-
-    return paths;
-}
-
-function getAllPaths(ast) {
-    const paths = [];
-
-    ast.definitions.forEach((definition) => {
-        if (definition.kind === "ObjectTypeDefinition") {
-            definition.fields.forEach((field) => {
-                paths.push(...getPaths(field, [definition.name.value, field.name.value]));
-            });
-        }
-    });
-
-    return paths;
-}
-
-const paths = getAllPaths(ast);
 
 paths.forEach((path) => {
     console.log(path.join(" -> "));
@@ -127,24 +88,25 @@ function generateDummyValue(type) {
 const testQuery = (path) => {
     const fieldsPath = path.slice(1); // Remove the type name
     const inputVariables = getInputVariables(path);
-    console.log(inputVariables);
     const inputValues = inputVariables
         .map((arg) => `${arg.name.value}: ${generateDummyValue(arg.type.name)}`)
         .join(", ");
 
-    const query = `
-    query {
+    const query = `{
       ${fieldsPath.join("{ ")}${inputValues ? `(${inputValues})` : ""}${"}".repeat(fieldsPath.length)}
-    }
   `;
     console.log(query);
     return graphql(schema, query);
 };
 
+let tests = [];
+
 paths.forEach((path, index) => {
-        const result = testQuery(path);
-        console.log(result);
+        tests.push(testQuery(path));
 });
+
+console.log(tests);
+console.log(tests[0]);
 
 
 

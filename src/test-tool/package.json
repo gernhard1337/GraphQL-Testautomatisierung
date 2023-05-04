@@ -1,0 +1,12 @@
+{
+  "name": "test-tool",
+  "version": "1.0.0",
+  "scripts": {
+    "run": "node graph-extraction.js"
+  },
+  "dependencies": {
+    "graphql": "^0.13.2",
+    "graphql-parser": "^2.1.0",
+    "graphql-tools": "^3.1.1"
+  }
+}

@@ -119,7 +119,10 @@ durchaus denkbar, dass dort Fehler in Zuordnungen gemacht werden und somit unter
 Insbesondere eine Verifikation von query3 stellt sicher, dass Kreise sicher bearbeitet werden von der API denn ein solcher getester Kreis
 sichert zu, dass Objekt vom Start und Ende des Kreises dasselbe sind. 
 
-
 Techstack
 
+
+# How to Run 
+move in src/test-tool & run "node graph-extraction.js"
+place your Schema in src/schemas/schema.graphql
 

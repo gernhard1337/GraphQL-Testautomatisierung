@@ -17,22 +17,9 @@ Man nehme zum Beispiel ein Buch und definiere hierfür einen Type
 Es exisitiert jetzt ein Objekt Book mit den Eigenschaften id als Integer und title als String.
 Repräsentiert als Graphen hätten wir nun einen einfachen Knoten der zwei Datentypen speichert.
 
-\begin{figure}[!htbp]
-    \begin{center}
-        \begin{tikzpicture}
-            \node (1)[abstract, rectangle split, rectangle split parts=2] at (4,8)
-                {
-                    \textbf{Book}
-                    \nodepart{second} \begin{description}
-                                          \item[id:] Integer
-                                          \item[title:] String
-                                      \end{description}
-                };
-        \end{tikzpicture}
-    \caption{Graph mit 1 Type}
-    \end{center}
-    \label{fig:1type}
-\end{figure}
+\begin{center}
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/book}
+\end{center}
 
 Ein Objekt enthält 1 bis n Propertys. Diese Property kann entweder ein Standarddatentyp sein oder auf einen Type verweisen,
 dies kann der eigene Type oder auch ein anderer Type sein.
@@ -57,31 +44,9 @@ So fügen wir unserem Graphen einen zusätzlichen Knoten hinzu
 Die Beziehung zwischen dem Buch und Author wird durch eine gerichtete Kante zwischen dem Buch und dem Author dargestellt.
 Hierdurch ergibt sich folgender Graph:
 
-\begin{figure}
-    \begin{center}
-        \begin{tikzpicture}
-            \node (1)[abstract, rectangle split, rectangle split parts=2] at (0,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                                      \item[author:] Author
-                \end{description}
-                };
-            \node (2)[abstract, rectangle split, rectangle split parts=2] at (10,0)
-                {
-                \textbf{Author}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[name:] String
-                \end{description}
-                };
-            \draw [->] (1) to node [midway,below]{author} (2);
-        \end{tikzpicture}
-    \end{center}
-    \label{fig:2types}
-\end{figure}
+\begin{center}
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/book-author}
+\end{center}
 
 Fügen wir dem Author nun auch noch die Property written hinzu, so ergibt sich ein Kreis in diesem Graph.
 
@@ -101,28 +66,7 @@ Fügen wir dem Author nun auch noch die Property written hinzu, so ergibt sich e
 so ergibt sich, dass wir einen zirkulären Graphen haben mit folgender Struktur
 
 \begin{center}
-    \begin{tikzpicture}
-        \node (1)[abstract, rectangle split, rectangle split parts=2] at (0,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                \end{description}
-            };
-            \node (2)[abstract, rectangle split, rectangle split parts=2] at (10,0)
-                {
-                \textbf{Author}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[name:] String
-                                      \item[written:] [Book]
-                \end{description}
-            };
-
-            \draw [ -> ] (1) to [bend right] node [midway,below]{ author } (2);
-            \draw [ -> ] (2) to node [midway,below]{written} (1);
-    \end{tikzpicture}
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/book-author-circle}
 \end{center}
 
 

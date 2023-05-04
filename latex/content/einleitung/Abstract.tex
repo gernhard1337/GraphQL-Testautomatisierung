@@ -1,11 +1,15 @@
 \chapter{Abstract}
 
-Mit zunehmender Popularität von GraphQL ist es wichtig auch die Qualität von GraphQL-Api's zu testen.
-Aktuell gibt es aber noch Einschränkungen an Testtools für GraphQL-Apis insbesondere im Bereich der
-Testcoverage. Im Paper \"Automatic Property-based Testing of
-GraphQL APIs" (Quelle hinzufügen) wurde sich mit einem automatischen Testverfahren für GraphQL-API's beschäftigt.
+Mit zunehmender Popularität von GraphQL ist es wichtig auch die Qualität von GraphQL-Api's zu validieren und verifizieren.
+Aktuell gibt es aber noch Einschränkungen an Testtools für GraphQL-Apis, insbesondere im Bereich der automatischen Testanalyse.
+Im Paper \" Automatic Property-based Testing of GraphQL APIs \" (Quelle hinzufügen) wurde sich mit einem automatischen
+Testverfahren für GraphQL-API's beschäftigt.
 Allerdings bietet diese Arbeit ein Verbesserungspotential, welches in dieser Arbeit untersucht und implementiert werden soll.
 Im konkreten handelt es sich bei dem automatischen Testverfahren um ein Verfahren, das ein GraphQL-Schema aufgrund seiner
-Eigenschaften aufspaltet und Testet. Hierbei wird zwar Rücksicht auf die Graphstruktur genommen allerdings werden spezifische
-Grapheigenschaften nicht ausgenutzt um die Tests zu verbessern. Ziel dieser Arbeit ist es, das Domänenwissen für Graphen zu nutzen
-um eine automatische Testgenerierung zu verbessern und somit eine zunächst höhere Test-Coverage bieten zu können.
+Struktur rekursiv untersucht und hieraus tests generiert.
+Hierbei wird zwar Rücksicht auf die spezielle Graphstruktur genommen allerdings werden spezifische Grapheigenschaften nicht ausgenutzt, um die Tests zu verbessern.
+Dabei sind diverse Arbeiten publiziert worden die sich mit Graphenüberdeckung beschäftigen welche auch
+Algorithmen anwenden, die zyklische Strukturen gut überdecken.
+Ziel dieser Arbeit ist es, dieses Wissen über Graphüberdeckung zu nutzen indem besagte GraphAlgorithmen
+den rekursiven Suchalgorithmus des Papers ersetzen.
+Hierdurch erhoffen wir uns eine Verbesserung der Test-Coverage.

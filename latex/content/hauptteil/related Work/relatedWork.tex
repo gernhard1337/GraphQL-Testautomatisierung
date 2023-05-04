@@ -4,9 +4,24 @@ Da Software-Testing ein stetig wachsendes Thema ist und der allgemeine Konsens \
 es klar, dass diverse Arbeiten in Richtung Testautomatisierung erstellt wurden. In diesem Abschnitt sollen ähnliche Arbeiten
 genannt werden sowie Unterschiede zu diesen Arbeiten benannt werden.
 
-\section{Property search Based Testing}
+\section{Property Based Testing}
 
-Das Paper auf das sich die Arbeit mainly bezieht
+In (Paper Quelle hier verlinken) wird der Ansatz des Property-based Testing verfolgt.
+Property-based Testing ist laut dem Paper heute Synonym mit "Random Testing" (vgl. Paper) wobei zufällig hierbei meint,
+dass Eingabedaten zufällig generiert werden.
+Die Generierung der eigentlichen Tests geschieht hierbei auf Grundlage des graphenbasierten Schemas (vgl. Paper) indem
+das Schema rekursiv untersucht wird auf "Objekte" und "Fields" (Objekte = Types; Fields = Felder des Typens).
+Die generierten Tests werden dann auf dem zu testenden System ausgeführt und ausgewertet.
+Im Grunde arbeitet dieses Paper ähnlich wie die hier zu untersuchende Methode allerdings nutzen die
+Autoren bekanntes Wissen nicht vollkommen aus.
+So ist erwähnt, dass der Query-Generator ein Iterationslimit auf jedem Knoten hat um mögliche zyklische Strukturen
+zu umgehen. (vgl "Creation of the query Generator" im Paper).
+Unter anderem dieser Umstand führt dazu, dass unter gewissen Umständen Tests nicht ideal abgebildet werden.
+Die Annahme, dass ein Iterationslimit nötig ist, ist aber falsch.
+Es gibt Algorithmen wie z.B. den PrimePath Algorithmus (später mehr dazu) die eine Graphüberdeckung ermitteln können
+auch in zyklischen Graphen ohne dabei in einer Rekursionsschleife feststecken zu bleiben.
+Insofern soll der Query-Generation Ansatz vom "Property-based Testing" durch unseren neuen Ansatz ersetzt werden.
+Hierzu jedoch im folgenden dann mehr.
 
 \section{heuristisch suchenbasiertes Testen}
 
@@ -78,17 +93,17 @@ und automatisch daraus Test-Cases erstellen zu können damit zukünftig keine Fe
 \newcolumntype{C}{>{\Centering\arraybackslash}X}
 \begin{center}
     \begin{table}[!ht]
-        \begin{tabularx}{\textwidth}{|C|C|C|C|C|}
+        \begin{tabularx}{\textwidth}{|C|C|C|C|C|C|}
             \hline
-            \textbf{ Arbeit / Kriterium} &  \textbf{EvoMaster} & \textbf{Deviation-Testing} & \textbf{AutoGraphQL} \\
+            \textbf{ Arbeit / Kriterium} & \textbf{Property Based Testing} & \textbf{heuristisch suchenbasiertes Testen} & \textbf{Deviation-Testing} & \textbf{Query Harvesting} \\
             \hline
-            Überdeckungs- kriterien & Heuristische Suche & Erweiterung von bestehenden Tests & Tracken von Querys und daraus Tests generieren \\
+            Überdeckungs- kriterien & Heuristische Suche & Erweiterung von bestehenden Tests & Tracken von Querys und daraus Tests generieren & \\
             \hline
-            Orakel & simples Raten &  & \\
+            Orakel & simples Raten &  & &\\
             \hline
-            Testverarbeitung & & & \\
+            Testverarbeitung & & & &\\
             \hline
-            Testgranularität & & & \\
+            Testgranularität & & & &\\
             \hline
         \end{tabularx}
     \end{table}
