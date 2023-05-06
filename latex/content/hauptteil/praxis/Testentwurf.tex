@@ -241,12 +241,12 @@ Iteration 1:
 \begin{itemize}
   \item hello
   \item books
-  \item books -> author
+  \item books \textrightarrow author
   \item authors
-  \item authors -> books
-  \item bookWrittenBy -> author
-  \item booksWrittenBy -> author
-  \item writtenBy -> book
+  \item authors \textrightarrow books
+  \item bookWrittenBy \textrightarrow author
+  \item booksWrittenBy \textrightarrow author
+  \item writtenBy \textrightarrow book
 \end{itemize}
 
 Iteration 2:
@@ -254,45 +254,28 @@ Iteration 2:
 \begin{itemize}
   \item hello
   \item books
-  \item books -> author
-  \item books -> author -> books
+  \item books \textrightarrow author
+  \item books \textrightarrow author \textrightarrow books
   \item authors
-  \item authors -> books
-  \item authors -> books -> author
+  \item authors \textrightarrow books
+  \item authors \textrightarrow books \textrightarrow author
   \item bookWrittenBy
-  \item bookWrittenBy -> author
-  \item bookWrittenBy -> author -> book
+  \item bookWrittenBy \textrightarrow author
+  \item bookWrittenBy \textrightarrow author -> book
   \item booksWrittenBy
-  \item booksWrittenBy -> author
-  \item booksWrittenBy -> author -> book
+  \item booksWrittenBy \textrightarrow author
+  \item booksWrittenBy \textrightarrow author \textrightarrow book
   \item writtenBy
-  \item writtenBy -> book
-  \item writtenBy -> book -> author
+  \item writtenBy \textrightarrow book
+  \item writtenBy \textrightarrow book \textrightarrow author
 \end{itemize}
 
-In Iteration 2 ist nun zu erkennen, dass sich Kreise bilden. Es ist nun möglich weitere Iterationen durchzuführen jedoch
-wird hier keine weitere Information mehr gewonnen, denn die nun resultierenden Pfade sind nur Wiederholungen der eben erkannten
-Kreise.
-
-
-
-
-
-
-
-
-
-
-\begin{center}
-  \begin{description}
-    \item[kind]
-    \item[name]
-    \item[type]
-    \item[ObjectTypeDefinition]
-  \end{description} (Quelle X.Y.Z)
-\end{center}
-
-Mittels folgendem Pseudo-Code ist es dann möglich, alle Pfade zu ermitteln:
+In Iteration 2 ist nun zu erkennen, dass sich Kreise bilden. Weitere Iterationen führen dazu, dass sich nur noch
+Kreise bilden innerhalb der definierten Struktur. D.h. Iteration 3,4 etc würde an neuen Pfaden nur noch
+Verlängerungen des Schemas "........ book \textrightarrow author \textrightarrow book \textrightarrow author ........"
+hervorbringen.
+Jede Kante im Graphen entsteht dadurch, dass das Feld keine Standarddatentyp Definition hat sondern einen Objekt-Type.
+Somit ist es möglich, mithilfe von folgendem Pseudo-Code, die Pfade alle zu erzeugen.
 
 \begin{verbatim}
   0. Importiere funktionen buildSchema(), parse() und printSchema()
@@ -307,50 +290,7 @@ Mittels folgendem Pseudo-Code ist es dann möglich, alle Pfade zu ermitteln:
   5. return pfade
 \end{verbatim}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Endergebnis dieser Funktion sollten exakt Iteration 2 entsprechen.
 
 
 \subsection{Filtern der Prime-Paths}
@@ -360,6 +300,42 @@ Wie in (Kapitel verlinken) bereits erwähnt, sind PrimePaths die längsten Pfade
 Hierzu können wir eine einfache Funktion entwickeln, die alle "nicht Prime Paths" herausfiltert.
 Diese Funktion muss hierfür jeden errechneten Pfad einmal überprüfen ob dieser Pfad ein Teilpfad eines anderen Pfades ist.
 Sollte der Pfad ein Teilpfad sein, so ist dieser kein PrimePath andernfalls handelt es sich um einen PrimePath und
-dieser wird behalten. Konkrete Implementierung ist hierfür im Praxis-Teil zu finden (Link zum Kaptitel).
+dieser wird behalten.
+Folgender Pseudo-Code übernimmt die Filterung der Pfade:
 
-\section{zweite Phase / Pfade untersuchen und tests für resolver entwickeln}
+\begin{verbatim}
+  Input: Pfadliste
+  0. Variable primePaths: []
+  1. Für alle pfade aus Pfadliste:
+    1.1 Für alle andererPfad aus Pfadliste
+      1.1.1 Wenn istKeinTeilpfad(pfad, andererPfad)
+            primePaths.push(pfad)
+  2. return primePaths
+  # ausgehend davon, dass pfade als Liste [1,2,3] gespeichert sind.
+  # isSubarray sollte vordefiniert sein in diversen Sprachen
+  Function istKeinTeilpfad(pfad, andererPfad):
+    return !isSubarray(pfad, andererPfad)
+
+\end{verbatim}
+
+Wendet man die Filterung nun auf unsere Liste aus Iteration 2 an, sollte sich folgende, gefilterte Liste ergeben:
+
+\begin{itemize}
+  \item hello
+  \item books \textrightarrow author
+  \item authors \textrightarrow books \textrightarrow author
+  \item bookWrittenBy \textrightarrow author \textrightarrow book
+  \item booksWrittenBy \textrightarrow author \textrightarrow book
+  \item writtenBy \textrightarrow book \textrightarrow author
+\end{itemize}
+
+Dies sind dann die Prime-Paths des Schemas.
+Mithilfe dieser Pfade haben wir jeden Knoten und jede Kante mindestens einmal in einer Query berücksichtigt.
+Aus dieser Liste können wir nun fortfahren und unsere Tests entwickeln.
+
+\section{zweite Phase / Pfade untersuchen und Tests für resolver entwickeln}
+
+Aus den gefundenen Pfaden entwickeln wir nun die Tests. Wir werden weiterhin das Beispiel von vorher bentuzen
+um zu zeigen, wie die Testentwicklung für unser Schema aussieht.
+Jeder gefundene Prime-Path wird nun so untersucht, dass er
+
