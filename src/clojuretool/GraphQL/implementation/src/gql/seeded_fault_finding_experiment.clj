@@ -2,7 +2,7 @@
   (:require [gql.generators :as gqlgen]
             [gql.query-data :as data]
             [gql.gql-queries :as query]
-            [gql.small-example-specs :as sspecs]
+            [gql.small_example_specs :as sspecs]
             [paren.serene :as serene]
             [paren.serene.schema :as schema]
             [clojure.test.check.properties :as prop]
@@ -23,7 +23,7 @@
   ;; Write specs to file, only needed when schema changed
   (serene/spit-specs
    "small-example-specs.clj"
-   'gql.small-example-specs
+   'gql.small_example_specs
    (:body (run-query schema/query))))
 
 (defn valid-result?

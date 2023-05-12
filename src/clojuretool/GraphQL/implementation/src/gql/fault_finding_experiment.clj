@@ -7,7 +7,7 @@
             [clojure.data.json :as json]
             [clojure.spec.alpha :as s]))
 
-(def token "ZaBpdrqzpzcmbdEzd1kB")
+(def token "glpat-LPP8P6H9pHSs6V18RdWs")
 
 (def results-db (atom []))
 (def queries (atom []))

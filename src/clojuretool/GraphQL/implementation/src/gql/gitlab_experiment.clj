@@ -1,5 +1,6 @@
 (ns gql.gitlab-experiment
   (:require [clojure.data.json :as json]
+            [clojure.set]
             [org.httpkit.client :as http]
             [gql.generators :as gqlgen]
             [clojure.test.check.properties :as prop]

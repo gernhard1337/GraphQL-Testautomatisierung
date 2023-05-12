@@ -12,4 +12,4 @@ docker run --detach \
   --volume "$HOME/temp/gitlab/config":/etc/gitlab \
   --volume "$HOME/temp/gitlab/logs":/var/log/gitlab \
   --volume "$HOME/temp/gitlab/data":/var/opt/gitlab \
-  gitlab/gitlab-ce:12.6.3-ce.0
+  yrzr/gitlab-ce-arm64v8

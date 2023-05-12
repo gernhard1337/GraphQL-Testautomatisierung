@@ -5,7 +5,6 @@ import resolvers from "./resolvers";
 import typeDefs from "./typeDefs";
 import assert = require("assert");
 
-
 jest.setTimeout(2000)
 jest.retryTimes(3)
 
