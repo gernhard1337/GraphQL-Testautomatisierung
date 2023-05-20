@@ -1,0 +1,38 @@
+  (try
+    (let [gql-schema (query-schema url)
+          query-type-name (:name (:queryType gql-schema))
+          mutation-type-name (:name (:mutationType gql-schema))]
+      (if query-type-name
+        (do
+          (println (str "Query Type found: " query-type-name))
+          (println "Creating Generators...")
+          (let [query-node-map (g/object-node->specification-map
+                                 (gu/find-type gql-schema query-type-name))
+                query-generator (mg/generator
+                                  (first (vals query-node-map))
+                                  {:registry
+                                   (g/generation-registry
+                                    b/base-registry (:types gql-schema))
+                                    :malli.generator/recursion-limit recursion-limit})]
+            (println (first (vals query-node-map)))
+            (println "Running generators...")
+            (let [test-result
+                  (run-test-on-generator query-generator size url)]
+              (println "Test generation done.")
+              (println test-result))
+            (println "Running single field generators...")
+            (let [permutated-generators
+                  (map
+                    (fn [node]
+                      (mg/generator
+                        node
+                        {:registry
+                         (g/generation-registry b/base-registry (:types gql-schema))
+                         :malli.generator/recursion-limit recursion-limit}))
+                    (permutate-query (first (vals query-node-map))))]
+              (mapv #(run-test-on-generator % size url) permutated-generators)
+              )))
+        (println "No Query node found"))
+      )
+    (catch Exception e
+      (str "Exception: " (.getMessage e))))
