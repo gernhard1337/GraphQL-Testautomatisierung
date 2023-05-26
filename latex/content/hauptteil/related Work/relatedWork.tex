@@ -1,27 +1,54 @@
 \chapter{related Work / verwandte Arbeiten}
 
-Da Software-Testing ein stetig wachsendes Thema ist und der allgemeine Konsens \"man kann nicht genug testen\" existiert, ist
-es klar, dass diverse Arbeiten in Richtung Testautomatisierung erstellt wurden. In diesem Abschnitt sollen ähnliche Arbeiten
-genannt werden sowie Unterschiede zu diesen Arbeiten benannt werden.
+Da GraphQL eine stetig wachsende Beliebheit verzeichnet (Quelle) steigt auch der Bedarf an Testmethoden. Aktuell gibt es
+für GraphQL noch eine Lücke an produktionsreifen Testtools, insbesondere automatische Testtools.
+Eine wachsende Anzahl an research-tools bzw. untersuchten Methoden ist allerdings zu verzeichnen.
+In diesem Kapitel sollen etwaiige Verwandheiten, Unterschiede oder thematische Überschnitte von dieser und anderen Arbeiten benannt werden.
+
 
 \section{Property Based Testing}
 
-In (Paper Quelle hier verlinken) wird der Ansatz des Property-based Testing verfolgt.
+In (Paper Quelle hier verlinken) wird der Ansatz des Property-based Testing verfolgt um Integrationstests zu erstellen.
 Property-based Testing ist laut dem Paper heute Synonym mit "Random Testing" (vgl. Paper) wobei zufällig hierbei meint,
-dass Eingabedaten zufällig generiert werden.
-Die Generierung der eigentlichen Tests geschieht hierbei auf Grundlage des graphenbasierten Schemas (vgl. Paper) indem
-das Schema rekursiv untersucht wird auf "Objekte" und "Fields" (Objekte = Types; Fields = Felder des Typens).
-Die generierten Tests werden dann auf dem zu testenden System ausgeführt und ausgewertet.
-Im Grunde arbeitet dieses Paper ähnlich wie die hier zu untersuchende Methode allerdings nutzen die
-Autoren bekanntes Wissen nicht vollkommen aus.
-So ist erwähnt, dass der Query-Generator ein Iterationslimit auf jedem Knoten hat um mögliche zyklische Strukturen
-zu umgehen. (vgl "Creation of the query Generator" im Paper).
-Unter anderem dieser Umstand führt dazu, dass unter gewissen Umständen Tests nicht ideal abgebildet werden.
-Die Annahme, dass ein Iterationslimit nötig ist, ist aber falsch.
-Es gibt Algorithmen wie z.B. den PrimePath Algorithmus (später mehr dazu) die eine Graphüberdeckung ermitteln können
-auch in zyklischen Graphen ohne dabei in einer Rekursionsschleife feststecken zu bleiben.
-Insofern soll der Query-Generation Ansatz vom "Property-based Testing" durch unseren neuen Ansatz ersetzt werden.
-Hierzu jedoch im folgenden dann mehr.
+dass die Eingabedaten & Routen zufällig generiert werden.
+Der allgemeine Ablauf der Testgenerierung laut Paper ist wie folgt:
+
+\begin{center}
+    \begin{itemize}
+        \item[1.] Vom Schema, generiere Typ-Spezifikationen
+        \item[2.] Generiere einen Generator der zufällig eine Liste an Query-Objekten erstellen kann
+        \item[3.] Generiere n Querys
+        \item[4.] Transformiere die Queries in GraphQL-Format
+        \item[5.] Führe die Queries auf dem SUT (system under test) aus
+        \item[6.] Evaluiere die Ergebnisse auf ihre Properties
+    \end{itemize} (vgl. Paper Seite 3.)
+\end{center}
+
+Wie Eingangs erwähnt soll Ziel dieser Arbeit sein, Punkt 2 und vielleicht Punkt 6 zu verändern.
+In der Entwicklung des Tools wurde Bezug darauf genommen, dass die Random-Testing Methode durchaus ihre Limitierungen hat (maximale Pfadlänge = Rekursionslimit) allerdings
+wurde die Lösung dieses Problems nur kurz untersucht. Hierbei wird gesagt, dass eine Breitensuche innerhalb des Schemas
+möglich wäre aber nicht skaliert und der iterative Ansatz die Tests schneller und kontrollierter erstellt (vgl Paper Absatz B).
+Wir wollen zeigen, dass diese Schlussfolgerung falsch ist und wir einen skalierbaren Ansatz entwickeln können der die angesprochenen
+Probleme lösen kann.
+Auf die konkrete Implementierung der zufallsbasierten Generierung & unsere Verbesserungen wird später noch eingegangen.
+
+%Die Generierung der eigentlichen Tests geschieht hierbei auf Grundlage des graphenbasierten Schemas (vgl. Paper) indem
+%%das Schema rekursiv untersucht wird auf "Objekte" und "Fields" (Objekte = Types; Fields = Felder des Typens).
+%Die generierten Tests werden dann auf dem zu testenden System ausgeführt und ausgewertet.
+%Im Grunde arbeitet dieses Paper ähnlich wie die hier zu untersuchende Methode allerdings nutzen die
+%Autoren bekanntes Wissen nicht vollkommen aus.
+%So ist erwähnt, dass der Query-Generator ein Iterationslimit auf jedem Knoten hat um mögliche zyklische Strukturen
+%zu umgehen. (vgl "Creation of the query Generator" im Paper).
+%Unter anderem dieser Umstand führt dazu, dass unter gewissen Umständen Tests nicht ideal abgebildet werden.
+%Die Annahme, dass ein Iterationslimit nötig ist, ist aber falsch.
+%Es gibt Algorithmen wie z.B. den PrimePath Algorithmus (später mehr dazu) die eine Graphüberdeckung ermitteln können
+%auch in zyklischen Graphen ohne dabei in einer Rekursionsschleife feststecken zu bleiben.
+%Insofern soll der Query-Generation Ansatz vom "Property-based Testing" durch unseren neuen Ansatz ersetzt werden.
+%Hierzu jedoch im folgenden dann mehr.
+
+
+% MAYBE TODO
+
 
 \section{heuristisch suchenbasiertes Testen}
 

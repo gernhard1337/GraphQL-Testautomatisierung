@@ -1,20 +1,90 @@
 \section{GraphQL}
 
-GraphQL ist eine Open-Source Query-Language (Abfragesprache) entwickelt von Facebook. (vgl. GraphQL-Spec)
-Ziel dieser Sprache ist es einen möglichst intuitiven und flexiblen Ansatz für Datenkommunikation zu bieten.
-Hierbei ist GraphQL für die Strukturierung und Anfragesteuerung zuständig. GraphQL selbst ist keine Programmiersprache
-sondern verteilt die Anfragen entsprechend der definierten Spezifikation in GraphQL.
-Wie man GraphQL spezifiziert und was "Unter der Haube" dabei passiert wird im folgendem erklärt.
-Da GraphQL ein äußerst detaillierter Standard ist, werden hier nur grundlegende Konzepte betrachtet die für die
-Arbeit wichtig sind, insbesondere wichtige Aspekte für die Testgenerierung.
+GraphQL ist eine Open-Source Query-Language (Abfragesprache) und Laufzeitumgebung die von Facebook entwickelt wurde. (vgl. GraphQL-Spec)
+Die Besonderheiten von GraphQL sind, dass man mit nur einer einzelnen Anfrage mehrere Ressourcen gleichzeitig abfragen kann und die
+Daten in diesem Schema stark durch einen Typgraphen definiert sind. So lässt sich einerseits die Effizienz stark erhöhen indem weniger Anfragen
+gestellt werden die zeitgleich eine höhere Informationsdichte haben.
+Außerdem erleichtert GraphQL die Kommunikation von Schnittstellen indem die geünschten Felder schon in der Query definiert werden
+und direkt den erwarteten Datentyp zusichern.
+Hier liegt auch der große Vorteil im Vergleich zum direkten technologischen Konkurenten REST API.
+Bei REST-APIs sind nämlich für verschiedene Ressourcen auch jeweils eine eigene Anfrage nötig und die Typsicherheit ist nicht so stark gegeben
+wie bei GraphQL-APIs.
+Diese beiden großen Vorteile sorgen dafür, dass GraphQL an Popularität gewinnt und zunehmend eingesetzt wird.
+Im Kontext dieser Arbeit ist ein tiefgreifendes, technologisches Verständniss von GraphQL essentiell, deshalb wird hier
+eine tiefgreifende Erklärung von GraphQL folgen.
 
 \subsection{Schema \& Typen}
 
-Test
+Grundlage einer jeden GraphQL-API ist ein GraphQL-Schema.
+Dieses Schema definiert genau wie die Daten der API aufgebaut sind und welche Informationen exisitieren.
+Ein GraphQL-Schema ist eine Sammlung von Typen.
+Typen sind Objekte einer Datenstruktur.
+Ein Typ definiert alle Informationen über sich, hierbei wird für jede Information ein Feld angelegt.
+Das Feld kann entweder ein Standarddatentyp wie String, Integer etc. sein oder ein anderer Typ.
+Falls das Feld ein anderer Typ ist, so entspricht diese Beziehung einer Kante in einem Graphen.
+Dies bedeuet, dass eine Abfrage dieses Feldes dann ein Objekt des Types zurückliefert und hier auch die gewünschten Felder
+definiert werden müssen.
+Ein sehr einfaches Schema wäre zum Beispiel die Beziehung zwischen Büchern und Authoren.
+Ein Buch hat hierbei einen Titel und einen Author.
+Ein Author hat einen Namen und ein Geburtsdatum.
+Ein Schema für dieses Beispiel sähe wie folgt aus:
+
+\begin{center}
+    \begin{verbatim}
+        type Buch {
+            title: String
+            author: Author
+        }
+        type Author{
+            name: String
+            geburtsdatum: Date
+        }
+    \end{verbatim}
+\end{center}
+
+Es lässt sich also festhalten, dass ein GraphQL-Typ immer als ein Tupel \verb+(Name, Felder)+ definiert wird wobei
+die Felder eine Liste an Tupeln \verb+(Feldname, Feldtyp, Datentyp)+ sind.
+Hierbei gelten folgende Einschränkungen für die Elemente des Tupels:
+
+\begin{center}
+    \begin{itemize}
+        \item[Feldname] ein eindeutiger Feldbezeichner
+        \item[Feldtyp] gibt Einschänkungen vor, z.B. nicht Null (durch \verb+!+), Listentyp (durch \verb+[]+) etc.
+        \item[Datentyp] der explizite Typ den das Feld hat, kann Standarddatentyp oder anders definierter Type sein
+    \end{itemize}
+\end{center}
+
+Wenn ein Typ ein Feld enthält, das kein Standarddatentyp ist so entspricht dieses Feld einer Kante in einem Graphen.
+Dieses Feld muss dann in einer Query näher definiert werden indem angegeben wird, welche Felder nun vom Typ zu dem die
+Kante führt, ausgegeben werden sollen.
+
+\subsection{vordefinierte Typen}
+
+Jedes GraphQL-Schema definiert intial mehrere Typen die spezielle Aufgaben haben und nicht vom User überschrieben werden können.
+Im folgenden werden wir auf einige wichtige dieser Typen eingehen.
+
+\subsubsection{Scalar-Types}
 
 
 
 
+\subsubsection{Query-Type}
+
+Der Query Type definiert alle erlaubten Anfragen an die GraphQL-API.
+Hierbei können Anfragen mit und ohne Eingabeparameter angegeben werden.
+Die definierten Anfragen haben, wie jeder Typ, einen eindeutigen Bezeichner, welcher dann auch in der zustellenden Query
+benutzt wird.
+Die Felder der Antwort hängen hierbei vom Feldtypen ab. Ist das Ergebnis der Query-Definition ein Standarddatentyp, so wird
+es direkt ausgegeben. Ist es ein anderer definierter Typ, so müss näher bestimmt werden welche Felder erwartet werden.
 
 
+\subsubsection{Mutation}
+
+
+
+\subsubsection{Subscription}
+
+
+
+\subsection{Resolver}
 
