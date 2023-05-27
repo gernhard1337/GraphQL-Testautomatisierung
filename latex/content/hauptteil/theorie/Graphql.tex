@@ -65,20 +65,77 @@ Im folgenden werden wir auf einige wichtige dieser Typen eingehen.
 
 \subsubsection{Scalar-Types}
 
+Grundlegende Datentypen (Standarddatentypen) werden durch Scalar Types ausgedrückt. Scalar-Types repräsentieren einzelne Werte
+wie z.B. einen Integer, einen String, Boolean Werte oder auch Datumstypen.
+Ein Scalar-Type kann nicht vom User geändert werden und enthält auch keine anderen Typen (im Gegensatz zu Objekttypen die das können).
+Es ist möglich auch eigene Scalar-Types festzulegen jedoch sind in der offiziellen Spezifikation von GraphQL
+lediglich folgende Scalar-Types definiert:
 
-
+\begin{center}
+    \begin{itemize}
+        \item[Int] 32-bit Integer
+        \item[Float] Gleitkommazahl nach IEEE 754
+        \item[String] frei wählbarer Text (leerer String zählt nich als non-Null!)
+        \item[Boolean] True;False repräsentiert durch internen boolean-type. Ansonsten 0 & 1
+        \item[ID] einzigartiger Identifier, intern behandelt wie ein String
+        \item[Scalar Extensions] Rohkonstrukt von dem geerbt werden kann für eigen definierte Typen
+    \end{itemize}
+    (vgl. GraphQL-Sepzifikation 3.5)
+\end{center}
 
 \subsubsection{Query-Type}
 
-Der Query Type definiert alle erlaubten Anfragen an die GraphQL-API.
+Der Query-Type definiert alle erlaubten Anfragen (Leseoperationen) an die GraphQL-API.
 Hierbei können Anfragen mit und ohne Eingabeparameter angegeben werden.
 Die definierten Anfragen haben, wie jeder Typ, einen eindeutigen Bezeichner, welcher dann auch in der zustellenden Query
 benutzt wird.
 Die Felder der Antwort hängen hierbei vom Feldtypen ab. Ist das Ergebnis der Query-Definition ein Standarddatentyp, so wird
 es direkt ausgegeben. Ist es ein anderer definierter Typ, so müss näher bestimmt werden welche Felder erwartet werden.
+Nutzen wir das Beispiel der Bücher & Autoren weiter, könnte man wie folgt einen Query-Type definieren:
+
+\begin{verbatim}
+    type Query{
+        # returns a List of all Books
+        getBooks: [Book]
+        # returns one random Book
+        getBook: Book
+        # returns the Author from a Book Title
+        getBookByTitle(String title): Author
+    }
+\end{verbatim}
 
 
 \subsubsection{Mutation}
+
+Der Mutation-Type ist das Pendant des Query-Types. Im Mutation-Type werden alle erlaubten Schreiboperationen definiert.
+Dies beeinhaltet das Erstellen, Aktualisieren und Löschen von Daten in der GraphQL-API.
+Felder im Mutation-Type haben auch immer einen Rückgabewert, Konvention ist es hierbei, die veränderten Objekte zurückzugeben,
+sodass der Client als Validierung exakt das Objekt bekommt, welches er sich "gewünscht hat".
+Die Operationen die mittels Mutation hervorgerufen werden, werden linear abgearbeitet. So ist es in GraphQL möglich, die
+Operationen miteinander zu verknüpfen. Man stelle sich z.B. vor, dass ein User seine Mail ändern will und gleichzeitig noch
+seinen Namen. Mit REST wären hier zwei Anfragen nötig, GraphQL kann dies mit einer Anfrage erledigen.
+Kehren wir wieder auf unser bisheriges Beispiel zurück, ein Mutationstyp hierfür könnte wie folgt aussehen:
+
+\begin{verbatim}
+    type Mutation{
+        # erstelle einen Author
+
+        # erstelle ein Buch
+
+        # ändere den Titel eines Buches
+
+        # ändere den Geburtstag eines Autors
+
+    }
+\end{verbatim}
+
+eine einzelne Mutation kann Pflichtfelder und optionale Felder markieren.
+Pflichtfelder werden mit einem ! markiert. Diese Felder müssen dann bei jeder Ausführung mitgesendet werden.
+Optionale Felder benötigen dies nicht.
+
+
+
+
 
 
 
@@ -88,3 +145,5 @@ es direkt ausgegeben. Ist es ein anderer definierter Typ, so müss näher bestim
 
 \subsection{Resolver}
 
+Bisher wurde sich vorallem mit der Strukturierung & Typisierung der Objekte in GraphQL beschäftigt.
+Es fehlt noch die Funktionsweise
