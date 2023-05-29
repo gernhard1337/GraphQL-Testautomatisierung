@@ -118,32 +118,102 @@ Kehren wir wieder auf unser bisheriges Beispiel zurück, ein Mutationstyp hierf�
 
 \begin{verbatim}
     type Mutation{
-        # erstelle einen Author
-
-        # erstelle ein Buch
-
-        # ändere den Titel eines Buches
-
-        # ändere den Geburtstag eines Autors
-
+        # erstelle einen Author, return den erstellten Author
+        createAuthor(name: String!, birthdate: Date):Author
+        # erstelle ein Buch, return das erstellte Buch
+        createBok(title: String!, author:Author): Book
+        # ändere den Titel eines Buches, return des Buches mit geänderten Titel
+        changeBookTitle(title: String! , newTitle: String!): Book
+        # ändere den Geburtstag eines Autors, return des geänderten Authors
+        changeBirthdateFromAuthor(author: Author!, newBirthDate: Date!)
     }
 \end{verbatim}
 
 eine einzelne Mutation kann Pflichtfelder und optionale Felder markieren.
-Pflichtfelder werden mit einem ! markiert. Diese Felder müssen dann bei jeder Ausführung mitgesendet werden.
+Pflichtfelder werden mit einem \verb+!+ markiert.
+Diese Felder müssen dann als Argument bei jeder Ausführung mitgesendet werden.
 Optionale Felder benötigen dies nicht.
-
-
-
-
-
-
 
 \subsubsection{Subscription}
 
+Eine Besonderheit von GraphQL ist der Subscription-Type.
+Dieser ermöglicht eine Echtzeitkommunikation zwischen Server und Client, indem mithilfe des WebSocket-Protokolls eine
+permanente Verbindung zwischen Server und Client hergestellt wird.
+Diese permantente Verbindung ermöglicht es dem Server direkt Daten an den Client zu senden ohne, dass der Client dafür
+eine Anfrage schicken muss.
+Wie auch in allen anderen Typen definiert der Subscription-Type Felder mit einem Namen und Rückgabetyp.
+Im Beispiel der Bücher & Autoren wäre hierbei nun denkbar, dass eine Subscription für neue Bücher & neue Autoren wünschenswert
+wäre.
+Hierdurch folgt dann dieser Subscription-Type:
 
+\begin{verbatim}
+    type Subscription{
+        # neues Buch veröffentlicht
+        newBook: Book
+        # ein neuer Author erscheint
+        newAuthor: Author
+    }
+\end{verbatim}
+
+Ein Client könnte sich auf diese Kanäle nun subscriben.
+Angenommen, wir wollen immer über ein neues Buch informiert werden so muss der Client diese Anfrage stellen:
+
+\begin{verbatim}
+    subscription{
+        newBook{
+            title
+            author{
+                name
+            }
+        }
+    }
+\end{verbatim}
+
+Hierdurch wird eine permanente Verbindung hergestellt und immer ein Objekt vom Type Book mit den Feldern title \& author gesendet, wenn ein neues erschienen ist.
+Es ist wie auch in anderen Typen möglich, Felder wegzulassen falls diese nicht.
+Ein spezieller Client muss gewählt werden, der den WebSocket offen lässt, um den die Nachrichten zu empfangen, dies ist
+jedoch spezifisch abhängig von dem Projekt (Sprache, gewählte GraphQL Server Instanz).
 
 \subsection{Resolver}
 
-Bisher wurde sich vorallem mit der Strukturierung & Typisierung der Objekte in GraphQL beschäftigt.
-Es fehlt noch die Funktionsweise
+Bisher beschäftigen wir uns vorrangig mit der Strukturierung und Typisierung von GraphQL und den Daten die durch
+das GraphQL Schema dargestellt werden.
+Ein wichtiger Baustein fehlt aber noch.
+Woher kommen die Daten?
+Wie werden Eingabedaten behandelt?
+Diese Fragen werden durch die Resolver beantwortet.
+Ein Resolver ist in GraphQL eine Funktion die zuständig für die Datenabfragen und Strukturierung ist.
+Im Schema haben wir bisher definiert in welcher Art und Weise wir die Daten haben wollen, der Resolver ist nun dafür zuständig,
+diese Daten im definierten Format zur Verfügung zu stellen.
+Die Resolver sind nicht, wie alle vorher benannten Teil von GraphQL offen einsehbar, sondern sind Funktionen einer Programmiersprache.
+Für jedes Feld im Schema, das Daten enthält, muss ein Resolver implementiert werden, dies umfasst insbesondere die Query, Mutation und Subscription Typen aber auch
+alle selbstdefinierten Typen.
+Die konkrete Implementierung der Resolver hängt von verschiedenen Dingen ab, insbesondere jedoch welchen GraphQL-Server man nutzt und welche Programmiersprache verwandt wird.
+Ein beispielhafter Resolver für die Query eines Buches anhand seines Titels mit ApolloServer in Javascript könnte folgende minimale Syntax haben:
+
+\begin{verbatim}
+    const resolvers = {
+        Query: {
+            book: (parent, args, context, info) => {
+                return getBookByID(args.id);
+            },
+        },
+    };
+\end{verbatim}
+
+Wobei hierbei zu beachten sei, dass alle Argumente die mitgegeben werden im \verb+args+ Argument gespeichert sind.
+Die Funktion getBookByID gibt ein, dem Schema entsprechendes, Json-Objekt zurück.
+Da die Resolver konkrete Implementierungen außerhalb von GraphQL sind und die einzelnen Resolver untereinander aufrufen können, bedarf es hier
+einer Reihe an Tests da dieser Code gerne Fehlerhaft sein kann.
+Ein Klassiker für GraphQL ist es, einzelne Attribute in einem Resolver zu vergessen.
+Ein Entwickler sollte für jeden Resolver, der ja eine Funktion darstellt, Unit-Tests zur Verfügung stellen.
+Da sich die einzelnen Resolver aber auch untereinander aufrufen können, muss hier auch die Integrität getestet werden.
+Hier setzten wir an, indem unsere Testgenerierung darauf aufbaut, jeden möglichen Resolver in mindestens einer Kombination mit anderen Resolvern zu testen.
+So kann sichergestellt werden, dass die Resolver untereinander integer sind.
+
+
+
+
+
+
+

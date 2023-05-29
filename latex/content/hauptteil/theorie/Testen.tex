@@ -10,34 +10,74 @@ sicherstellen sollen.
 
 \subsection{Arten von Tests}
 
-\subsubsection{Acceptance Testing}
-
-\subsubsection{System Testing}
-
-\subsubsection{Integration Testing}
-
-\subsubsection{Module Testing}
+Es existieren verschiedene Arten von Tests welche unterschiedliche Ziele haben.
+Nachfolgend wird eine Auswahl verschiedener Arten erklärt wobei wir in der Granularität aufsteigen, wir fangen mit feingranularen Unit-Tests an
+und steigen immer weiter zu kompletten System-Tests auf.
+In der Mitte davon liegt das Integrations-Testen.
+Diese Methode wird mit dieser Arbeit für einen Anwendungsfall benötigt.
+Die Erklärung der anderen Arten erfolgt für eine einfachere Einordnung ebendieser.
 
 \subsubsection{Unit Testing}
 
+Feingranulare Tests die zur Aufgabe haben, einzelne Funktionen/Methoden zu testen.
+Es wird insbesondere darauf geachtet, dass die einzelne Methode genau das macht, was Sie soll.
+Es existieren diverse Tools, die diesen Schritt vereinfachen.
+Diese Tools helfen einem dabei, dass man Tests definieren kann \& ein erwartetes Verhalten der Funktion angibt.
+Eine Auswertung dieser Funktionalität wird dann vom Tool übernommen und bei etwaiigen Fehlern gibt es eine Erklärung
+nach dem Muster: \vern+ABC+ war erwartet, \verb+DEF+ ist eingetreten.
+Unit-Tests werden bei der Entwicklung der einzelnen Funktionen von der Software entwickelt (sollten sie zumindest).
+Im Idealfall wird Test-Driven-Development verwendet, hierbei wird erst der Test entwickelt und dann die Methode entwickelt,
+die diese Tests erfüllen muss.
+
+\subsubsection{Integration Testing}
+
+Eine Granularitätsebene höher sind die Integrationstests.
+Hier wird getestet, ob einzelne Komponenten der Software miteinander gut zusammen arbeiten, d.h.\ ob sie integer sind.
+Die Testentwicklung ist hierbei meist eher komplex da einzelne Komponenten der Software selbst eine sehr hohe Komplexität haben können.
+Eine automatische Testentwicklung ist auf dieser Granularitätseben eigentlich eher selten der Fall, allerdings bietet sich
+im Kontext von GraphQL die Automatisierung durchaus an da die Zusammenarbeit von Softwarekomponenten mit klar definierter Struktur
+lohnenswert scheint.
+Will man allerdings die Intergration von großen Librarys als einzelne Komponente in der eigenen Anwendung testen, so gestaltet sich dies
+meist schwer und muss manuell getestet werden da meist komplexe Datenstrukturen händisch gemockt (Mocken als Kapitel oder Glossar?) werden müssen.
+
+\subsubsection{System Testing}
+
+Auf der Ebene des System-Testing wird das komplette entwickelte System getestet.
+Hierbei ist sicherzustellen, dass alle funktionalen Anforderungen an das System eingehalten werden.
+Die Tests werden hierbei so realistisch wie möglich ausgeführt, d.h. das Testsystem soll möglichst nah am späteren Produktivsystem sein
+und Testfälle sollen die funktionalen Anforderungen der Software abdecken.
+So sind insbesondere alle Geschäftsprozesse zu testen.
+Im allgemeinen werden System-Tests als Blackbox Tests durchgeführt, dies bedeutet, dass nur externe Funktionsmerkmale getest werden,
+z.B. ob eine gewünschte Interaktion stattfand.
+Hierbei wird keine Rücksicht auf interne Zustände genommen.
+Ziel ist es, die Funktionsweise so zu testen wie ein realer Benutzer die Software nutzen würde.
+
 \subsection{Test-Coverage}
 
-\subsection{Test-Coverage & Graphen}
+Es ist nun bekannt, welche Arten des Testens es gibt.
+Allerdings ist noch nicht klar, wie viele Tests ausreichend sind.
+Man könnte nun argumentieren, dass man einfach jede einzelne Eingabe in einem Programm testen könnte um zu sehen,
+dass für jede Eingabe die korrekte Ausgabe kommt.
+Hierbei bemerkt man jedoch relativ schnell, dass dies mit heutigen Prozessoren nicht mehr möglich ist.
+Als Beispiel sei hier eine simple Addition von 2 64-bit Integern genannt.
+Für eine komplette Testung dieser simplen Addition gibt es \verb+2^64 ≈ 18 Trillionen+ Kombinationen.
+Mit einem 3GHz Prozessor wäre eine vollständige Testung nach \verb+2^64 / 3.000.000.000 ≈ 6.149.571+ Sekunden (69 Tage) erledigt.
+Es ist also ersichtlich, dass schon so eine vermeintlich einfache Funktion nicht komplett testbar ist.
+Daher wird also ein strukturierter Ansatz benötigt, der den Testraum einerseits klein hält, andererseits trotzdem dafür sorgt, dass
+Fehler ausgeschlossen werden können.
+Hierfür wurden formale Coverage-Kriterien entwickelt.(vgl. S. 17 software-testing)
 
-\subsection{Graphcoverage & Graphcoverage Kriterien}
 
-\subsubsection{Edge Coverage}
 
-\subsubsection{Node Coverage}
 
-\subsubsection{Edge-Pair Coverage}
+\subsubsection{Coveragekriterien}
 
-\subsubsection{Prime-Path Coverage}
 
-\subsection{Graphcoverage für Code}
 
-\subsection{Graphcoverage für GraphQL}
 
-\subsection{Prime-Path Coverage Algorithmus}
+
+
+
+
 
 
