@@ -1,19 +1,59 @@
-\section{Graphcoverage}
+\chapter{Graphcoverage}
 
-\subsection{Graphcoverage allgemein}
+Wie zuvor gesehen, existieren verschiedene Coverage-Kriterien um Testabdeckung zu prüfen.
+Graphcoverage ist hierbei eine Herangehensweise um graphenbasierte Datenstrukturen zu überdecken.
+Graphen können nämlich ähnliche Probleme aufweisen wie vorheriges Beispiel der Addition.
+Die Addition zweier 64-bit Integer ist wenigstens endlich, Graphenstrukturen haben sogar unter Umständen unendliche Testräume.
+Umso wichtiger ist es hier, dass Überdeckungskriterien formuliert werden können, die diesen möglicherweise unendlichen Suchraum
+stark verkleinern und dennoch eine ausreichende Testung ermöglichen.
+Da wir vorher ergründet haben, dass GraphQL sich als gerichteten Graph darstellen lässt, können wir nun die Graphcoverage nutzen, um Tests mithilfe der Grapcoverage zu erstellen.
+Wie genau die Coverage erstellt wird und daraus Tests resultieren, werden im folgenden geklärt.
+Gerichtete Graphen sind die Grundlage für viele Coverage-kriterien, wobei die Grundidee hierbei ist,
+Sachverhalte als Graphen zu modellieren und dann eine ausreichende Überdeckung zu finden. (vgl. Software-testing S. 27 2.1)
+In (Graphentheorie Kapitel verlinken) wurden gerichtete Graphen bereits erklärt, daher können wir direkt fortfahren und verschiedene
+Kriterien definieren, die einen Graphen überdecken.
+Wir erklären zuerst verschiedene Techniken, die einen Graphen überdecken und erklären dann ihre Anwendung
+an Beispielen.
+Erst sortieren wir Graphcoverage ein im Kontext von Code-Coverage und bilden im zweiten Schritt eine Coverage für GraphQL\@.
 
-\subsection{Graphcoverage Kriterien}
-    \subsubsection{Edge Coverage}
+\section{Graphcoverage allgemein}
 
-    \subsubsection{Node Coverage}
+Um Graphcoverage zu nutzen, verfeinern wir zuerst die allgemeine Definition von gerichteten Graphen.
+Ein gerichteter Graph ist ein Paar $\textrm{G = (V, E)}$ zweier disjunkter Mengen (vgl. Graphlehrbuch) mit E $\subseteq$ V^2 (vgl. Graphlehrbuch)
+Die Definition muss hierbei erweitert werden mit:
 
-    \subsubsection{Edge-Pair Coverage}
+\begin{description}
+    \item[Menge N] von Knoten
+    \item[Menge N_{0}] von Anfangsknoten, wobei N_{0} $\subseteq$ N
+    \item[Menge N_{f}] von Endknoten, wobei N_{f} $\subseteq$ N
+    \item[Menge E] von Kanten, wobei E $\subseteq$ N x N. Hierbei ist die Menge als init{x} x target{y} definiert.
+\end{description} (vgl. Introduction to Softwaretesting 1-1 Kopie)
 
-    \subsubsection{Prime-Path Coverage}
+Mithilfe dieser Definition können nun z.B. Kontrollflussgraphen abgebildet werden.
+Eine Definition benötigen wir noch, bevor wir uns den Überdeckungskriterien widmen können.
+Ein Pfad, mit möglicher Länge Null, der in einem Knoten N_{0} startet und in einem Knoten N_{f} endet, nennt sich Testpfad (vgl. Introduction to Softwaretesting 1-1 Kopie)
 
-\subsection{Graphcoverage für Code}
+\section{Graphcoverage Kriterien}
+Es gibt verschiedene Möglichkeiten die Überdeckung von Graphen zu definieren, hierbei ist Relevant zu betrachten welches Überdeckungskriterium das sinnvollste
+für das aktuelle System ist, das zu testen ist.
 
-\subsection{Graphcoverage für GraphQL}
+\subsection{Edge Coverage}
+
+\subsection{Node Coverage}
+
+\subsection{Edge-Pair Coverage}
+
+\subsection{Prime-Path Coverage}
+
+
+
+
+
+
+
+\section{Graphcoverage für Code}
+
+\section{Graphcoverage für GraphQL}
 
 
 
