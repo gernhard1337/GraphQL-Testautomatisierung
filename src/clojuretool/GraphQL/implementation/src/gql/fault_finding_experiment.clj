@@ -14,7 +14,7 @@
 
 (defn run-query
   [query-str]
-  (let [response @(http/request {:url          "http://localhost/api/graphql"
+  (let [response @(http/request {:url          "http://localhost:4000/graphql"
                                  :method       :post
                                  :headers      {"PRIVATE-TOKEN" token}
                                  :content-type "application/json"

@@ -244,11 +244,6 @@
      gql-nodes))
 
 
-  
-  
-  
-  
-
   (make-gql (:fields {:fields
                       {"routing"
                        {:type

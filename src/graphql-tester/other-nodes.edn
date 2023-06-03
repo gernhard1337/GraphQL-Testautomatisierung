@@ -1,0 +1,351 @@
+(#:object{:Query
+          [:map
+           [:fields
+            [:map
+             ["character"
+              {:optional true}
+              [:map
+               [:type [:ref :object/Character]]
+               [:args [:map ["id" :gql.scalar/non-null-id]]]]]
+             ["characters"
+              {:optional true}
+              [:map
+               [:type [:ref :object/Characters]]
+               [:args
+                [:map
+                 ["page" :gql.scalar/int]
+                 ["filter"
+                  {:kind "INPUT_OBJECT",
+                   :name "FilterCharacter",
+                   :ofType nil}]]]]]
+             ["charactersByIds"
+              {:optional true}
+              [:map
+               [:type [:vector {:min 1} [:ref :object/Character]]]
+               [:args [:map ["ids" :gql.list.scalar/non-null-id]]]]]
+             ["location"
+              {:optional true}
+              [:map
+               [:type [:ref :object/Location]]
+               [:args [:map ["id" :gql.scalar/non-null-id]]]]]
+             ["locations"
+              {:optional true}
+              [:map
+               [:type [:ref :object/Locations]]
+               [:args
+                [:map
+                 ["page" :gql.scalar/int]
+                 ["filter"
+                  {:kind "INPUT_OBJECT",
+                   :name "FilterLocation",
+                   :ofType nil}]]]]]
+             ["locationsByIds"
+              {:optional true}
+              [:map
+               [:type [:vector {:min 1} [:ref :object/Location]]]
+               [:args [:map ["ids" :gql.list.scalar/non-null-id]]]]]
+             ["episode"
+              {:optional true}
+              [:map
+               [:type [:ref :object/Episode]]
+               [:args [:map ["id" :gql.scalar/non-null-id]]]]]
+             ["episodes"
+              {:optional true}
+              [:map
+               [:type [:ref :object/Episodes]]
+               [:args
+                [:map
+                 ["page" :gql.scalar/int]
+                 ["filter"
+                  {:kind "INPUT_OBJECT",
+                   :name "FilterEpisode",
+                   :ofType nil}]]]]]
+             ["episodesByIds"
+              {:optional true}
+              [:map
+               [:type [:vector {:min 1} [:ref :object/Episode]]]
+               [:args [:map ["ids" :gql.list.scalar/non-null-id]]]]]]]
+           [:type [:enum :object/Query]]]}
+ #:object{:ID [:map [:fields [:map]] [:type [:enum :object/ID]]]}
+ #:object{:Character
+          [:map
+           [:fields
+            [:map
+             ["id" {:optional true} [:enum :scalar]]
+             ["name" {:optional true} [:enum :scalar]]
+             ["status" {:optional true} [:enum :scalar]]
+             ["species" {:optional true} [:enum :scalar]]
+             ["type" {:optional true} [:enum :scalar]]
+             ["gender" {:optional true} [:enum :scalar]]
+             ["origin"
+              {:optional true}
+              [:map [:type [:ref :object/Location]]]]
+             ["location"
+              {:optional true}
+              [:map [:type [:ref :object/Location]]]]
+             ["image" {:optional true} [:enum :scalar]]
+             ["episode"
+              {:optional true}
+              [:map [:type [:vector {:min 1} [:ref :object/Episode]]]]]
+             ["created" {:optional true} [:enum :scalar]]]]
+           [:type [:enum :object/Character]]]}
+ #:object{:String
+          [:map [:fields [:map]] [:type [:enum :object/String]]]}
+ #:object{:Location
+          [:map
+           [:fields
+            [:map
+             ["id" {:optional true} [:enum :scalar]]
+             ["name" {:optional true} [:enum :scalar]]
+             ["type" {:optional true} [:enum :scalar]]
+             ["dimension" {:optional true} [:enum :scalar]]
+             ["residents"
+              {:optional true}
+              [:map
+               [:type [:vector {:min 1} [:ref :object/Character]]]]]
+             ["created" {:optional true} [:enum :scalar]]]]
+           [:type [:enum :object/Location]]]}
+ #:object{:Episode
+          [:map
+           [:fields
+            [:map
+             ["id" {:optional true} [:enum :scalar]]
+             ["name" {:optional true} [:enum :scalar]]
+             ["air_date" {:optional true} [:enum :scalar]]
+             ["episode" {:optional true} [:enum :scalar]]
+             ["characters"
+              {:optional true}
+              [:map
+               [:type [:vector {:min 1} [:ref :object/Character]]]]]
+             ["created" {:optional true} [:enum :scalar]]]]
+           [:type [:enum :object/Episode]]]}
+ #:object{:Int [:map [:fields [:map]] [:type [:enum :object/Int]]]}
+ #:object{:FilterCharacter
+          [:map
+           [:fields [:map]]
+           [:type [:enum :object/FilterCharacter]]]}
+ #:object{:Characters
+          [:map
+           [:fields
+            [:map
+             ["info"
+              {:optional true}
+              [:map [:type [:ref :object/Info]]]]
+             ["results"
+              {:optional true}
+              [:map
+               [:type [:vector {:min 1} [:ref :object/Character]]]]]]]
+           [:type [:enum :object/Characters]]]}
+ #:object{:Info
+          [:map
+           [:fields
+            [:map
+             ["count" {:optional true} [:enum :scalar]]
+             ["pages" {:optional true} [:enum :scalar]]
+             ["next" {:optional true} [:enum :scalar]]
+             ["prev" {:optional true} [:enum :scalar]]]]
+           [:type [:enum :object/Info]]]}
+ #:object{:FilterLocation
+          [:map
+           [:fields [:map]]
+           [:type [:enum :object/FilterLocation]]]}
+ #:object{:Locations
+          [:map
+           [:fields
+            [:map
+             ["info"
+              {:optional true}
+              [:map [:type [:ref :object/Info]]]]
+             ["results"
+              {:optional true}
+              [:map
+               [:type [:vector {:min 1} [:ref :object/Location]]]]]]]
+           [:type [:enum :object/Locations]]]}
+ #:object{:FilterEpisode
+          [:map
+           [:fields [:map]]
+           [:type [:enum :object/FilterEpisode]]]}
+ #:object{:Episodes
+          [:map
+           [:fields
+            [:map
+             ["info"
+              {:optional true}
+              [:map [:type [:ref :object/Info]]]]
+             ["results"
+              {:optional true}
+              [:map
+               [:type [:vector {:min 1} [:ref :object/Episode]]]]]]]
+           [:type [:enum :object/Episodes]]]}
+ #:object{:__Schema
+          [:map
+           [:fields
+            [:map
+             ["types"
+              {:optional true}
+              [:map [:type [:vector {:min 1} [:ref :object/__Type]]]]]
+             ["queryType"
+              {:optional true}
+              [:map [:type [:ref :object/__Type]]]]
+             ["mutationType"
+              {:optional true}
+              [:map [:type [:ref :object/__Type]]]]
+             ["subscriptionType"
+              {:optional true}
+              [:map [:type [:ref :object/__Type]]]]
+             ["directives"
+              {:optional true}
+              [:map
+               [:type
+                [:vector {:min 1} [:ref :object/__Directive]]]]]]]
+           [:type [:enum :object/__Schema]]]}
+ #:object{:__Type
+          [:map
+           [:fields
+            [:map
+             ["kind" {:optional true} [:map [:type :enum/__TypeKind]]]
+             ["name" {:optional true} [:enum :scalar]]
+             ["description" {:optional true} [:enum :scalar]]
+             ["fields"
+              {:optional true}
+              [:map
+               [:type
+                {:kind "LIST",
+                 :name nil,
+                 :ofType
+                 {:kind "NON_NULL",
+                  :name nil,
+                  :ofType
+                  {:kind "OBJECT", :name "__Field", :ofType nil}}}]
+               [:args
+                [:map ["includeDeprecated" :gql.scalar/boolean]]]]]
+             ["interfaces"
+              {:optional true}
+              [:map
+               [:type
+                {:kind "LIST",
+                 :name nil,
+                 :ofType
+                 {:kind "NON_NULL",
+                  :name nil,
+                  :ofType
+                  {:kind "OBJECT", :name "__Type", :ofType nil}}}]]]
+             ["possibleTypes"
+              {:optional true}
+              [:map
+               [:type
+                {:kind "LIST",
+                 :name nil,
+                 :ofType
+                 {:kind "NON_NULL",
+                  :name nil,
+                  :ofType
+                  {:kind "OBJECT", :name "__Type", :ofType nil}}}]]]
+             ["enumValues"
+              {:optional true}
+              [:map
+               [:type
+                {:kind "LIST",
+                 :name nil,
+                 :ofType
+                 {:kind "NON_NULL",
+                  :name nil,
+                  :ofType
+                  {:kind "OBJECT", :name "__EnumValue", :ofType nil}}}]
+               [:args
+                [:map ["includeDeprecated" :gql.scalar/boolean]]]]]
+             ["inputFields"
+              {:optional true}
+              [:map
+               [:type
+                {:kind "LIST",
+                 :name nil,
+                 :ofType
+                 {:kind "NON_NULL",
+                  :name nil,
+                  :ofType
+                  {:kind "OBJECT",
+                   :name "__InputValue",
+                   :ofType nil}}}]]]
+             ["ofType"
+              {:optional true}
+              [:map [:type [:ref :object/__Type]]]]]]
+           [:type [:enum :object/__Type]]]}
+ #:object{:__TypeKind
+          [:map [:fields [:map]] [:type [:enum :object/__TypeKind]]]}
+ #:object{:Boolean
+          [:map [:fields [:map]] [:type [:enum :object/Boolean]]]}
+ #:object{:__Field
+          [:map
+           [:fields
+            [:map
+             ["name" {:optional true} [:enum :scalar]]
+             ["description" {:optional true} [:enum :scalar]]
+             ["args"
+              {:optional true}
+              [:map
+               [:type [:vector {:min 1} [:ref :object/__InputValue]]]]]
+             ["type"
+              {:optional true}
+              [:map [:type [:ref :object/__Type]]]]
+             ["isDeprecated" {:optional true} [:enum :scalar]]
+             ["deprecationReason" {:optional true} [:enum :scalar]]]]
+           [:type [:enum :object/__Field]]]}
+ #:object{:__InputValue
+          [:map
+           [:fields
+            [:map
+             ["name" {:optional true} [:enum :scalar]]
+             ["description" {:optional true} [:enum :scalar]]
+             ["type"
+              {:optional true}
+              [:map [:type [:ref :object/__Type]]]]
+             ["defaultValue" {:optional true} [:enum :scalar]]]]
+           [:type [:enum :object/__InputValue]]]}
+ #:object{:__EnumValue
+          [:map
+           [:fields
+            [:map
+             ["name" {:optional true} [:enum :scalar]]
+             ["description" {:optional true} [:enum :scalar]]
+             ["isDeprecated" {:optional true} [:enum :scalar]]
+             ["deprecationReason" {:optional true} [:enum :scalar]]]]
+           [:type [:enum :object/__EnumValue]]]}
+ #:object{:__Directive
+          [:map
+           [:fields
+            [:map
+             ["name" {:optional true} [:enum :scalar]]
+             ["description" {:optional true} [:enum :scalar]]
+             ["locations"
+              {:optional true}
+              [:map
+               [:type
+                {:kind "NON_NULL",
+                 :name nil,
+                 :ofType
+                 {:kind "LIST",
+                  :name nil,
+                  :ofType
+                  {:kind "NON_NULL",
+                   :name nil,
+                   :ofType
+                   {:kind "ENUM",
+                    :name "__DirectiveLocation",
+                    :ofType nil}}}}]]]
+             ["args"
+              {:optional true}
+              [:map
+               [:type
+                [:vector {:min 1} [:ref :object/__InputValue]]]]]]]
+           [:type [:enum :object/__Directive]]]}
+ #:object{:__DirectiveLocation
+          [:map
+           [:fields [:map]]
+           [:type [:enum :object/__DirectiveLocation]]]}
+ #:object{:CacheControlScope
+          [:map
+           [:fields [:map]]
+           [:type [:enum :object/CacheControlScope]]]}
+ #:object{:Upload
+          [:map [:fields [:map]] [:type [:enum :object/Upload]]]})

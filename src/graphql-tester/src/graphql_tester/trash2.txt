@@ -1,0 +1,14 @@
+(defn run-property-based
+     [url]
+     ;; get query and mutation type
+     (try
+       (let [gql-schema         (query-schema! url)
+             query-tree         (gqlgen/gen-gql-nodes
+                                  (nth (:types gql-schema) 2) (:types gql-schema) 4
+                                  gqlgen/resolve-arg-gen-alphanumeric)
+             generated-nodes    (gen/sample query-tree 4)]
+         (reset! generated-queries (map gqlgen/make-query generated-nodes))
+         (println generated-queries)
+         )
+       (catch Exception e
+         (str "Exception: " (.getMessage e)))))
