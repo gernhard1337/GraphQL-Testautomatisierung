@@ -1,20 +1,40 @@
 \chapter{Abstract}
 
-Mit zunehmender Popularität von GraphQL ist es wichtig auch die Qualität von GraphQL-Api's zu validieren und verifizieren.
+Mit zunehmender Popularität von GraphQL werden Tools benötigt, die Sicherheit, Zuverlässigkeit und korrekte Funktionalität
+von GraphQL verifizieren und validieren können.
+Durch die starke Typisierung von GraphQL lässt sich der Testraum jedoch sehr schön eingrenzen.
 Aktuell gibt es aber noch Einschränkungen an Testtools für GraphQL-Apis, insbesondere im Bereich der automatischen Testanalyse.
 Im Paper \" Automatic Property-based Testing of GraphQL APIs \" (Quelle hinzufügen) wurde sich mit einem automatischen
 Testverfahren für Integrationstest für GraphQL-API's beschäftigt.
-Diese Arbeit hat allerdings einige Limitierungen wie zum Beispiel ein Rekursionslimit, dass die Größe der zu testenden
-API stark limitiert und einen Fokus auf zufallsbasierte Testgenerierung.
-In dieser Arbeit soll auf die Methode des \" Automatic Property-based Testing of GraphQL APIs \"
-eingegangen werden und mit einem anderen, strukturierteren Ansatz verbessert werden.
-Denn GraphQL definiert eine sehr stark typisierte Schnittstelle welche mithilfe von Graphalgorithmen untersucht werden kann.
-Ziel dieser Arbeit ist es, Graphüberdeckungen nach \cite{software-testing} zu untersuchen und Algorithmen zu implementieren
-die zu einer optimalen bzw hinreichenden Überdeckung eines Graphen führen.
+Hierbei wurde der Ansatz der zufallsbasierten Testgenerierung genutzt, um Tests zu generieren.
+Die zufallsbasierte Testgenerierung weist allerdings einige Schwachstellen auf.
+So kann Sie nicht garantieren, dass die API zu jeder Zeit eine gute Coverage hat.
+Es sind Testszenarios denkbar, die sehr viele false-positives durchlassen \& somit die Qualität der Software nicht ausreichend sicherstellen können.
+GraphQL ermöglicht außerdem einen potentiell unendlichen Suchraum für die Tests.
+Um diesem Problem zu entgehen wurde ein einfaches rekursions-limit definiert was jedoch dazu führt, dass die Testabdeckung
+wieder nicht garantiert sichergestellt werden kann.
+Mithilfe von einem allgemeinen Graphalgorithmus, der sonst zur Kontrollflussgraphen Analyse benutzt wird, wollen wir zeigen,
+dass es möglich ist mit einem iterativen Verfahren GraphQL zu testen.
+Hierbei werden die Probleme des unendlichen Suchraumes und der zufälligen Testüberdeckung systematisch und effizient gelöst.
+Um zu validieren, dass unsere Methode eine Verbesserung bietet werden einige Experimente durchgeführt in denen wir
+verschiedene Metriken vergleich hierbei unter anderem: Anzahl der generierten Tests, Testabdeckung der Schnittstelle und
+gefundene Fehler.
 
-Hierzu soll der PrimePath Algorithmus, der klassischerweise für Graphüberdeckung in Kontrollflussgraphen verwendet wird, auf
-dieses Problem angepasst werden und evaluiert werden, inwiefern dieser zu einer Lösung des Problems beiträgt.
-Hierzu folgt am Ende ein Vergleich zwischen der ursprünglichen und neu entwickelten Methode.
+
+
+
+
+%Diese Arbeit hat allerdings einige Limitierungen wie zum Beispiel ein Rekursionslimit, dass die Größe der zu testenden
+%API stark limitiert und einen Fokus auf zufallsbasierte Testgenerierung.
+%In dieser Arbeit soll auf die Methode des \" Automatic Property-based Testing of GraphQL APIs \"
+%eingegangen werden und mit einem anderen, strukturierteren Ansatz verbessert werden.
+%Denn GraphQL definiert eine sehr stark typisierte Schnittstelle welche mithilfe von Graphalgorithmen untersucht werden kann.
+%Ziel dieser Arbeit ist es, Graphüberdeckungen nach \cite{software-testing} zu untersuchen und Algorithmen zu implementieren
+%die zu einer optimalen bzw hinreichenden Überdeckung eines Graphen führen.
+
+%Hierzu soll der PrimePath Algorithmus, der klassischerweise für Graphüberdeckung in Kontrollflussgraphen verwendet wird, auf
+%dieses Problem angepasst werden und evaluiert werden, inwiefern dieser zu einer Lösung des Problems beiträgt.
+%Hierzu folgt am Ende ein Vergleich zwischen der ursprünglichen und neu entwickelten Methode.
 
 
 %alter Text:

@@ -4,16 +4,16 @@ const { buildSchema } = require('graphql');
 
 // Definiere das Schema
 const schema = buildSchema(`
-  type Book {
-    id: ID!
-    title: String!
-    author: String!
-  }
-
   type Query {
     book(id: ID!): Book
     books: [Book]
     hello: String
+  }
+  
+  type Book {
+    id: ID!
+    title: String!
+    author: String!
   }
 `);
 

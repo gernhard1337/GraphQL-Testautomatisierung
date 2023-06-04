@@ -10,7 +10,8 @@
                  [clj-http "3.10.1"]
                  [org.clojure/test.check "1.1.0"]
                  [com.paren/serene "0.0.2"]
-                 [metosin/malli "0.11.0"]]
+                 [metosin/malli "0.11.0"]
+                 [com.walmartlabs/lacinia "1.2.1"]]
   :main ^:skip-aot graphql-tester.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all

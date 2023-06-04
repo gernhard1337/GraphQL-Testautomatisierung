@@ -4,7 +4,8 @@
             [clojure.test.check.properties :as prop]
             [clojure.pprint]
             [clojure.java.io :as io]
-            [graphql-tester.specs :as specs]))
+            [graphql-tester.specs :as specs]
+            [clojure.walk]))
 
 (defn resolve-field-type
   [field-type]
@@ -486,7 +487,6 @@
   [args types size arg-gen-fn]
   (mapv
     (fn [arg]
-      ;;(println arg)
       (let [arg-generator (arg-gen-fn (:type arg) types)]
         (assoc arg :value (gen/generate arg-generator size))))
     args))
@@ -500,32 +500,30 @@
   false
   )
 
+(defn extract-fields [x]
+  (if (and (sequential? x)
+           (= (first x) :fields)
+           (sequential? (second x))
+           (= (first (second x)) :map))
+    (rest (second x))
+    x))
+
 ;; Breitensuche übers Schema
 (defn generate-prime-paths
   [start-nodes other-nodes visited path]
   (let [field-name (first start-nodes)
         field-optional? (-> start-nodes second :optional)
         field-type (-> other-nodes second :type)
-        rootFields (-> start-nodes :object/Query)
+        rootFields (second (clojure.walk/postwalk extract-fields (-> start-nodes :object/Query)))
+        nodeFields (second (clojure.walk/postwalk extract-fields (-> other-nodes :object/Query)))
         ]
-    ; iteriere über alle felder aus dem query type
-    (doseq [el (second (second rootFields))]
-      (println el)
-      (cond
-        (vector? el) (conj path (first el)))
+    ;(clojure.pprint/pprint other-nodes)
 
-      )
-    (println path)
-    (doseq [rootFields (:fields start-nodes)]
+    ;(println (type rootFields))
 
-
-      )
-
-
-
-
-    )
   )
+)
+
 
 
 

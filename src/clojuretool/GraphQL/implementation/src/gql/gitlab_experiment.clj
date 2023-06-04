@@ -8,7 +8,6 @@
             [gql.query-data :as data]
             [clojure.spec.alpha :as s]))
 
-
 ;; (def token "ZaBpdrqzpzcmbdEzd1kB")
 
 ;; (defn run-query

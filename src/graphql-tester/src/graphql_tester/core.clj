@@ -9,20 +9,24 @@
             [graphql-tester.base-specifications :as b]
             [graphql-tester.generators :as gqlgen]
             [graphql-tester.primepath-generators :as pgqlgen]
+            [graphql-tester.test-runner :as runner]
             [clojure.test.check :as tc]
             [clojure.test.check.generators :as gen]
-            [paren.serene :as serene]
-            [paren.serene.schema :as schema]
             [malli.generator :as mg]
             [clojure.spec.alpha :as s]
             [clojure.pprint]
-            [clojure.java.io]
-            [clojure.string]))
+            [clojure.string]
+            [clojure.java.io :as io]
+            [com.walmartlabs.lacinia.util :as util]
+            [com.walmartlabs.lacinia :as lacinia]
+            [com.walmartlabs.lacinia.parser.schema :as schema]
+            [clojure.edn :as edn]))
 
 (def urlToTest "https://rickandmortyapi.com/graphql")
 (def result-db (atom []))
 (def generation-db (atom []))
 (def queries (atom []))
+(def generated-queries (atom []))
 
 ; allgemeine Funktionen
 (defn run-query
@@ -32,23 +36,12 @@
         body  (when (:body reply) (json/read-str (:body reply) :key-fn keyword))]
     (merge
       {:status-code (:status reply)}
-      {:body body})
-    ))
+      {:body body})))
 
 (defn query-schema
   [url]
   (let [schema-query-response (run-query url q/graphiQL)]
     (-> schema-query-response :body :data :__schema)))
-
-(defn run-query
-  [url query-str]
-  (let [reply (client/post url {:form-params      {"query" query-str}
-                              :throw-exceptions false})
-        body  (when (:body reply) (json/read-str (:body reply) :key-fn keyword))]
-    (merge
-      {:status-code (:status reply)}
-      {:body body})
-    ))
 
 (defn run-test [url query]
   (if (= query "{}")
@@ -77,63 +70,17 @@
       ))
   )
 
-(defn permutate-query
-  [query]
-  (let [query-fields
-        (second (second query))]
-    (reduce
-      (fn [acc field-node]
-        (conj acc [:map [:fields [:map (into [] (remove :optional field-node))]]]))
-      []
-      (rest query-fields))))
-
 (defn query-schema!
   [url]
   (let [schema-query-response (run-query url q/graphiQL)]
     (-> schema-query-response :body :data :__schema)))
 
-(defn valid-result?
-  [payload]
-  ;;(println (str "Validating " payload))
-  (every?
-    identity
-    (map
-      eval
-      (reduce
-        (fn [acc p]
-          (conj
-            acc
-            `(s/valid?
-               ~(keyword "gql.small-example-specs.QueryRoot" (name (key p)))
-               ~(val p))))
-        []
-        payload))))
-
-(def test-property
-  (let [schema (query-schema! urlToTest)]
-    (prop/for-all [
-                   query-tree (gqlgen/gen-gql-nodes
-                                (first (filter #(= (:name %) "QueryRoot")
-                                               (:types schema)))
-                                (:types schema)
-                                3
-                                ;;gqlgen/resolve-arg-gen-alphanumeric
-                                gqlgen/resolve-arg-gen-string
-                                )]
-      (let [result (run-query urlToTest (gqlgen/make-query query-tree))]
-        (swap! result-db conj
-               {:query      (gqlgen/make-query query-tree)
-                :result     result
-                :query-tree query-tree})
-        (swap! queries conj (gqlgen/make-query query-tree))
-        (and
-          (= (:status-code result) 200)
-          (valid-result? (:data (:body result)))
-          )))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Utils
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defn filter-empty-braces
+  [strings]
+  (filter #(not (clojure.string/blank? %)) strings))
 
 (defn make-query-of-nodes
   [nodes]
@@ -199,15 +146,6 @@
                   flatten))
        "}"))
 
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; property-based generation
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(def generated-queries (atom []))
-
 (defn run-coverage-test
   [query-gen n]
   (let [property (prop/for-all
@@ -217,11 +155,14 @@
                      true))]
     (tc/quick-check n property)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; property-based generation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn run-property-based
   [url size recursion-limit]
   (let [gql-schema         (query-schema! url)
-        query-type-name    (:name (:queryType gql-schema))
-        mutation-type-name (:name (:mutationType gql-schema))]
+        query-type-name    (:name (:queryType gql-schema))]
     (reset! result-db [])
     (reset! generation-db [])
     (if query-type-name
@@ -233,28 +174,46 @@
                                (g/generation-registry
                                  b/base-registry (:types gql-schema))
                                :malli.generator/recursion-limit recursion-limit})
-            test-result
-            (run-coverage-test query-generator size)]
+            test-result (run-coverage-test query-generator size)]
         {:test-result test-result
          :call-result @result-db
          :generated   @generation-db})
       {:test-result :no-query-node}))
   (doseq [el @generation-db]
-    (println el)
-    (println (make-gql-string (:fields el)))
+    ; generting actual graphql queries here
+    ; sometimes they are empty! -> known bug in research tool! (gql.bahnql.clj Line 548/549
     (swap! queries conj (make-gql-string (:fields el)))
     )
-  (println @result-db)
-  (println "######")
-  (println @generation-db)
-  (println "########")
-  (println @queries)
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; experimental property-based generation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn run-test-gen
+  [url]
+  (println "hi")
+  (let [schema (query-schema! url)
+        query-tree (gqlgen/gen-gql-nodes
+                     (nth (:types schema) 2)
+                     (:types schema)
+                     3
+                     gqlgen/resolve-arg-gen-alphanumeric)
+        samples (gen/sample query-tree 4)
+        queries (map gqlgen/make-query samples)
+        ]
+    (reset! generated-queries queries)
+    ;(println (map gqlgen/make-query query-tree))
+    ;(clojure.pprint/pprint (gen/sample query-tree 4)  )
+    (println @generated-queries)
+    )
   )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; prime-path generation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn run-prime-path
   [url]
   (reset! result-db [])
@@ -270,14 +229,23 @@
         other-nodes-map (map #(g/object-node->specification-map (gu/find-type gql-schema %)) other-types-names)
         prime-paths (pgqlgen/node-map-to-prime-path-generators query-node-map other-nodes-map)
         ]
+  (clojure.pprint/pprint (first query-node-map))
       )
-  )
-
+)
 
 (defn -main
-  "main Function to run the test-Tool - size and recursion-limit are only needed by legacy test generation"
+  "main Function to run the test-Tool; mode defines which algorithm to run for testgeneration"
   [url mode]
   (cond
-    (= mode "1") (run-prime-path url)
-    (= mode "2") (run-property-based url 4 4))
-)
+    (= mode "prime") (run-prime-path url)
+    (= mode "test") (run-test-gen url)
+    (= mode "property") (run-property-based url 10 5))
+  (let [responses (map #(run-query url %) @queries)]
+    (spit (str mode "generated-tests.txt") (clojure.string/join "\n" @queries))
+    (println "generierte Tests in " (str mode "generated-test.txt"))
+    (println "Generierte Tests: " (count responses))
+    ; nur status-Code Überprüfung! -> prüft nur nach richtigem Schemata; (Property-based: viele fehler sind hausgemacht vom Tool)!
+    (println "Erfolgreiche Tests: " (count (filter #(= (:status-code %) 200) responses)))
+    (println "Fehlerhafte Tests: " (count (filter #(= (:status-code %) 400) responses)))
+    )
+  )
