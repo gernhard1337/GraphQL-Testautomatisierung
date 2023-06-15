@@ -1,17 +1,17 @@
 \chapter{related Work / verwandte Arbeiten}
 
-Da GraphQL eine stetig wachsende Beliebheit verzeichnet (Quelle) steigt auch der Bedarf an Testmethoden. Aktuell gibt es
-für GraphQL noch eine Lücke an produktionsreifen Testtools, insbesondere automatische Testtools.
-Eine wachsende Anzahl an research-tools bzw. untersuchten Methoden ist allerdings zu verzeichnen.
-In diesem Kapitel sollen etwaiige Verwandheiten, Unterschiede oder thematische Überschnitte von dieser und anderen Arbeiten benannt werden.
-
+Da GraphQL eine stetig wachsende Beliebtheit verzeichnet \cite{graphql-growing-report}[vgl. Language Features] steigt auch der Bedarf und das Interesse an Testmethoden.
+Aktuell gibt es für GraphQL noch eine Lücke an produktionsreifen Testtools, insbesondere automatischen Testtools.
+Eine wachsende Anzahl an research-tools beziehungsweise untersuchten Methoden ist allerdings zu verzeichnen.
+In diesem Kapitel sollen diese Methoden benannt werden und Verwandheiten, Unterschiede oder thematische Überschnitte von dieser und anderen Arbeiten benannt werden.
 
 \section{Property Based Testing}
 
-In (Paper Quelle hier verlinken) wird der Ansatz des Property-based Testing verfolgt um Integrationstests zu erstellen.
-Property-based Testing ist laut dem Paper heute Synonym mit "Random Testing" (vgl. Paper) wobei zufällig hierbei meint,
-dass die Eingabedaten & Routen zufällig generiert werden.
-Der allgemeine Ablauf der Testgenerierung laut Paper ist wie folgt:
+In ''Automatic Property-based Testing of GraphQL APIs''\cite{property-based-testing} wird der Ansatz des Property-based Testing verfolgt, um Integrationstests zu erstellen.
+Property-based Testing ist laut dem Paper heute Synonym mit "Random Testing"\cite{property-based-testing}[vgl. 2B] wobei zufällig hierbei meint,dass die Eingabedaten und Routen zufällig generiert werden.
+Wie Eingangs schon erwähnt, hat die Methode einige Limitierungen.
+Wir wollen diese hier noch einmal aufgreifen und vertiefen.
+Der allgemeine Funktionsablauf der Testgenerierung laut Paper ist wie folgt:
 
 \begin{center}
     \begin{itemize}
@@ -21,59 +21,50 @@ Der allgemeine Ablauf der Testgenerierung laut Paper ist wie folgt:
         \item[4.] Transformiere die Queries in GraphQL-Format
         \item[5.] Führe die Queries auf dem SUT (system under test) aus
         \item[6.] Evaluiere die Ergebnisse auf ihre Properties
-    \end{itemize} (vgl. Paper Seite 3.)
+    \end{itemize}[\cite{property-based-testing}[vgl. 3. Proposed Method]]
 \end{center}
 
-Wie Eingangs erwähnt soll Ziel dieser Arbeit sein, Punkt 2 und vielleicht Punkt 6 zu verändern.
-In der Entwicklung des Tools wurde Bezug darauf genommen, dass die Random-Testing Methode durchaus ihre Limitierungen hat (maximale Pfadlänge = Rekursionslimit) allerdings
-wurde die Lösung dieses Problems nur kurz untersucht. Hierbei wird gesagt, dass eine Breitensuche innerhalb des Schemas
-möglich wäre aber nicht skaliert und der iterative Ansatz die Tests schneller und kontrollierter erstellt (vgl Paper Absatz B).
-Wir wollen zeigen, dass diese Schlussfolgerung falsch ist und wir einen skalierbaren Ansatz entwickeln können der die angesprochenen
-Probleme lösen kann.
-Auf die konkrete Implementierung der zufallsbasierten Generierung & unsere Verbesserungen wird später noch eingegangen.
-
-%Die Generierung der eigentlichen Tests geschieht hierbei auf Grundlage des graphenbasierten Schemas (vgl. Paper) indem
-%%das Schema rekursiv untersucht wird auf "Objekte" und "Fields" (Objekte = Types; Fields = Felder des Typens).
-%Die generierten Tests werden dann auf dem zu testenden System ausgeführt und ausgewertet.
-%Im Grunde arbeitet dieses Paper ähnlich wie die hier zu untersuchende Methode allerdings nutzen die
-%Autoren bekanntes Wissen nicht vollkommen aus.
-%So ist erwähnt, dass der Query-Generator ein Iterationslimit auf jedem Knoten hat um mögliche zyklische Strukturen
-%zu umgehen. (vgl "Creation of the query Generator" im Paper).
-%Unter anderem dieser Umstand führt dazu, dass unter gewissen Umständen Tests nicht ideal abgebildet werden.
-%Die Annahme, dass ein Iterationslimit nötig ist, ist aber falsch.
-%Es gibt Algorithmen wie z.B. den PrimePath Algorithmus (später mehr dazu) die eine Graphüberdeckung ermitteln können
-%auch in zyklischen Graphen ohne dabei in einer Rekursionsschleife feststecken zu bleiben.
-%Insofern soll der Query-Generation Ansatz vom "Property-based Testing" durch unseren neuen Ansatz ersetzt werden.
-%Hierzu jedoch im folgenden dann mehr.
-
-
-% MAYBE TODO
+Insbesondere Punkt 2. und Punkt 6. weisen Verbesserungsbedarf auf.
+Punkt 2 wird auch der Hauptunterscheidungspunkt beider Arbeiten sein, denn hier sind dann zwei gänzlich unterschiedliche Konzepte am Werk.
+Dieser ist beim Property-Based Testing nämlich ein Query-Generator der mithilfe der Clojure-Bilbiothek Serene\cite{clojureserene}
+Clojure.Specs\cite{clojurespec} generiert und diese Clojure.Specs\cite{clojurespec} dann nutzt um mit der Clojure-Bilbiothek Malli\cite{clojuremalli} dann Daten für die Testqueries zu generieren.
+Unsere herangehensweise wird sich hiervon gänzlich unterscheiden.
+Im Sinne von Property-based Testing ist diese Herangehensweise allerdings eine sehr sinnvolle gewesen da Malli\cite{clojuremalli} de-facto Standard
+für Property-based Testing in der Clojure-Welt ist.
+Geht man jedoch davon aus, dass das Ziel eine ideale Überdeckung des Graphens jeder größe und jeder Struktur ist, so
+ist diese herangehensweise nicht die beste.\cite{property-based-testing}[vgl. 3C]
+Laut dem Paper gilt ''ein größeres und mehr rekursives (GraphQL)-Schema würde nicht skalieren und der (zufällig) iterative Ansatz ist besser als eine Breitensuche''\cite{property-based-testing}[vgl. 3C].
+Diese Behauptung betrachten wir als falsch und behaupten, dass es besser möglich ist.
+Dies zu zeigen bleibt Gegenstand der folgenden Arbeit.
 
 
 \section{heuristisch suchenbasiertes Testen}
 
-EvoMaster ist ein Open-Source Tool welches sich automatisiertes Testen von Rest-APIs und GraphQL APIs zur Aufgabe gemacht hat.
+EvoMaster\cite{evo-master} ist ein Open-Source Tool welches sich automatisiertes Testen von Rest-APIs und GraphQL APIs zur Aufgabe gemacht hat.
 Aktuell kann durch EvoMaster sowohl WhiteBox Testing als auch BlackBox Testing durchgeführt werden jedoch ist ein
 Whitebox Test mittels Vanilla-EvoMaster nur für Rest-APIs möglich die mit der JVM lauffähig sind.
-Im Paper \"White-Box and Black-Box Fuzzing for GraphQL APIs" (Quelle hier) wurde ein System on-Top für EvoMaster
-erstellt welches GraphQL Tests generieren kann. Hierbei soll sowohl WhiteBox als auch BlackBox Testing möglich sein.
+Im Paper ''White-Box and Black-Box Fuzzing for GraphQL APIs''\cite{belhadi2022whitebox} wurde ein System on-Top für EvoMaster
+erstellt welches GraphQL Tests generieren kann.
+Hierbei soll sowohl WhiteBox als auch BlackBox Testing möglich sein.
 Das erstellte Framework in diesem Paper arbeitet nach folgendem Prinzip:
 
 \begin{center}
     \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{content/hauptteil/related Work/evomaster_framework}
 \end{center}
 
-WhiteBox Testing ist möglich insofern Zugang zum GraphQL-Schema und zum Source Code der API gegeben ist. Andernfalls ist
-nur BlackBox Testing möglich. Zur Testgenerierung wird ein genetischer Algorithmus genutzt welcher die Tests generiert.
-Wie dieser genetische Algorithmus genau funktioniert kann im Paper selbst nachgelesen werden (hier Quelle).
+WhiteBox Testing ist möglich insofern Zugang zum GraphQL-Schema und zum Source Code der API gegeben ist.
+Andernfalls ist nur BlackBox Testing möglich.
+Zur Testgenerierung wird ein genetischer Algorithmus genutzt welcher die Tests generiert.
+Wie dieser genetische Algorithmus genau funktioniert kann im Paper selbst nachgelesen werden\cite{belhadi2022whitebox}.
 Im Vergleich mit unserer geplanten Arbeit mittels des Prime-Path-Algorithmus ergeben sich einige Unterschiede, diese sind
 unter anderem: Nutzung eines evolutionären Algorithmus Many-Independent-Objective (MIO).
 Im Paper selbst wird davon ausgegangen, dass andere evolutionäre Algorithmen unter Umständen passender wären als der MIO Algorithmus
-für die Testgenerierung. Jedoch ist ein evolutionärer Algorithmus auch immer ein stochastisch, heuristisch sich dem Optimum annähernder Algorithmus. (Beleg hierfür)
-Im Gegensatz dazu ist der Ansatz dieser Arbeit ein deterministischer Algorithmus der beweisbar ideale Lösungen auf direkte Art bietet
-und im ersten Durchlauf direkt sein ideales Ergebnis ermittelt. Die ideale Lösung bezieht sich hierbei auf bestimmte
-Code-Coverage Kriterien die durch unseren Algorithmus erfüllt werden.  Inwiefern der evolutionäre Algorithmus diese
-Kriterien erfüllt bleibt offen, es ist jedoch davon auszugehen, dass er sich einer idealen Lösung dieser Kriterien nur
+für die Testgenerierung.
+Jedoch ist ein evolutionärer Algorithmus auch immer ein stochastisch, heuristisch sich dem Optimum annähernder Algorithmus. (Beleg hierfür)
+Im Gegensatz dazu ist der Ansatz dieser Arbeit ein iterativer Algorithmus der ideale Überdeckungen auf direkte Art bietet
+und im ersten Durchlauf direkt sein ideales Ergebnis ermittelt.
+Die ideale Lösung bezieht sich hierbei auf bestimmte Code-Coverage Kriterien die durch unseren Algorithmus erfüllt werden.
+Inwiefern der evolutionäre Algorithmus diese Kriterien erfüllt bleibt offen, es ist jedoch davon auszugehen, dass er sich einer idealen Lösung dieser Kriterien nur
 annähert da er eben ein stochastischer Algorithmus ist. (beleg oder Quelle)
 
 \section{Deviation Testing}
@@ -124,13 +115,15 @@ und automatisch daraus Test-Cases erstellen zu können damit zukünftig keine Fe
             \hline
             \textbf{ Arbeit / Kriterium} & \textbf{Property Based Testing} & \textbf{heuristisch suchenbasiertes Testen} & \textbf{Deviation-Testing} & \textbf{Query Harvesting} \\
             \hline
-            Überdeckungs- kriterien & Heuristische Suche & Erweiterung von bestehenden Tests & Tracken von Querys und daraus Tests generieren & \\
+            Generierungsart & Zufallsbasierte Routengenerierung & Heuristische Suche & Erweiterung von bestehenden Tests & Tracken von Querys und daraus Tests generieren \\
             \hline
-            Orakel & simples Raten &  & &\\
+            Überdeckung & Zufällig, stark abhängig von Schema  & abhängig ob Zugang zu Source Code, Zufällig aber optimaler & stark abhängig von selbst geschriebenen Tests  & stark Abhängig von User-requests  \\
             \hline
-            Testverarbeitung & & & &\\
+            Orakel & simples Raten & mit Source Code: Analyse & Aus entwickelten Tests &  Aus gestellten Querys \\
             \hline
-            Testgranularität & & & &\\
+            Ausführzeit & vor Prod & vor Prod & vor Prod & Verifikation / Wartung \\
+            \hline
+            Use-Case & allgemeines Testen & allgemeines Testen & allgemeines Testen & Testen bei Code-Änderung \\
             \hline
         \end{tabularx}
     \end{table}

@@ -10,87 +10,50 @@ Kapitelstruktur gegeben.
 
 Mit einer steigenden Nutzung von GraphQL wird es immer wichtiger, geeignete Tests für GraphQL-API's zu entwickeln damit eine
 gute Softwarequalität sichergestellt werden kann.
-Idealerweise können diese Testtools solche API's automatisch testen,
-so wie es für REST-API's schon umgesetzt wurde.
-Die Struktur von GraphQL erlaubt allerdings zyklische Strukturen
-und ermöglicht somit ein potentenziell unendlich großen Testraum.
-In dem Paper " Automatic Property-based Testing of GraphQL-API's " (hier Quelle) wurde versucht ein solches
-automatisches Testtool zu entwickeln. Ergebniss der Arbeit war hierbei ein Prototyp der in der Lage ist
-eine GraphQL-Schnittstelle zu testen allerdings mit zwei technischen Einschränkungen.
-Die erste technische Limitierung liegt in der Lösung des potentiell unendlichen Testraumes, hierbei
-wird ein Rekursionslimit festgelegt, dass die maximale Pfadlänge festlegt und somit für einen endlichen Suchraum sorgt.
-Diese Arbeit soll zeigen, dass die erste technische Limitierung lösbar ist durch einen spezifischen Algorithmus.
-Eine zweite Limitierung ist die Auswertung der Tests. GraphQL liefert eine stark typisierte Antwort, die vorhersehbar
-durch die Schemadefinition ist. Im Testtool wird allerdings nur die Typsierung getestet. Dies bedeutet, dass eine gewisse
-Anzahl an false-positives existieren können geschuldet daraus, dass nur der Typ eines Objektes getestet wird, jedoch nicht
-seine Exakten Attribute.
+Tests können manuell geschrieben oder automatisch generiert werden.
+Während bei Unit-Tests für einzelne Methoden der Programmierer frei entscheiden kann, ob er die Tests selbst schreiben will
+oder doch eher von einem Tool generieren lassen will sind bei Integrations-Tests die Testräume teilweise so groß, dass ein
+manuelles Schreiben dieser Tests einerseits fehleranfällig aber auch schlicht zu langwierig ist.
+Für REST-APIs existieren schon automatische Integrationstesttools wie zum Beispiel: EvoMaster \cite{evo-master} , QuickREST \cite{karlsson2019quickrest} oder RESTTESTGEN \cite{rest-test-gen}.
+GraphQL-APIs haben leider noch einen Mangel an solchen automatischen Testtools.
+Im Rahmen der IEEE/ACM 2021 wurde mit ''Automatic Property-based Testing of GraphQL APIs''\cite{property-based-testing} eine Methode vorgestellt die diesen Mangel angehen soll.
+Ergebnis der Arbeit war hierbei ein Prototyp der die vorgestellte Methode umsetzten sollte.
+Die vorgestellte Methode bezieht sich auf ''Property-based Testing'' wobei diese gleichzusetzen ist mit ''Random Testing'' \cite{property-based-testing}[vgl. 2.B]
+Durch die starke Typisierung und Schema-Definition, welche prinzipiell ein Graph ist, lässt sich in GraphQL
+sehr einfach auswerten welche Anfragen nun zulässig sind.
+Die hier vorgestellte Methode nutzt den Fakt, dass zum Beispiel alle möglichen Anfragen immer im Query-Knoten
+beginnen müssen und somit alle weitergehenden Felder im Schema innerhalb des Query-Knoten definiert sein müssen.
+Da die Definition des Schemas der eines Graphens entspricht ist jedoch der mögliche Suchraum potentiell unendlich da GraphQL
+Zyklen innerhalb des Graphens erlaubt.
+Der unendliche Suchraum wurde durch ein Rekursionslimit begrenzt allerdings wird so eine schlechtere Test-Coverage erreicht.
+\newpage
+Die bisher entwickelte Methode funktioniert auf folgende Weise:
 
-Der allgemeine Ablauf des bestehenden Tools ist wie folgt:
 \begin{center}
     \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{content/einleitung/toolchain}
+    \caption{Methode von~\cite{property-based-testing}}
 \end{center}
 
-Verbesserungen in dieser Arbeit sind insbesondere in den Punkten 2 und 6 (6 wenn genug Zeit) geplant.
+wobei neben dem vorher erwähnten Rekursionslimit außerdem Punkt 6. ''Verify response Properties'' kritisch
+zu betrachten ist da die Auswertung wirklich nur auf die Properties schaut.
+Dies bedeutet, dass ein zurückgegebens Objekt nur auf seinen Typ überprüft wird aber nicht, ob seine tatsächlichen Rückgabewerte, die exakt erwartet sind.
+Hierdurch können false-positives entstehen.
 
-\begin{description}
-    \item[Create Query Generator (Punkt 2)] Kapitel Testgenerierung
-    \item[Verify response properties (Punkt 6)] Kapitel Testauswertung
-\end{description}
-
-\subsection{Testgenerierung}
-
-Der bisherige Ansatz der Testgenerierung ist eine zufallsbasierte Suche.
-Hierbei wird ein GraphQL-Schema geladen und nach dem Query-Type gefragt.
-Der Query-Type definiert alle erlaubten Anfragen an die API.
-Das Ergebnis einer jeden Anfrage ist (ein Knoten) / (eine Liste von Knoten).
-Jeder Knoten kann dann verwandte Knoten haben.
-Eben diese werden dann mit zufallsbasierter Suche abgefragt, jedoch nur bis zu einer bestimmten Pfadlänge die
-durch das Rekursionslimit festgelegt ist, eben um unendliche Suchräume zu vermeiden.
-Nun ist offensichtlich, dass es durchaus auch Pfade geben kann, die länger
-als das Rekursionslimit sind und somit nicht vom Testtool berücksichtig werden.
-Im Sinne einer guten Testcoverage wollen wir aber möglichst
-jede Funktion mit Tests überdecken, somit erreicht die bisherige Methode leider nicht eine zufriedenstellende Lösung im Sinne
-der Testcoverage.
-Diese Arbeit soll die bisherige Methode verbessern indem Schritt 2, der Query-Generator, verbessert wird mit einem
-endlichen Algorithmus der Graphen jeder Größe und Struktur zuverlässig abdeckt. Hierfür müssen verschiedene Überdeckungskriterien
-erst definiert werden, allerdings sei schon zu sagen, die hier vorgestellte Methode hat als Ziel, das jede Kante und jeder
-Knoten des Graphens hierdurch mit mindestens einem Test abgedeckt werden, sodass wir eine erhebliche Verbesserung in der
-Zuverlässigkeit der Testcoverage erlangen.
-
-\subsection{Testauswertung}
-
-
-Die Auswertung der Tests nach " Automatic Property-based Testing of GraphQL-API's " erfolgt durch einen Typabgleich von Query und Response.
-Eine Validierung der Response wird zeitgleich mit dem erstellen der Querys erledigt. Hierdurch folgt die Limitierung, dass das Testtool
-aus dem GraphQL-Schema wissen kann, welchen Typ eine Antwort hat, allerdings ist nicht erschließbar, welche genauen Attribute eine Rückgabe hat.
-So kann eine Anfrage, die als Typ \verb+Automarke+ hat, jede Automarke akzeptieren.
-Sähe die Anfrage allerdings so aus: \verb+getMarke("Opel Corsa")+ und die Antwort \verb+Marke(name:Audi)+ dann wäre hier eigentlich
-ein Fehler, das Testtool würde aber akzeptieren, da die Typzuordnung zutreffend ist.
-Es wäre besser, wenn das Testtool nicht nur den Typ der Response auswertet sondern auch ihren Inhalt.
-Ob dies umgesetzt wird in dieser Arbeit wird sich zeigen (Zeitliche Komponente; TODO)
-\newpage
+Die vorgestellte Methode wollen wir verbessern durch Änderung einiger Ansätze.
+Hierbei sollen Graphcoverage-Algorithmen zum Einsatz kommen, die mit iterativen Verfahren auch zyklische Graphen ideal
+überdecken können und dabei immer verlässlich arbeiten, sodass die generierten Tests stets für vergleichbare Ergebnisse sorgen und nicht
+davon abhängig sind, dass der Zufall eine gute Überdeckung liefert.
+Zusammenfassend sei gesagt, dass bei der Testgenerierung und Testauswertung Verbesserungen möglich sind und dies Gegenstand dieser Arbeit sein soll.
 
 \section{Umsetzung}
 
 Zuallererst wird in dieser Arbeit etwas Theorie definiert und in Bezug gesetzt.
-Angefangen mit einer allgemeinen Definition eines Graphens im mathematischen Sinne und GraphQL als Schnittstelle, wird dann ein Bezug dieser beiden Themen
-zueinander hergestellt.
-Im folgenden wird erklärt, was Software-Testing überhaupt ist und inwiefern dieses mit Graphen zusammenhängt.
-Hierfür werden insbesondere Graphüberdeckungen betrachtet.
-Abschließend für den Theorie-Teil folgt eine Erklärung wie Graphüberdeckungskriterien und Algorithmen die diese Kriterien
-erfüllen können, helfen können um GraphQL-APIs zu testen.
-Um diese theoretischen Erkenntnisse zu validieren und die eingängliche Behauptung zu beweisen wird dann eine Implementierung
-des PrimePath Algorithmus erstellt die dann den Query-Generator vom Paper " Automatic Property-based Testing of GraphQL-API's " ersetzen soll.
-Hierbei ist das Ziel, große Teile des bestehenden Codes zu nutzen und den Query-Generator nathlos in das Programm einzubinden, sodass
-gezeigt werden kann, dass unsere hier erarbeitete Methode funktioniert.
-Um zu beweisen, dass unsere Methode funktioniert folgt ein Vergleich beider Generierungsalgorithmen.
-Verschiedene Metriken sind hierbei interessant, insbesondere jedoch die Anzahl der generierten Tests, die Dauer
-der Berechnung aller Tests und die Coverage des Graphens.
-Insbesondere bei der Anzahl an generierten Test / Coverage erhoffen wir uns, dass durch weniger Tests eine höhere Coverage erreicht werden
-kann. Außerdem erwarten wir, dass die Berechnungszeit für eine vollständige Coverage geringer sein sollte als bei der zufallsbasierten Suche.
-Hierfür werden die Experimente an 3 verschiedenen GraphQL-API's ausgetestet, 2 stammen hiervon aus dem originalen Paper und eins wird
-eigens für unsere Methode entwickelt um an diesem besonders die Limitierungen des ursprünglichen Tools zu zeigen und die Lösung der Limitierungen zu validieren.
-
-
-
-
+Wir beginnen damit die Graphentheorie als mathematisches Konzept zu definieren denn dieses liegt GraphQL zugrunde.
+Darauffolgend kommt eine kleine Einführung in GraphQL und dann bilden wir schon die Schnittstelle von GraphQL zur Graphentheorie.
+Sobald diese Verbindung erfolgt ist können wir uns dem eigentlichen Problem widmen: Wie kann man mithilfe von Graphcoverage-Algorithmen
+Tests generieren?
+Hierfür erfolgt ein letzter Theorie-Exkurs über Software-Tests.
+Mit diesen Grundlagen schaffen wir es dann unsere Methode zu entwickeln und können Sie auch mit ''Automatic Property-based Testing of GraphQL APIs''\cite{property-based-testing}
+vergleichen.
+Unsere Methode wird konzeptionell vorgestellt und dann folgen einige Implementierungsdetails sowie ein Vergleich beider Tools durch Experimente.
+Abschließen wird die Arbeit mit einem Ausblick für zukünftige Arbeit und einem Fazit über unsere erreichten Verbesserungen.
