@@ -1,54 +1,55 @@
 \section{Zusammenhang Graphentheorie und GraphQL}
 
-GraphQL erlaubt es uns, Typen zu definieren. Ein Type beinhaltet immer mindestens eine Property. Ein Type kann mit einem
-Knoten eines Graphens gleichgesetzt werden. Und eine Beziehung zwischen Types als Kante. Hierdurch lässt sich dann
-ein Typgraph entwickeln der als Bauplan für reale Graphen dient.
-Man nehme zum Beispiel ein Buch und definiere hierfür einen Type
+Nun, da wir ein grundlegendes Wissen über Graphentheorie und GraphQL erlangt haben, müssen wir noch zeigen,
+dass Graphentheorie auch anwendbar ist auf GraphQL. Ohne diese Verknüpfung könnten wir uns nicht sicher sein,
+dass die zukünftig vorgestellten Algorithmen ausführbar sind für eine GraphQL-API.
 
-\begin{center}
-    \begin{verbatim}
+\subsection{Typen als Knoten}
+
+Wie in $4.2.1$ schon gezeigt, ermöglicht GraphQL das Erstellen von eigenen Typen.
+Diese Typen repräsentieren einzelne Datenobjekte.
+Somit liegt es nahe, dass die einzelnen Typen als Knoten eines Graphens repräsentiert werden können.
+Bleiben wir bei vorigem Beispiel, so definieren wir einen Typen $Book$:
+
+\begin{figure}[ht]
+    \centering
+    \begin{minipage}[b]{0.4\textwidth}
+        \begin{verbatim}
         type Book {
             id: Int
             title: String
         }
-    \end{verbatim}
-\end{center}
+        \end{verbatim}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/book}
+        \caption{Book als Knoten}
+        \label{fig:mein_bild}
+    \end{minipage}
+\end{figure}
 
-Es exisitiert jetzt ein Objekt Book mit den Eigenschaften id als Integer und title als String.
-Repräsentiert als Graphen hätten wir nun einen einfachen Knoten der zwei Datentypen speichert.
+\subsection{Felder als Kanten}
 
-\begin{center}
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/book}
-\end{center}
-
-Ein Objekt enthält 1 bis n Propertys. Diese Property kann entweder ein Standarddatentyp sein oder auf einen Type verweisen,
-dies kann der eigene Type oder auch ein anderer Type sein.
-Fügen wir unserem Beispiel des Buches eine Property hinzu mit dem Type Author wobei der Author selbst
-wie folgt definiert wird:
-
-\begin{center}
-    \begin{verbatim}
-        type Book {
-            id: Int
-            title: String
-            author: Author
-        }
-        type Author {
-            id: Int
-            name: String
-        }
-    \end{verbatim}
-\end{center}
-
-So fügen wir unserem Graphen einen zusätzlichen Knoten hinzu
-Die Beziehung zwischen dem Buch und Author wird durch eine gerichtete Kante zwischen dem Buch und dem Author dargestellt.
-Hierdurch ergibt sich folgender Graph:
+Der eben definierte Typ Book besitzt aktuell nur zwei Felder, id und title.
+Beides sind Skalare-Datentypen und bilden somit keine ausgehenden Kanten, denn Kanten symbolisieren Beziehungen zwischen Objekten.
+Wir können einen Graphen mit $G$ = $(V,E)$ wobei $E =\emptyset$ definieren.
+Allerdings wäre dies sehr restriktiv da wir überhaupt keine Verbindungen haben würden und viele Vorteile von GraphQL würden wegfallen.
+Es ist aber auch möglich, dass ein Type ein Feld definiert das nicht vom Skalaren Datentyp ist.
+So können wir das Buch um einen Typen $Author$ erweitern wobei der Author gleich definiert wird wie in $4.2.1$.
+Diese Typdefinitionen führen dann zu diesem Graphen:
 
 \begin{center}
     \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/book-author}
 \end{center}
 
-Fügen wir dem Author nun auch noch die Property written hinzu, so ergibt sich ein Kreis in diesem Graph.
+Wir nutzen also die Typdefinitionen aus um die Beziehungen zwischen einzelnen Objekten zu bekommen.
+Hierbei wird ein Typ dann mit einem anderen Typen verbunden, wenn dieser als Feld im Ursprungstyp vorkommt.
+Man muss hierbei klar beachten, dass dies eine gerichtete Beziehung ist.
+Eben erstellte Beziehung definiert nur, dass ein Book das Feld Author hat. Wir können nach aktuellem Stand nicht
+die Bücher eines Autoren herausfinden da wir diese Kante nicht deklariert haben.
+Dies ist allerdings möglich. Definieren wir den Author dann also wie folgt:
 
 \begin{verbatim}
     type Book {
@@ -63,146 +64,58 @@ Fügen wir dem Author nun auch noch die Property written hinzu, so ergibt sich e
     }
 \end{verbatim}
 
-so ergibt sich, dass wir einen zirkulären Graphen haben mit folgender Struktur
+so ergibt sich folgender, zyklischer Graph:
 
 \begin{center}
     \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/book-author-circle}
 \end{center}
 
+\subsection{der komplette Graph}
 
-Dieses Schema ist ein Bauplan für einen sehr einfachen, zirkulären Graphen der durch GraphQL abgebildet wird.
-In Realität können die Graphstrukturen die aus diesem Bauplan resultieren sehr unterschiedlich sein.
-Für dieses Beispiel kann das bedeuten, dass folgende beide Graphen korrekt definierte Graphen sind jedoch komplett
-andere Möglichkeiten bieten wie man sie abfragen kann. Hierdurch resultiert auch, dass die Abfragen
-diverse Möglichkeiten haben je nach den unterliegenden Daten.
+Wir wissen nun also wie ein GraphQL-Schema einen Graphen repräsentiert und können Algorithmen die auf Graphen funktionieren auch
+auf einem GraphQL-Schema anwenden.
+Abschließend zu diesem Kapitel sei gesagt, dass es in GraphQL allerdings nicht möglich ist, jeden einzelnen Knoten direkt
+abzufragen.
+Dies hängt stets von der Definition des Query/Mutation-Types ab, denn alle eingehenden Anfragen müssen vom Query-Type bzw. alle
+eingehenden Veränderungen müssen über den Mutation-Type ablaufen.
+Der Einfachheit halber werden wir uns jetzt erstmal dem Query-Type widmen.
+Jede Anfrage die in GraphQL getätigt werden kann, hat ihren Ursprung im Query-Type.
+Somit folgt auch, dass alle Routen stets im Query-Type entspringen müssen.
+Dies bedeutet, dass nur Knoten mit Erreichbarkeit vom Query-Type überhaupt abgefragt werden können.
+In diesem Beispiel:
 
-\begin{figure}
-    \begin{center}
-        \begin{tikzpicture}
-            \node (1)[abstract, rectangle split, rectangle split parts=2] at (0,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                \end{description}
-            };
-            \node (2)[abstract, rectangle split, rectangle split parts=2] at (5,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                \end{description}
-            };
-            \node (3)[abstract, rectangle split, rectangle split parts=2] at (10,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                \end{description}
-            };
-            \node (4)[abstract, rectangle split, rectangle split parts=2] at (0,5)
-                {
-                \textbf{Author}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[name:] String
-                \end{description}
-            };
-            \node (5)[abstract, rectangle split, rectangle split parts=2] at (10,5)
-                {
-                \textbf{Author}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[name:] String
-                \end{description}
-            };
-            \draw [->] (4) to node [midway]{ schrieb } (1);
-            \draw [->] (4) to node [midway]{ schrieb } (2);
-            \draw [->] (5) to node [midway]{ schrieb } (3);
+\begin{figure}[ht]
+    \centering
+    \begin{minipage}[b]{0.4\textwidth}
+        \begin{verbatim}
+    type Query {
+        book: Book
+        author: Author
+    }
 
-        \end{tikzpicture}
-    \caption{3 Bücher, 2 Autoren}
-    \end{center}
+    type Book {
+        id: Int
+        title: String
+        author: Author
+    }
+        \end{verbatim}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.4\textwidth}
+        \begin{verbatim}
+    type Author {
+        id: Int
+        name: String
+        written: [Books!]
+    }
+
+    type Publisher {
+        name: String
+        published:  [Book]
+    }
+        \end{verbatim}
+    \end{minipage}
 \end{figure}
 
 
-\begin{figure}
-    \begin{center}
-        \begin{tikzpicture}[scale=0.7, transform shape]
-            \node (1)[abstract, rectangle split, rectangle split parts=2] at (0,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                \end{description}
-            };
-            \node (2)[abstract, rectangle split, rectangle split parts=2] at (4,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                \end{description}
-            };
-            \node (3)[abstract, rectangle split, rectangle split parts=2] at (8,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                \end{description}
-            };
-            \node (4)[abstract, rectangle split, rectangle split parts=2] at (12,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                \end{description}
-            };
-            \node (5)[abstract, rectangle split, rectangle split parts=2] at (16,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                \end{description}
-            };
-            \node (6)[abstract, rectangle split, rectangle split parts=2] at (20,0)
-                {
-                \textbf{Book}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[title:] String
-                \end{description}
-            };
-            \node (7)[abstract, rectangle split, rectangle split parts=2] at (10,5)
-                {
-                \textbf{Author}
-                \nodepart{second} \begin{description}
-                                      \item[id:] Integer
-                                      \item[name:] String
-                \end{description}
-            };
-            \draw [->] (7) to node [midway]{ schrieb } (1);
-            \draw [->] (7) to node [midway]{ schrieb } (2);
-            \draw [->] (7) to node [midway]{ schrieb } (3);
-            \draw [->] (7) to node [midway]{ schrieb } (4);
-            \draw [->] (7) to node [midway]{ schrieb } (5);
-            \draw [->] (7) to node [midway]{ schrieb } (6);
-        \end{tikzpicture}
-        \caption{6 Bücher, 1 Autor}
-    \end{center}
-\end{figure}
-
-Definiert man nun, dass es zum Beispiel die StandardQuery "getBookAuthor(id): Author" geben soll. So bedeutet dies,
-dass ein Author eines Buches abgefragt werden soll aufgrund der Id eines Buches.
-
-(Hier Graphen einfügen mit Highlight der gewählten Knoten)
-
-
-
+wäre es nicht möglich einen Knoten des Publishers abzufragen da dieser Knoten nicht erreichbar ist vom Query-Type.

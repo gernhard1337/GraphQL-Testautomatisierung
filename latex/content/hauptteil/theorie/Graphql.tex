@@ -1,21 +1,22 @@
 \section{GraphQL}
 
-GraphQL ist eine Open-Source Query-Language (Abfragesprache) und Laufzeitumgebung die von Facebook entwickelt wurde. (vgl. GraphQL-Spec)
-Die Besonderheiten von GraphQL sind, dass man mit nur einer einzelnen Anfrage mehrere Ressourcen gleichzeitig abfragen kann und die
-Daten in diesem Schema stark durch einen Typgraphen definiert sind. So lässt sich einerseits die Effizienz stark erhöhen indem weniger Anfragen
+GraphQL ist eine Open-Source Query-Language (Abfragesprache) und Laufzeitumgebung die von Facebook entwickelt wurde. \cite[vgl. Introduction]{graphqlspecification}
+Die Besonderheiten von GraphQL sind, dass man mit nur einer einzelnen Anfrage mehrere Ressourcen gleichzeitig abfragen kann \cite[vgl. No More Over- and Underfetching]{howtographql} und die
+Daten in einem Schema durch einen Typgraphen definiert sind \cite[vgl. Benefits of a Schema & Type System]{howtographql}.
+So lässt sich die Effizienz stark erhöhen, indem weniger Anfragen
 gestellt werden die zeitgleich eine höhere Informationsdichte haben.
-Außerdem erleichtert GraphQL die Kommunikation von Schnittstellen indem die geünschten Felder schon in der Query definiert werden
+Außerdem erleichtert GraphQL die Kommunikation von Schnittstellen, indem die gewünschten Felder schon in der Query definiert werden
 und direkt den erwarteten Datentyp zusichern.
 Hier liegt auch der große Vorteil im Vergleich zum direkten technologischen Konkurenten REST API.
 Bei REST-APIs sind nämlich für verschiedene Ressourcen auch jeweils eine eigene Anfrage nötig und die Typsicherheit ist nicht so stark gegeben
-wie bei GraphQL-APIs.
+wie bei GraphQL-APIs. \cite[vgl. No More Over- and Underfetching]{howtographql}
 Diese beiden großen Vorteile sorgen dafür, dass GraphQL an Popularität gewinnt und zunehmend eingesetzt wird.
-Im Kontext dieser Arbeit ist ein tiefgreifendes, technologisches Verständniss von GraphQL essentiell, deshalb wird hier
+Im Kontext dieser Arbeit ist ein tiefgreifendes, technologisches Verständniss von GraphQL essenziell, deshalb wird hier
 eine tiefgreifende Erklärung von GraphQL folgen.
 
 \subsection{Schema \& Typen}
 
-Grundlage einer jeden GraphQL-API ist ein GraphQL-Schema.
+Grundlage einer jeden GraphQL-API ist ein GraphQL-Schema. \cite[vgl. Core Concepts]{graphqlspecification}
 Dieses Schema definiert genau wie die Daten der API aufgebaut sind und welche Informationen exisitieren.
 Ein GraphQL-Schema ist eine Sammlung von Typen.
 Typen sind Objekte einer Datenstruktur.
@@ -25,9 +26,9 @@ Falls das Feld ein anderer Typ ist, so entspricht diese Beziehung einer Kante in
 Dies bedeuet, dass eine Abfrage dieses Feldes dann ein Objekt des Types zurückliefert und hier auch die gewünschten Felder
 definiert werden müssen.
 Ein sehr einfaches Schema wäre zum Beispiel die Beziehung zwischen Büchern und Authoren.
-Ein Buch hat hierbei einen Titel und einen Author.
+Ein Buch hat einen Titel und einen Author.
 Ein Author hat einen Namen und ein Geburtsdatum.
-Ein Schema für dieses Beispiel sähe wie folgt aus:
+Zugehöriges Schema für dieses Beispiel sähe wie folgt aus:
 
 \begin{center}
     \begin{verbatim}
@@ -60,7 +61,8 @@ Kante führt, ausgegeben werden sollen.
 
 \subsection{vordefinierte Typen}
 
-Jedes GraphQL-Schema definiert intial mehrere Typen die spezielle Aufgaben haben und nicht vom User überschrieben werden können.
+Jedes GraphQL-Schema definiert initial mehrere Typen die spezielle Aufgaben haben und nicht vom User überschrieben werden können.
+Hierunter zählen unter anderem auch Standarddatentypen wie Sie gemeinhin bekannt sind.
 Im folgenden werden wir auf einige wichtige dieser Typen eingehen.
 
 \subsubsection{Scalar-Types}
@@ -71,17 +73,31 @@ Ein Scalar-Type kann nicht vom User geändert werden und enthält auch keine and
 Es ist möglich auch eigene Scalar-Types festzulegen jedoch sind in der offiziellen Spezifikation von GraphQL
 lediglich folgende Scalar-Types definiert:
 
+
+\newcolumntype{C}{>{\Centering\arraybackslash}X}
 \begin{center}
-    \begin{itemize}
-        \item[Int] 32-bit Integer
-        \item[Float] Gleitkommazahl nach IEEE 754
-        \item[String] frei wählbarer Text (leerer String zählt nich als non-Null!)
-        \item[Boolean] True;False repräsentiert durch internen boolean-type. Ansonsten 0 & 1
-        \item[ID] einzigartiger Identifier, intern behandelt wie ein String
-        \item[Scalar Extensions] Rohkonstrukt von dem geerbt werden kann für eigen definierte Typen
-    \end{itemize}
-    (vgl. GraphQL-Sepzifikation 3.5)
+    \begin{table}[!ht]
+        \begin{tabularx}{\textwidth}{|C|C|}
+            \hline
+            \textbf{ Typ } & \textbf{ Beschreibung} \\
+            \hline
+            \textbf{ Int } & \textbf{ 32-bit Integer } \\
+            \hline
+            \textbf{ Float  } & \textbf{ Gleitkommazahl nach IEEE 754 } \\
+            \hline
+            \textbf{ String } & \textbf{ frei wählbarer Text (leerer String zählt nich als non-Null!) } \\
+            \hline
+            \textbf{ Boolean } & \textbf{ einzigartiger Identifier, intern behandelt wie ein String } \\
+            \hline
+            \textbf{ ID } & \textbf{ Rohkonstrukt von dem geerbt werden kann für eigen definierte Typen } \\
+            \hline
+            \textbf{ Scalar Extensions } & \textbf{ Rohkonstrukt von dem geerbt werden kann für eigen definierte Typen } \\
+            \hline
+        \end{tabularx}
+    \end{table}
+    \cite[vgl. 3.5 Scalars]{graphqlspecification}
 \end{center}
+
 
 \subsubsection{Query-Type}
 

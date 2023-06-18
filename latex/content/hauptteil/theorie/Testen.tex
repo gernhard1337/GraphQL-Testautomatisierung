@@ -65,15 +65,25 @@ Mit einem 3GHz Prozessor wäre eine vollständige Testung nach \verb+2^64 / 3.00
 Es ist also ersichtlich, dass schon so eine vermeintlich einfache Funktion nicht komplett testbar ist.
 Daher wird also ein strukturierter Ansatz benötigt, der den Testraum einerseits klein hält, andererseits trotzdem dafür sorgt, dass
 Fehler ausgeschlossen werden können.
-Hierfür wurden formale Coverage-Kriterien entwickelt.(vgl. S. 17 software-testing)
-
-
-
+Hierfür wurden formale Coverage-Kriterien entwickelt.\cite[vgl. S.17]{software-testing}
 
 \subsubsection{Coveragekriterien}
 
-
-
+Wie gezeigt ist ein "vollständiges Testen" - also ein ausprobieren aller Möglichkeiten einfach unmöglich.
+Hierdurch sind wir gezwungen einen anderen Ansatz zu verfolgen.
+Coveragekriteren liefern hierbei einen Ansatz die einem dabei helfen können, sinnvolle Tests zu entwickeln und zu entscheiden,
+wann genug Tests entwickelt wurden.
+Die Grundidee ist hierbei, dass wir Test-Requirements definieren.
+Ein Test Requirement ist ein spezielles Element eines Software-Artefakts, dass von einem Testfall erfüllt sein muss.~\cite[vgl. S.17]{software-testing}
+Hiermit ist gemeint, dass ein Test-Requirement ein spezifisches Kriterium definiert, dass durch einen Test überprüfbar
+wird.
+Ein Beispiel für ein Test-Requirement wäre es, das wir prüfen, ob die Division von 2 und 1 wirklich 2 ergibt.
+Ein Coveragekriterium ist dann eine Regel beziehungsweise eine Sammlung von Regeln die eine Menge an Test-Requirements erzeugen.~\cite[vgl. S.17]{software-testing}
+Bleiben wir bei dem eben genannten Beispiel wäre ein Coveragekriterium hierbei, dass wir die Divison durch 0 auch noch überprüfen
+da diese speziell ausgeschlossen wird.
+Es gibt diverse Methoden wie ein Coveragekriterium entwickelt werden kann.
+Einige grundlegende Typen wären zum Beispiel Call-Coverage, Branch-Coverage, Boundary-Coverage oder Statement-Coverage.
+(Man könnte hier noch weiter darauf eingehen aber das wäre nur um mehr Text zu haben TODO)
 
 
 
