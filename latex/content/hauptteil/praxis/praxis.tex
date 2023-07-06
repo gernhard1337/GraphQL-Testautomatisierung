@@ -1,4 +1,105 @@
 \chapter{Praxis}
 
+Nach der Einführung der Methode im vorherigen Kapitel soll nun der entwickelte Prototyp umfassend erklärt werden.
+Der entwickelte Prototyp lässt sich unter \href{https://github.com/gernhard1337/graphql-primepath-tester} finden und testen.
+Eine erklärende Readme existiert im Root-Verzeichnis.
+Vorraussetzungen zum Ausführen der Anwendung ist Python und diverse Dritt-Bibliotheken die in der Readme vermerkt sind.
+
+\section{Toolauswahl}
+Um die vorgestellte Methode umzusetzen war insbesondere wichtig, dass eine einfache und mächtige Bibliothek für die Definition und Bearbeitung
+von Graphen zur Verfügung steht.
+Die erste Wahl fiel hierbei auf NetworkX, eine Graphenbibliothek in Python.
+Sie wurde ausgewählt da der Ersteller schon einige Erfahrungen mit dieser Bibliothek hat und somit eine effiziente Umsetzung möglich war.
+Dadurch, dass diese Bibliothek als Grundlage gewählt wurde hat sich die Programmiersprache Python schnell ergeben.
+Im folgenden werden einige weitere benutzte Bibliotheken kurz vorgestellt sodass der Applikationsstack übersichtlich wird.
+Wir werden auch auf NetworkX und seine Features eingehen.
+Es werden nicht alle Bibliotheken eine Berücksichtigung finden sondern nur diese, die einen signifikanten Einfluss auf das Programm haben und besonders herausstechen.
+
+\subsection{NetworkX}
+
+NetworkX ist eine Python-Biblitohek für \textit{Erstellung, Manipulation und Untersuchung der Struktur, Dynamik und Funktionen komplexer Netzwerke}~\cite[vgl. Startseite]{networkx}
+Mit einer Star-Anzahl von \textit{12.8k}\cite{networkxgithub} auf GitHub ist networkX eine sehr beliebte Bibliothek.
+NetworkX ist die ideale Wahl um Graphen zu erstellen für unseren Use-Case denn es nimmt jeden möglichen Datentypen als Wert für einen Knoten und Kante.
+Wir können also sehr simpel Graphen definieren.
+Für das simple Beispiel von Author, Book, Publisher und deren Verbindungen benötigen wir nur folgende Zeilen:
+
+\begin{lstlisting}[language=Python]
+    import networkx as nx
+
+    G = nx.Graph()
+    G.add_edge("Query", "Book", "book")
+    G.add_edge("Query", "Author", "author")
+    G.add_edge("Query", "Publisher", "publisher")
+
+    G.add_edge("Publisher", "Book", "book")
+    G.add_edge("Book", "Publisher", "publisher")
+
+    G.add_edge("Book", "Author", "author")
+    G.add_edge("Author", "Book", "book")
+\end{lstlisting}
+
+Diese wenigen Zeilen reichen aus um unseren Graphen mit allen Knoten und Kanten zu definieren.
+Wie zuvor eingeführt existiert auch das Kantengewicht, dass der Feldbezeichner eines Types ist.
+Auf diesem Graphen können wir dann diverse Algorithmen ablaufen lassen.
+Diverse Hilfsfunktionen helfen dabei eine effiziente Programmierung zu erlangen.
+Hierbei seien insbesondere folgende Hilfsfunktionen genannt:
+
+\subsubsection{draw}
+    \begin{lstlisting}[language=Python]
+        nx.draw(G, with_labels=True)
+    \end{lstlisting}
+
+Zeichnet einem den erstellten Graphen in ein beliebiges Format.
+So fällt es einfach große Graphen darzustellen.
+
+\subsubsection{shortest\_path}
+    \begin{lstlisting}[language=Python]
+        shortest_path = nx.shortest_path(G, Node1, Node5)
+    \end{lstlisting}
+
+Die Funktion $shortest\_path$ gibt eine Liste von Kanten zurück, die den kürzesten Weg zwischen zwei
+Knoten angibt.
+
+\subsubsection{neighbors}
+    \begin{lstlisting}[language=Python]
+        G.neighbors(Node)
+    \end{lstlisting}
+Diese Funktion liefert alle Nachbarn eines Knotens.
+In unserem Kontext eine sehr wichtige Funktion wie wir später noch sehen werden.
+
+\subsection{Faker}
+Die gewählte Datengenerierungsbibliothek ist \textit{Faker}\cite{fakergithub}.
+Mit \textit{16k}\cite{fakergithub} Sternen auf GitHub ist Faker eine noch beliebtere Bilbiothek als NetworkX.
+Faker ist eine Bilbiothek die es sehr einfach macht Daten zu generieren.
+Da wir im Kontext von GraphQL Argumenten nur sehr einfache Datentypen als Argumente benötigen reicht uns diese
+Bibliothek komplett aus da sie es schafft uns schnell und unkompliziert Daten in genau dem Format zu generieren wie wir sie brauchen.
+Angenommen wir benötigen einen String der 10 Zeichen lang ist, so reicht eine Zeile:
+
+\begin{lstlisting}[language=Python]
+        random_string = fake.pystr(min_chars=10, max_chars=10)
+\end{lstlisting}
+
+Selbiges falls wir eine Zufallszahl benötigen zwischen 1 bis 1000
+
+\begin{lstlisting}[language=Python]
+        random_number = fake.random_int(min=1, max=1000)
+\end{lstlisting}
+
+Diese Schema des Einzeilers zieht sich für alle simplen $SCALAR$ Types in GraphQL.
+Daher fällt die Wahl für die Datengenerierung auf diese Bibliothek.
+
+
+
+
+
+
+
+\subsection{PyTest}
+
+
+
 \section{Umsetzung der Methode}
+
+
+
 

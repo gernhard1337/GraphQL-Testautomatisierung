@@ -18,6 +18,7 @@
 \usepackage{lipsum}  % Platzhaltertext (kann entfernt werden)
 \usepackage[backend=bibtex,style=ieee]{biblatex}  % Moderne Literaturverwaltung
 \usepackage{tikz} % Graphen zeichnen
+
 \usetikzlibrary{positioning,shapes,shadows,arrows}
 
 % Einstellungen
@@ -82,6 +83,64 @@
         {\}}{{{\color{delim}{\}}}}}{1}
         {[}{{{\color{delim}{[}}}}{1}
         {]}{{{\color{delim}{]}}}}{1},
+}
+
+% GraphQL-Syntax-Hervorhebung
+\lstdefinelanguage{GraphQL}{
+    keywords={query, mutation, subscription, fragment, on, true, false, null},
+    sensitive=true,
+    comment=[l]{\#},
+    morecomment=[s]{/*}{*/},
+    string=[b]",
+    morestring=[b]',
+    literate=
+        {<=}{{$\leq$}}2
+        {>=}{{$\geq$}}2
+        {!=}{{$\neq$}}2
+        {==}{{$=$}}2
+        {&&}{{\&\&}}2
+        {||}{{$\mid\mid$}}2
+        {...}{{$\ldots$}}2
+%{_}{{$\lambda$}}1
+        {\\\\}{{\char`\\\char`\\}}1
+        {\\n}{{\char`\\n}}1
+        {\\t}{{\char`\\t}}1
+        {\\u2028}{{\char`\\u2028}}1
+        {\\u2029}{{\char`\\u2029}}1
+        {\\v}{{\char`\\v}}1
+        {\\b}{{\char`\\b}}1
+        {\\r}{{\char`\\r}}1
+        {\\f}{{\char`\\f}}1,
+}
+
+% Einstellungen für den Code-Stil
+\lstset{
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{orange},
+    numbers=left,
+    numberstyle=\scriptsize\color{gray},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    captionpos=b,
+}
+
+
+\lstdefinelanguage{Python}{
+    keywords={False, None, True, and, as, assert, break, class, continue, def, del, elif, else, except, finally, for, from, global, if, import, in, is, lambda, nonlocal, not, or, pass, raise, return, try, while, with, yield},
+    keywordstyle=\color{blue}\bfseries,
+    identifierstyle=\color{black},
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{orange},
+    morestring=[b]',
+    morestring=[b]",
+    morecomment=[s]{"""}{"""},
+    morecomment=[l]{\#},
+    morecomment=[s]{'''}{'''},
+    sensitive=true,
+    showstringspaces=false,
 }
 
 % Laden der Literaturdaten
