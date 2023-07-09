@@ -1,24 +1,24 @@
+type Query {
+    book(id: ID): Book
+    author(id: ID): Author
+    publisher(id: ID): Publisher
+}
+
 type Book {
-    id: Int
+    id: ID
     title: String
     author: Author
+    publisher: Publisher
 }
+
 type Author {
-    id: Int
+    id: ID
     name: String
     books: [Book]
 }
-type Query {
-    # test query
-    hello: String
-    # all books
+
+type Publisher {
+    id: ID
+    name: String
     books: [Book]
-    # all authors
-    authors: [Author]
-    # a single book from a author name
-    bookWrittenBy(name: String!): Book
-    # all books from a author
-    booksWrittenBy(name: String!): [Book]
-    # a author for a book title
-    writtenBy(title: String!): Author
 }
