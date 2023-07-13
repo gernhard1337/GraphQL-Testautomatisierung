@@ -1,0 +1,7 @@
+{
+  "name": "graphql-toy-js",
+  "version": "1.0.0",
+  "dependencies": {
+    "apollo-server": "^3.12.0"
+  }
+}
