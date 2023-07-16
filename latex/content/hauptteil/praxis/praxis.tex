@@ -1,4 +1,4 @@
-\chapter{Praxis}
+\chapter{Testautomatisierung}
 
 Nach der Einführung der Methode im vorherigen Kapitel soll nun der entwickelte Prototyp umfassend erklärt werden.
 Der entwickelte Prototyp lässt sich unter \href{https://github.com/gernhard1337/graphql-primepath-tester} finden und testen.
@@ -226,16 +226,54 @@ def is_prime_path(new_path, pathList):
     return True
 \end{lstlisting}
 
-
-
-
-
-% Das wird in der Implementierung teilweise schon anders gemacht und wird vielleicht nicht gebraucht.
-\subsection{Coveragepfade ermitteln (maybe remove - TODO)}
-
-
 \subsection{Querys aus Pfad ermitteln}
+
+Die entwickelten Pfade werden in diesem Schritt nun in Querys umgewandelt, sodass diese an die GraphQL-API
+gestellt werden können.
+Eine Query beginnt in GraphQL immer im Query-Knoten und so beginnen auch alle unseren ermittelten Pfade in diesem Knoten.
+Da wir uns bei der Argumentgenerierung stark an \textit{Property-based Testing}~\cite{property-based-testing} halten
+erstellen wir pro Pfad n Querys.
+Standardmäßig ist $n = 5$.
+Um Querys aus einem Pfad zu erstellen wurde der $querygenerator$ entwickelt.
+Der Querygenerator hat die Methode $pathToQuery$ welche den Pfad, ein Typedict und den Graphen erwartet.
+Das Typedict ist ein Python-Dict, dass alle Informationen über das Schema enthält.
+Die Funktion erstellt nun eine Query indem der angegebene abgelaufen wird.
+Diese Funktionalität setzt die rekursive Funktion $resolvePathTillOnlyScalarTypesOrEnd(path, typedict, graph, query="")$ um.
+Die Funktion arbeitet dabei so, dass sie für jeden Ausgangspunkt einer Kante alle $SCALAR$ Felder hinzufügt.
+So wird sichergestellt, dass alle einfachen Felder eines Objektes abgefragt werden.
+Es kann so validiert werden, dass das Objekt übereinstimmt mit der Schema-Definition.
+Sind alle $SCALAR$ Types hinzugefügt, so wird geprüft, welches Feld vom Type $OBJECT$ hinzugefügt werden muss um die Kante
+zum nächsten Knoten abzubilden.
+Sollte diese Kante Einträge im $args$ Feld besitzen, so werden die Argumente generiert.
+Da Argumente nur $SCALAR$ Types oder Aggregationen von $SCALAR$ Types sein können, benötigen wir Datengeneratoren für die Standarddatentypen.
+Hierbei kann es allerdings auch vorkommen, dass Argumente als Listen vorkommen.
+In allen Fällen sind die Argumente jedoch immer nur Varianten von Standarddatentypen.
+Die Auflösung der Argumente wird erledigt durch die Funktion $resolveArg$.
+Benötigt ein $OBJECT$ Feld nun Argumente, so werden diese der Query hinzugefügt.
+Anschließen wird die Kante aus der Liste des Pfades entfernt und die Funktion wieder rekursiv aufgerufen.
+Abbruchbedingung ist, dass der Pfad keine Kanten mehr besitzt.
+Wenn der Pfad keine Kanten mehr besitzt, so ist die entwickelte Query ein Test der den Pfad abdeckt.
+Es sei unbedingt angemerkt, dass durch die zufällige Argumentgenerierung keinesfalls garantiert ist, dass bei der
+Testausführung dann der volle Pfad getestet wird.
+Sollte zum Beispiel ein Pfad direkt am Anfang Argumente benötigen, diese aber jedoch zu keinen Daten des SUT passen, so ist es sehr
+wahrscheinlich, dass der Test erfolgreich sein wird, ohne dass der eben entwickelte Pfad wirklich komplett getestetet wird.
+
 \subsection{Test ausführen / Testfile generieren}
+
+In der Testausführung halten wir uns auch relativ nah an die vorgestellte Methode in \textit{Property-based Testing} \cite{property-based-testing}.
+Wir gehen hierbei davon aus, dass eine GraphQL-API die zu testen ist, genau so reagiert wie in $6.5$ vorgestellt.
+
+
+
+
+
+
+
+
+
+
+
+
 \subsection{Testauswertung}
 
 \newpage

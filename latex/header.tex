@@ -143,6 +143,31 @@
     showstringspaces=false,
 }
 
+
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{codered}{rgb}{0.64,0.08,0.08}
+
+\lstdefinelanguage{javascript}{
+    keywords={const, let, break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with, yield, import, export, async, await},
+    keywordstyle=\color{blue}\bfseries,
+    ndkeywords={class, enum, interface, extends, super, public, static, getter, setter},
+    ndkeywordstyle=\color{codered}\bfseries,
+    identifierstyle=\color{black},
+    sensitive=false,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    commentstyle=\color{codegreen}\ttfamily,
+    stringstyle=\color{codepurple}\ttfamily,
+    morestring=[b]',
+    morestring=[b]"
+}
+
+
+
+
 % Laden der Literaturdaten
 \addbibresource{quellen.bib}
 \newtheorem{definition}{Definition}

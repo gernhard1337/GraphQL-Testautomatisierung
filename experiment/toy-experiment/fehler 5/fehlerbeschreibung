@@ -1,0 +1,2 @@
+falscher Objekttyp zurückgegeben der nicht zum schema passt.
+return { ...db.projects.find(project => project.id === id), name: ["a", "b"] };

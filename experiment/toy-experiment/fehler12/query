@@ -1,0 +1,58 @@
+falscher datentyp, liste statt string
+return { ...db.users.find(user => user.id === project.owner), name: ["a", "b"] };
+
+
+
+{
+  userProjects(id: 100) {
+    name
+    owner {
+      id
+      name
+      age
+    }
+  }
+}
+
+
+
+
+{
+  "errors": [
+    {
+      "message": "String cannot represent value: [\"a\", \"b\"]",
+      "locations": [
+        {
+          "line": 6,
+          "column": 7
+        }
+      ],
+      "path": [
+        "userProjects",
+        0,
+        "owner",
+        "name"
+      ],
+      "extensions": {
+        "code": "INTERNAL_SERVER_ERROR",
+        "exception": {
+          "message": "String cannot represent value: [\"a\", \"b\"]",
+          "stacktrace": [
+            "GraphQLError: String cannot represent value: [\"a\", \"b\"]",
+            "    at GraphQLScalarType.serialize (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\type\\scalars.js:202:11)",
+            "    at completeLeafValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:749:39)",
+            "    at completeValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:630:12)",
+            "    at completeValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:595:23)",
+            "    at executeField (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:500:19)",
+            "    at executeFields (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:414:22)",
+            "    at completeObjectValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:925:10)",
+            "    at completeValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:646:12)",
+            "    at completeValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:595:23)",
+            "    at executeField (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:500:19)"
+          ]
+        }
+      }
+    }
+  ],
+  "data": null
+}

@@ -1,0 +1,3 @@
+index out of bounds für projekte
+
+return db.projects[parseInt(id)];

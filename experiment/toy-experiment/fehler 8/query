@@ -1,0 +1,57 @@
+falsches Feld für Auswertung
+ return db.projects.filter(project => user.projects.includes(project.name));
+
+
+
+{
+  userProjects(id: "1") {
+    name
+    owner {
+      id
+      name
+      age
+      projects {
+        name
+        description
+        id
+      }
+    }
+  }
+}
+
+
+{
+  "errors": [
+    {
+      "message": "Cannot read properties of undefined (reading 'projects')",
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+      ],
+      "path": [
+        "userProjects"
+      ],
+      "extensions": {
+        "code": "INTERNAL_SERVER_ERROR",
+        "exception": {
+          "stacktrace": [
+            "TypeError: Cannot read properties of undefined (reading 'projects')",
+            "    at C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\graphql-toy.js:90:55",
+            "    at Array.filter (<anonymous>)",
+            "    at Object.userProjects (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\graphql-toy.js:90:32)",
+            "    at field.resolve (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\apollo-server-core\\dist\\utils\\schemaInstrumentation.js:56:26)",
+            "    at executeField (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:492:20)",
+            "    at executeFields (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:414:22)",
+            "    at executeOperation (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:344:14)",
+            "    at execute (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:136:20)",
+            "    at execute (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\apollo-server-core\\dist\\requestPipeline.js:205:48)",
+            "    at processGraphQLRequest (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\apollo-server-core\\dist\\requestPipeline.js:148:34)"
+          ]
+        }
+      }
+    }
+  ],
+  "data": null
+}

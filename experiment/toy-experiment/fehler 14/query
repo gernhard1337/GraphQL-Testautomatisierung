@@ -1,0 +1,60 @@
+Falsches Feld zum filtern
+
+liefert leeren Wert -> erlaubt laut Schema, kein Fehler entdeckt
+
+
+
+{
+  userProjects(id: 100) {
+    name
+    owner {
+      id
+      name
+      age
+      projects {
+        members {
+          id
+          name
+          age
+        }
+      }
+    }
+  }
+}
+
+
+{
+  "data": {
+    "userProjects": [
+      {
+        "name": "Project 1",
+        "owner": {
+          "id": "100",
+          "name": "Burt",
+          "age": 23,
+          "projects": [
+            {
+              "members": []
+            },
+            {
+              "members": []
+            }
+          ]
+        }
+      },
+      {
+        "name": "Project 2",
+        "owner": {
+          "id": "200",
+          "name": "Earnie",
+          "age": 32,
+          "projects": [
+            {
+              "members": []
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

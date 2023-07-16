@@ -1,0 +1,39 @@
+return db.users.filter(user => project.members.includes());
+
+fehler nicht gefunden -> Schema erlaubt das ja aber daten sind falsch
+
+{
+  "data": {
+    "userProjects": [
+      {
+        "name": "Project 1",
+        "owner": {
+          "id": "100",
+          "name": "Burt",
+          "age": 23,
+          "projects": [
+            {
+              "members": []
+            },
+            {
+              "members": []
+            }
+          ]
+        }
+      },
+      {
+        "name": "Project 2",
+        "owner": {
+          "id": "200",
+          "name": "Earnie",
+          "age": 32,
+          "projects": [
+            {
+              "members": []
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

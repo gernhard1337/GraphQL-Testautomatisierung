@@ -1,0 +1,4 @@
+Falsche Syntax in einem Resolver
+return db.projects.find(project => project.id ===);
+
+jede Query mit Argument ID löst Fehler aus.

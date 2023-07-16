@@ -1,0 +1,52 @@
+falsches feld -> resultiert in null für NonNull Wert
+
+
+{
+  userProjects(id: 100) {
+    name
+    owner {
+      id
+      name
+      age
+    }
+  }
+}
+
+
+{
+  "errors": [
+    {
+      "message": "Cannot return null for non-nullable field Project.owner.",
+      "locations": [
+        {
+          "line": 4,
+          "column": 5
+        }
+      ],
+      "path": [
+        "userProjects",
+        0,
+        "owner"
+      ],
+      "extensions": {
+        "code": "INTERNAL_SERVER_ERROR",
+        "exception": {
+          "stacktrace": [
+            "Error: Cannot return null for non-nullable field Project.owner.",
+            "    at completeValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:605:13)",
+            "    at executeField (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:500:19)",
+            "    at executeFields (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:414:22)",
+            "    at completeObjectValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:925:10)",
+            "    at completeValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:646:12)",
+            "    at completeValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:595:23)",
+            "    at C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:707:25",
+            "    at Function.from (<anonymous>)",
+            "    at completeListValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:687:34)",
+            "    at completeValue (C:\\Users\\Tom\\IdeaProjects\\GraphQL-Testautomatisierung\\src\\graphql-toy-js\\node_modules\\graphql\\execution\\execute.js:618:12)"
+          ]
+        }
+      }
+    }
+  ],
+  "data": null
+}

@@ -1,0 +1,3 @@
+return db.projects[parseInt(id)];
+
+-> Fehler wenn ein String der keine Zahl ist eingegeben wird.

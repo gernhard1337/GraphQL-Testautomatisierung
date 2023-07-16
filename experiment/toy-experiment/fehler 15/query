@@ -1,0 +1,52 @@
+falsches field für query
+return db.projects.filter(project => user.projects.includes(project.name));
+
+erlaubt laut schema daher kein fehler.
+Schema nachbesserung würde hier stark helfen
+
+
+
+
+{
+  userProjects(id: 100) {
+    name
+    owner {
+      id
+      name
+      age
+      projects {
+        members {
+          id
+          name
+          age
+        }
+      }
+    }
+  }
+}
+
+
+{
+  "data": {
+    "userProjects": [
+      {
+        "name": "Project 1",
+        "owner": {
+          "id": "100",
+          "name": "Burt",
+          "age": 23,
+          "projects": []
+        }
+      },
+      {
+        "name": "Project 2",
+        "owner": {
+          "id": "200",
+          "name": "Earnie",
+          "age": 32,
+          "projects": []
+        }
+      }
+    ]
+  }
+}

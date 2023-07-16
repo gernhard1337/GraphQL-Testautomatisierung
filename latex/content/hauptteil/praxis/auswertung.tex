@@ -119,4 +119,130 @@ Eine beispielhafte Anpassung wäre hier nun, dass wir den Generator für den Typ
 in einem gewissen Bereich der durch das SUT abgebildet wird.
 
 
+\section{Fehlerfindungskapazitäten}
+
+Zuerst wollen wir die Fehlerfindungskapazitäten des Testtool auf die Probe stellen.
+Hierfür nutzen wir die beiden, zuvor benannten, Testsyteme GraphQL-Toy (eine experimentelle GraphQL-Implementierung) und GitLab in der Version 12.6.3.
+Ziel ist es mindestens die Fehler zu finden die vom \textit{Property-based Testtool}\cite{property-based-testing} gefunden wurden.
+Idealerweise wollen wir jedoch sogar mehr Fehler finden.
+
+\subsection{GraphQL-Toy}
+
+Das Testssystem GraphQL-Toy hat ein sehr simples Schema in dem nur drei $OBJECT$ Typen exisitieren.
+Diese sind $Query$, $Project$ und $User$. 
+Das Schema hat folgende Struktur: \\
+\begin{center}
+    \includegraphics{img/graphqltoy}
+\end{center}
+
+Entwickelt wurde dieses System mit dem Hintergrund, dass bekannte Bugs im Code eingebracht werden und überprüft werden kann ob das Testtool diese findet.
+Insgesamt wurden 15 verschiedene Buggs vorgestellt welche in verschiedene Kategorien fallen wie Syntaxfehler, falsche Rückgabedaten, falsche Datenstrukturen etc.
+Einige der Bugs werden im folgenden kurz vorgestellt.
+Eine Liste aller eingebauten Bugs lässt sich im Appendix unter \textit{GraphQL-Toy Implementation mit Bugs}~\ref{graphql-toy-code} finden.
+
+\subsubsection{Bug 1 - SyntaxFehler}
+
+Einfache Syntaxfehler wurden an verschiedenen Stellen eingebaut.
+Dies bedeutet, dass jeder Funktionsaufruf dieser Funktion garantiert scheitern wird.
+Somit kann jede Request diesen Fehlerfall entdecken, solange die Request auch das Feld hinter der Funktion mit dem Syntaxfehler abfragt.
+Ein einfacher Syntaxfehler wäre zum Beispiel folgender Code: \\
+
+\begin{lstlisting}[language=javascript]
+    const resolvers = {
+        Query: {
+            project: (_, {id}, context, info) => {
+                // Example bug 1 - Syntax mistake
+                return db.projects.find(project => project.id ===);
+            }
+        }
+    }
+\end{lstlisting}
+
+Hierbei fehlt der Wert mit dem die $project.id$ verglichen werden soll.
+Ein jeder Aufruf dieser Funktion mit egal welcher $ID$ führt zu einem Fehler.
+
+\subsubsection{Bug 2 - Falscher Objekttyp}
+
+Objektfehler sind ein wenig unoffensichtlichere Fehler.
+Hierbei gibt der Code ein Objekt zurück, dass nicht der definierten Struktur im Schema entspricht.
+GraphQL wird hierfür dann einen Fehler erzeugen da die Daten eben nicht zum Schema passen.
+
+\begin{lstlisting}[language=javascript]
+    const resolvers = {
+        Query: {
+            project: (_, {id}, context, info) => {
+                // Example bug 5 - wrong type "error"
+                return { ...db.projects.find(project => project.id === id), name: ["a", "b"] };
+            }
+        }
+    }
+\end{lstlisting}
+
+Um diesen Fehler ausführen zu können ist es wichtig, dass das Feld auch abgefragt wird.
+Sollte das Feld ein Argument benötigen, so muss dieses passen, sodass auch wirklich ein Objekt abgefragt wird und dann der falsche Type zrückgegeben wird.
+
+\subsubsection{Bug 3 - Typfehler in der Eingabe}
+
+Felder wie $ID$ sind im GraphQL-Standard als einzigartige Strings definiert.
+Im allgemeinen wird der $ID$ Type jedoch von diversen Entwicklern als Zahlenstring genutzt.
+Eine Funktion wandelt diesen String dann in eine Zahl um die z.B. genutzt wird um einen bestimmten Eintrag eines Arrays zu bekommen.
+Inputvalidierung ist also von Nöten.
+
+\begin{lstlisting}[language=javascript]
+    const resolvers = {
+        Query: {
+            project: (_, {id}, context, info) => {
+                // Example bug 3 - Input type validation bug
+                return db.projects[id];
+            }
+        }
+    }
+\end{lstlisting}
+
+Es ist hier möglich, ohne jegliche Prüfung einen Key anzugeben.
+Ist ein Resolver wie heir implementiert so ist es erlaubt in der Query jeglichen String anzugeben.
+Es fällt also sehr leicht, dass z.B. ein IndexOutOfBound Fehler auftreten kann.
+\\
+\\
+\\
+\\
+
+Mit dem Testtool nach~\cite[Property-based Testing]{property-based-testing} konnten 73\% der Fehler, also 11 der 15 Fehler gefunden  werden.
+Unser entwickeltes Testtool schaffte auf der selben API auch eine Entdeckung von 11 Fehlern.
+Wir konnten also dieselbe Abdeckung erreichen wie das Property-based Tool.
+Bemerkenswert hierbei ist allerdings, dass das Property-based Tool hierfür wesentlich mehr Queries benötigte, um eine zufriedenstellende
+Coverage zu erreichen.
+Das Property-based Tool benötigte 30 Durchläufe, die jeweils bis zu 100\% Edge-Coverage liefen um alle Fehler zu finden.
+Im Kontrast dazu konnte unsere hier entwickelte Methode mithilfe von nur 2 PrimePfaden eine PrimePath Coverage erreichen.
+Hierzu wurden für jeden Pfad 5 Testquerys entwickelt.
+Es war somit möglich, alle 11 Fehler mit nur 10 Querys zu finden. Mehr noch, im allgemeinen haben, durch die spezielle Struktur des SUT's
+rein theoretisch nur 2 Querys ausgereicht, welche gut geeignet Argumente aufwiesen.
+Eine Query ist gut geeignet wenn gilt, dass die erwartete Pfadlänge = wirkliche Pfadlänge.
+Das Testtool fand diese beiden Querys hierfür: \\
+
+\begin{lstlisting}[language=GraphQL]
+    { project(id: "2", ) {  id  name  description   owner {  id  name  age   }  }  }
+\end{lstlisting}
+
+\begin{lstlisting}[language=GraphQL]
+    { userProjects(id: "1") { name owner { id name age projects { name description id } } } }
+\end{lstlisting}
+
+Mithilfe dieser beiden Querys konnte jeder der 11 entdeckten Fehler gefunden werden.
+Dies liegt auch daran, dass der Argumentgenerator entsprechend angepasst wurde und nur valide IDs produziert hat.
+So war es sehr wahrscheinlich, dass eine ID die Generiert wird mindestens in einer der 5 erstellten Querys zur unterliegenden Datenstruktur gepasst hat
+und wir somit die eine tatsächliche Testausführung haben und nicht nur einen initialen $null$ Wert der die Query sofort erfolgreich sein lässt.
+Die 4 nicht gefundenen Fehler sind die selben Fehler wie diese, die \textit{Property-based Testing} \cite[vgl. RQ.2]{property-based-testing} nicht finden konnte.
+Dies sind die Felder, in denen ein falscher Wert eines Objektes genutzt wurde um ein anderes Objekt zu erlangen.
+Hierbei verhindert der Black-Box Ansatz, dass der Fehler gefunden wird.
+Hierzu jedoch später mehr.
+
+\subsection{GitLab}
+
+
+
+
+
+\section{Schema-Abdeckung}
+
 

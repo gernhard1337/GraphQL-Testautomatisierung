@@ -1,4 +1,4 @@
-const {ApolloServer, gql} = require('apollo-server');
+const {ApolloServer, gql, ApolloError} = require('apollo-server');
 
 const typeDefs = gql`
     type User {
@@ -58,6 +58,7 @@ const db = {
 const resolvers = {
     Query: {
         project: (_, {id}, context, info) => {
+
             // Example bug 1 - Syntax mistake
             // return db.projects.find(project => project.id ===);
 
@@ -65,7 +66,7 @@ const resolvers = {
             // return db.projects[parseInt(id)];
 
             // Example bug 3 - Input type validation bug
-            // return db.projects[id];
+            //return db.projects[id];
 
             // Example bug 4 - Using the wrong field
             // return db.projects.find(project => project.name === id);
@@ -129,7 +130,7 @@ const resolvers = {
             // return db.projects.filter(project => user.projects.includes());
 
             // Example bug 2 - Using the wrong field
-            // return db.projects.filter(project => user.projects.includes(project.name));
+            return db.projects.filter(project => user.projects.includes(project.name));
 
             // Example bug 3 - wrong type "errors"
             // return db.projects.filter(project => user.projects.includes);
