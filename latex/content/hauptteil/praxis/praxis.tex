@@ -262,19 +262,104 @@ wahrscheinlich, dass der Test erfolgreich sein wird, ohne dass der eben entwicke
 
 In der Testausführung halten wir uns auch relativ nah an die vorgestellte Methode in \textit{Property-based Testing} \cite{property-based-testing}.
 Wir gehen hierbei davon aus, dass eine GraphQL-API die zu testen ist, genau so reagiert wie in $6.5$ vorgestellt.
+Dies bedeutet, dass wir mittels HTTP-POST unsere generierte Query an die zu testende API senden und die Antwort
+im nächsten Schritt untersuchen.
+Eine exakte Umsetzung hierfür existieren in zwei verschiedenen Versionen.
+Einerseits werden on-the-fly die Tests im Programmdurchlauf ausgeführt.
 
+\begin{lstlisting}[language=Python]
+    queryResults = []
+    for testQuery in primePathQueries:
+        r = requests.post(testUrl, json={'query': testQuery})
+        response_as_dict = json.loads(r.text)
+        queryResults.append([testQuery, r, measurement])
+\end{lstlisting}
 
+Andererseits werden die Querys auch in einer $test_graphQL.py$ abgespeichert indem
+wir aus der Query einen Test in $PyTest$ generieren.
 
+\begin{lstlisting}[language=Python]
+for testQuery in primePathQueries:
+    f.write(pytestgenerator.generateTestFromQuery(testQuery, testUrl))
+\end{lstlisting}
 
+Der Test ist so definiert, dass er im Endeffekt auch ein HTTP-POST ausführt und direkt die Testauswertung enthält.
+Zur Testauswertung jedoch im folgenden mehr.
 
-
-
-
-
-
-
+\begin{lstlisting}[language=Python]
+def generateTestFromQuery(testQuery, url):
+    testQueryAsValidString = testQuery.replace('"', '\\"')
+    testString = "def testQuery" + str(uuid.uuid4()).replace('-', '') + "(caplog):" + "\n"
+    testString = testString + "    caplog.set_level(logging.WARNING)" + "\n"
+    testString = testString + "    response = requests.post(\"" + url + "\"," "json={\'query\':\"" + testQueryAsValidString + "\"})" + "\n"
+    testString = testString + "    response_as_dict = json.loads(response.text)"  + "\n"
+    testString = testString + "    measurement = queries.compareQueryResults(response_as_dict, " + "\"" + testQueryAsValidString + "\"" + ")" + "\n"
+    testString = testString + "    if measurement[\"expectedPathLength\"] > measurement[\"pathLengthFromResult\"]:" + "\n"
+    testString = testString + "        logging.warning(\" Test hat nicht 100% Abdeckung \")" + "\n"
+    testString = testString + "    assert response.status_code == 200" + "\n"
+    testString = testString + "\n" + "\n"
+    return testString
+\end{lstlisting}
 
 \subsection{Testauswertung}
+
+Die Testauswertung erfolgt in zweierlei Maß.
+Einerseits werden Tests ad-hoc ausgeführt und ausgeführt andererseits wird ein Datei mit PyTests generiert.
+Diese dient insbesondere dafür, dass etwaiige fehlerhafte Tests zu einem späteren Zeitpunkt mittels PyTest noch einmal ausgeführt werden können.
+Für die Auswertung der Tests halten wir uns in beiden Beispielen an die HTTP-Statuscodes der Antwort sowie an die zuvor vorgestellte Messmethode
+der Pfadlängen.
+
+\subsubsection{Ad-Hoc Tests}
+
+Die Ad-Hoc Testausführung erfolgt durch ein simples HTTP-POST and das SUT.
+Zuerst sammeln wir dann alle Ergebnisse der Tests und werten sie zu einem späteren Zeitpunkt genauer aus.
+
+\begin{lstlisting}[language=Python]
+queryResults = []
+for testQuery in primePathQueries:
+    r = requests.post(testUrl, json={'query': testQuery})
+    response_as_dict = json.loads(r.text)
+    measurement = queries.compareQueryResults(response_as_dict, testQuery)
+    queryResults.append([testQuery, r, measurement])
+\end{lstlisting}
+
+Wir berechnen in Place dann die Pfadlängen von Response und Erwartung.
+Alles wird dann in einer Liste mit den QueryResults gespeichert.
+In der späteren Auswertung sortieren wir die Tests dann in 4 verschiedene Kategorien.
+
+\begin{lstlisting}[language=Python]
+for queryResult in queryResults:
+    testCount = testCount + 1
+    if any(substring in queryResult[1].text for substring in ["GRAPHQL_PARSE_FAILED", "GRAPHQL_VALIDATION_FAILED"]):
+    own_failure = own_failure + 1
+    elif "INTERNAL_SERVER_ERROR" in queryResult[1].text or "error" in queryResult[1].text:
+    print(queryResult[1].text)
+    server_failures = server_failures + 1
+    elif "data" in queryResult[1].text and queryResult[2]["expectedPathLength"] > queryResult[2]["pathLengthFromResult"]:
+    successfull = successfull + 1
+    elif "data" in queryResult[1].text and queryResult[2]["expectedPathLength"] == queryResult[2]["pathLengthFromResult"]:
+    perfect = perfect + 1
+\end{lstlisting}
+
+Die Kategoriesierungen sind $Good\_Test$, $Perfect\_Test$, $malformed\_Test$ und $confirmed\_failed\_Test$
+Ein Good\_Test ist ein Test, der keinen fehler erzeugt hat allerdings die Pfadlänge von Erwartung != Response.
+Perfect\_Tests sind Tests, die keinen Fehler erzeugen und Pfadlänge Erwartung = Response.
+Malformed\_Tests sind Tests, die fehlerhaft sind aber allerdings aufgrund von Generierungsfehler unsererseits.
+Dies sind also Tests die vernachlässigt werden müssen als False-Negatives.
+Confirmed\_Failed\_Tests sind Tests bei denen wir tatsächlich einen Fehler bekommen.
+Die Fehlerhaften Tests werden dann im folgenden Ausgegeben mit der konkreten Fehlerbeschreibung, sodass eine
+Fehleranalyse möglich wird.
+
+
+\subsubsection{PyTest Tests}
+
+Die erstellten Tests werden, wie in 7.2.4 vorgestellt, in einer Datei Namens $test\_GraphQL.py$ abgespeichert.
+Wenn PyTests installiert ist so lassen sich diese alle ausführen mit dem Befehl $pytest$.
+Diese Datei dient insbesondere zur Validierung von Codeänderungen.
+Man stelle sich vor, dass die fehlerhaften Code-Teile ausgebessert wurden.
+Da wir nun mit Random-Argumenten arbeiten können wir jedoch nicht garantieren, dass die selben Tests generiert werden.
+Daher speichern wir sie in der Datei ab um sie später noch einmal nutzen zu können und zu validieren, dass etwaiige Fehlerbehebungen wirksam waren und
+der spezielle Test nicht mehr scheitert.
 
 \newpage
 \section{Zusammenfassung der Implementation}
@@ -285,7 +370,11 @@ Die entwickelte Methode lässt sich in folgendem Sequenzdiagramm gut abbilden:
     \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/sequenz}
 \end{center}
 
-
-
-
-
+Durch die Generierung der Tests auf zwei Arten erreichen wir, dass einerseits die Tests direkt ausgeführt werden, sodass das
+Tool direkt Feedback zurückgibt. Andererseits verbessern wir die Überprüfbarkeit indem eine Pytest-File generiert wird die sicherstellt,
+dass die Tests erneut ausgeführt werden können.
+Limitierungen der Methode liegen insbesondere in den Argumentgeneratoren.
+Diese haben teilweise eine sehr schlechte Generierungskapazität im allgemeinen.
+Dies liegt daran, dass wir den BlackBox-Testing Ansatz verfolgen und wir somit kein Domänenwissen über die zugrunde liegenden Daten besitzen.
+Insgesamt lässt sich sagen, dass die Methode gut funktioniert und fähig ist, fehler zu finden in GraphQL-APIs.
+Hierzu jedoch im folgenden, insbesondere bei den Experimenten, mehr.

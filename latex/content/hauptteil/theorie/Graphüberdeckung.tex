@@ -215,14 +215,183 @@ Die Complete-Path Coverage ist sinnvoll wenn wir Kreise verbieten und der Testgr
 Um unsere Methode jedoch von \cite[Property-based Testing]{property-based-testing} abzugrenzen wollen wir explizit Kreise erlauben.
 Ja sogar fördern um zu symbolisieren warum unsere Methode eine Verbesserung darstellt.
 
-
 \subsection{abschließender Vergleich der Coverage-Kriterien}
 
+Wir haben nun verschiedene Coverage-Kriterien kennengelernt und teilweise schon Probleme benannt die einzelne
+Kriterien haben.
+Im Sinne einer zufriedenstellenden Testung eines Systems wollen wir nun die einzelnen Kriterien noch einmal
+zentral gegenüber stellen und sehen, welche Kriterien sich eignen würden für unseren, zu entwickelnden Prototypen.
+Unser Vergleich wird 4 verschiedene Kriterien beachten, diese sind Granularität, Redundanz, Abdeckungspotential und Komplexität beziehungsweise Effizienz.
+Obwohl alle Überdeckungskriterien einen einzigartigen Blick auf den Graphen bieten, so lässt sich feststellen, dass
+einige Überdeckungskriterien geeigneter sind als andere.
+
+\begin{description}
+    \item[Granularität] Dieses Kriterium setzt seinen Fokus darauf, welche Teile des Graphens im Überdeckungskriterium Anwendung finden.
+    Hierbei schauen wir insbesondere darauf, wie die Struktur des Graphens überdeckt wird.
+
+    \item[Redundanz] Damit wir nicht immer wieder die selben Tests ausführen vergleichen wir, wie stark die Redundanz innerhalb
+    des Überdeckungskriteriums ist. Wir wollen möglichst effizient testen da der Testprozess bei großen Systemen
+    durchaus einige Zeit in Anspruch nehmen kann.
+    \item[Abdeckungspotential] Wir untersuchen hier, wie stark das Potential des Kriteriums ist Tests zu generieren, die verlässlich Fehler finden.
+    Hierbei ist vor allem wichtig, wie die Pfade strukturell aufgebaut sein werden die das Überdeckungskriterium erfüllen.
+
+    \item[Komplexität / Effizienz] Mit der Komplexität und Effizienz wird untersucht, wie viele Pfade generiert werden und wie gut der mögliche Testraum durch diese
+    abgebildet werden kann.
+\end{description}
+
+\newcolumntype{C}{>{\Centering\arraybackslash}X}
+\begin{center}
+    \begin{table}[!ht]
+        \begin{tabularx}{\textwidth}{|c|c|c|c|c|}
+            \hline
+            \textbf{Kriterium} & \textbf{Granularität} & \textbf{Redundanz} & \textbf{Abdeckungstiefe} & \textbf{Komplexität, Effizienz}\\
+            \hline
+            \textbf{Node} & Knoten & Keine & Oberflächlich & Niedrigste, schnellste\\
+            \hline
+            \textbf{Edge} & Kanten & Minimal & Ein bisschen tiefer & Mittlere, effizient\\
+            \hline
+            \textbf{Edge-Pair} & Kantenpaare & Überlappung & Tiefer & Erhöhte, effizient\\
+            \hline
+            \textbf{SimplePath} & Pfade ohne Wiederholungen & Keine & Ziemlich tief & Hohe, langsam\\
+            \hline
+            \textbf{PrimePath} & Hauptpfade & Kann enthalten & Tief & Sehr hoch, langsam\\
+            \hline
+            \textbf{CompletePath} & Alle möglichen Pfade & Höchste & Am tiefsten & Extrem hoch, sehr langsam\\
+            \hline
+        \end{tabularx}
+        \caption{Vergleich der Graphabdeckungskriterien}
+    \end{table}
+\end{center}
 
 \section{Graphcoverage für Code}
 
+Im Kontext der Testentwicklung erlaubt die Graphcoverage es uns, einen systematischen Ansatz zur Testgenerierung zu verfolgen.
+Beziehen wir die Graphcoverage auf die Generierung von Tests für Code so müssen wir uns zuerst fragen, wie wir Code
+als Graphen darstellen können.
+Da dieser Abschnitt eher der generellen Einordnung dient, werden wir uns an dieser Stelle kurz halten.
+Im Allgemeinen muss der Code zuerst in einen Kontrollflussgraphen überführt werden. (Quelle)
+Ein Kontrollflussgraph ist ein gerichteter Graph mit, wie in 4.1 auch definiert, einer Menge Knoten, Anfangskonten und Endknoten sowie Kanten.
+Wer mehr über die Umwandlung von Code in Kontrollflussgraphen lernen will, sei an \cite[Kapitel 2.]{software-testing} verwiesen.
+
+
+\begin{minipage}{.5\linewidth}
+    \begin{lstlisting}
+function example(x, y) {
+    if (x > 10) {
+        if(x > 100){
+            return x;
+        }
+        example(x - 5, y);
+    } else {
+        if (y < 5) {
+            return y;
+        }
+        return x;
+    }
+}
+    \end{lstlisting}
+
+\end{minipage}%
+\begin{minipage}{.5\linewidth}
+    \begin{center}
+        \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/cfg}
+    \end{center}
+\end{minipage}
+
+Der Code der Funktion $example$ sei nun zu testen.
+Mithilfe der zuvor definierten Coveragekriterien können wir Pfade nun Pfade ermitteln und aus diesen Pfaden tests generieren.
+Nehme wir zum Beispiel die Node-Coverage.
+So müssen wir Pfade finden, sodass jeder Knoten mindestens einmal in einem Test vorkommt.
+Mit NodeCoverage sind die Pfade $(N_0, N_2, N_3, N_1, N_5)$ und $(N_0, N_1, N_4)$ ausreichend.
+Jeder Knoten wird durch einen Pfad repräsentiert.
+Erreicht werden können diese Pfade durch die Variablenauswahl x = 15, y = 10 für Pfad 1 und x = 5, y = 10 für Pfad 2.
+Somit haben wir die Tests example(15,10) und example(5,10) welche NodeCoverage erfüllen.
+Wir sehen auf anhieb, dass die Node-Coverage nicht ausreichend ist um Code gut zu testen.
+Es ist wünschenswert, dass jede Zeile Code im Testprozess mindestens einmal ausgeführt wird (Quelle TODO).
+Wir sehen aber, dass z.B. Zeile 4 nie ausgeführt wird durch unsere Tests.
+Da die Tests jedoch die Node-Coverage erfüllen müssen wir schlussfolgern, dass die Node-Coverage nicht ausreichend ist.
+Somit muss ein stärkeres Coverage-Kriterium her um Code ideal zu testen.
+Der interessierte Leser sei an dieser Stelle an \textit{Introduction to Software Testing Kapitel 2.3.1} \cite{software-testing} verwiesen.
+Wir wollten hier lediglich zeigen, dass Überdeckungskriterien speziell für den Anwendungsfall auszuwählen sind.
+
 \section{Graphcoverage für GraphQL}
 
+Wie wir zuvor, in $3.3$ feststellen konnten, lässt sich GraphQL in einen Graphen übersetzen.
+Aus dieser Tatsache folgt, dass wir Coveragekriterien auf diesem Graphen nutzen können.
+Im Unterschied zum Code ist die Zugrundeliegende Struktur direkt ein Graph und wir müssen keine großen Umwandlungen vornehmen.
+Alle Informationen über den Graphen sind in seinem Schema kodiert.
+Die zu ermittelnden Pfade ergeben damit auch direkt unsere Tests.
+Im folgenden wollen wir untersuchen, welches Coveragekriterium denn am geeignetsten wäre um es
+für Testgenerierung zu nutzen.
+Wir betrachten zuerst jedes Coveragekriterium für sich, betrachten seine Fähigkeiten aber auch Limitierungen.
+Abschließend ziehen wir ein Fazit, welches Coveragekriterium sich in unserem Kontext am ehesten eignen würde für
+eine Testgenerierung.
+Wir starten vom grobgranularsten Kriterium und verfeinern die Granularität immer weiter.
 
+\subsection{Node-Coverage für GraphQL}
 
+Die Node-Coverage zielt darauf ab, dass jeder Knoten in mindestens einem Test Berücksichtigung findet.
+In GraphQL sind Knoten als Type definiert.
+Jeder Type definiert seine eigenen Resolver wobei dies im Endeffekt Funktionen sind die es zu Testen gilt.
+Nutzen wir nun Node-Coverage, so ignorieren wir unsere Maxime, dass wir möglichst alle Funktionen wenigstens einmal aufrufen wollen.
+So kann ein Type mehrere Felder definieren, ist dieser Type aber in einem Pfad nur einmal mit einer Funktion vertreten, so gilt er als ausreichend abgedeckt.
+Dadurch, dass die Kanten also eben so wichtig sind, ist Node-Coverage ein ungeeignetes Coveragekriterium für GraphQL Testgenerierung.
 
+\subsection{Edge-Coverage für GraphQL}
+
+Zuvor wurde deutlich, dass die Abdeckung aller Kanten essentiell ist um GraphQL gut zu testen.
+Mit der Edge-Coverage zielen wir genau darauf ab, dass jede Kante mit mindestens einem Test abgedeckt wird.
+Im Sinne unserer Maxime, dass jede Funktion zumindest einmal ausgeführt werden sollte, haben wir hier ein geeigneteres
+Kriterium gefunden.
+Die Edge-Coverage findet auch Anwendung in \textit{Propert-based Testing}\cite[vgl. D-RQ1 ]{property-based-testing}
+Hierbei muss gesagt werden, dass Edge-Coverage durchaus unseren Zweck erfüllt, dass jede Funktion einmal ausgeführt wird.
+Jedoch bezieht unser Kontext sich insbesondere auf das Integrationstesten.
+Wir wollen sicherstellen, dass die Funktionen miteinander ideal funktionieren.
+So ergibt sich, dass Edge-Coverage eine nicht zufriedenstellende Komplexität liefert da nur beachtet wird, dass alle Kanten einmal getest werden.
+Es wird nicht beachtet, dass auch die Hintereinanderreihung der Kanten funktionieren muss, da in GraphQL eine Funktion tiefer in der Query immer auf die
+Ergebnisse einer Funktion höher in der Query zurückgreift.
+Um zu validieren, dass diese Zusammenarbeit klappt, brauchen wir noch speziellere Überdeckungskriterien.
+
+\subsection{Edge-Pair-Coverage für GraphQL}
+
+In der Edge-Pair Coverage betrachten wir alle Kantenpaare.
+Dadurch erlangen wir eine bessere Abdeckung der Funktionen indem sichergestellt wird, dass jede Kante mit jeder darauffolgenden Kante einmal ausgeführt wird.
+Dieses Kriterium stellt eine Verbesserung der Edge-Coverage dar, allerdings werden eben nur aufeinanderfolgende Kantenpaare abgedeckt.
+GraphQL kann aber wesentliche tiefere und komplexere Strukturen abbilden.
+Somit ergibt sich, dass die Abdeckung mit Edge-Pair noch nicht ausreichend ist da insbesondere stark verschachtelte Anfragen
+hier nicht als Test generiert werden obwohl diese wahrscheinlich besonders interessant für Tests sind.
+
+\subsection{SimplePath-Coverage für GraphQL}
+
+SimplePath berücksichtigt alle Pfadkombinationen im Schema die keine Wiederholungen enthalten.
+Mit diesem Coveragekriterium haben wir ein Kriterium gefunden, dass zumindest die einfachen Pfade, ohne Kreise gut abdeckt.
+Wir können theoretisch also folgern, dass dieses Kriterium gut geeignet wäre.
+Praktisch angewandt zeigt sich jedoch schnell, dass dieses Kriterium sehr viele redundante Tests erzeugt.
+Was per-se nicht schlecht ist jedoch keinen großen Informationsgewinn bringt.
+
+\subsection{Prime-Path Coverage für GraphQL}
+
+Mit der PrimePath Coverage elimieren wir die Redundanz aus der SimplePath Coverage und stellen sicher, dass
+vor allem sehr relevante Pfade gefunden werden die wir zur Testabdeckung nutzen.
+Wir erhöhen so die Effizienz der Tests indem wir unrelevante Tests filtern und dennoch eine zufriedenstellende Abdeckung beibehalten.
+
+\subsection{Complete-Path Coverage für GraphQL}
+
+Mit der Complete-Path Coverage haben wir als Ziel, dass wir alle Pfade, die möglich sind, auch generieren und in unseren
+Tests berücksichtigen.
+Da GraphQL jedoch Zyklen erlaubt ist die Anzahl an potentiellen Pfaden unendlich.
+Hierdurch folgt, dass auch der Testraum unendlich werden würde mit der Complete-Path Coverage.
+Somit ist Complete-Path Coverage nicht umsetztbar da wir im Allgemeinen nicht ausschließen können und wollen, dass GraphQL
+keine Zyklen haben kann.
+Dies wäre ein zu großer Einschnitt in GraphQL die von einem Testtool nicht erwartet werden sollte.
+
+\subsection{Fazit}
+
+Die beiden geeignetsten Coveragekriterien sind SimplePath-Coverage und PrimePath Coverage wobei PrimePath Coverage hierbei
+als Verfeinerung bzw. Einschränkung von SimplePath gesehen werden kann.
+Da jeder PrimePath auch ein SimplePath ist.
+Es hängt nun vom SUT ab welches Kriterium zu nutzen ist.
+Im Allgemeinen lässt sich sagen, dass wir SimplePath-Coverage nutzen sollten für kleinere, einfachere Schemas da
+wir somit eine gute Testabdeckung erreichen und die Offside der großen Redundanz noch nicht so schnell zu tragen kommt.
+Sollte das Schema nun stark wachsen und insbesondere viele Zyklen aufweisen, so empfiehlt sich die PrimePath Coverage da
+sie viel Redundanz entfernt.

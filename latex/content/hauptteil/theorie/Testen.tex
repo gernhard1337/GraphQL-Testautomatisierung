@@ -8,6 +8,37 @@ Hierbei sind diverse Techniken und Ansätze verfolgt.
 Im Rahmen dieser Arbeit wird sich insbesondere auf Integrationstests fokussiert also Tests, die Zusammenarbeit von einzelnen Softwarekomponenten (Units)
 sicherstellen sollen.
 
+\subsection{Typen von Tests}
+
+Es gibt verschiedene Sichtweisen auf das zu testende System.
+Die Sichtweisen können intern oder extern bestimmt sein.
+So sind Faktoren wie möglicher Zugriff auf Quellcode oder Architekturdetails des Systems essentiell wichtig um
+zu entscheiden, welche Art von Tests angewandt werden.
+Es gibt zwei generelle Typen von Sichtweisen und eine Mischform.
+Wir betrachten hierbei das zu testende System als Box.
+Diese Box kann entweder transparent gesehen werden, halbtransparent oder untransparent.
+Der Transparente Ansatz nennt sich WhiteBox-Testing, der halbtransparente GreyBox-Testing und der Untransparente BlackBox-Testing.
+Die Ansätze unterscheiden sich vorallem in den zur Verfügung stehenden Informationen des Systems.
+Wir vernachlässigen hierbei das GreyBox-Testing da dieses keine Relevanz für das hier zugrunde liegende Problem besitzt.
+
+\subsubsection{White-Box Testing}
+
+Im WhiteBox-Testing stehen alle Informationen über das System zur Verfügung.
+Der Tester hat Zugriff auf Code, Architekturdetails und besitzt Kenntniss über alle möglichen Details des Systems.
+Somit kann der Tester auf alle möglichen Informationen über das System zugreifen und damit seine Tests generieren.
+Die erstellten Tests fundieren dann auf einem soliden Niveau, dass begründet wird durch das Domänenwissen über das System.
+
+\subsubsection{Black-Box Testing}
+
+Der Idealfall des Testens ist zwar der WhiteBox-Test allerdings ist es durch verschiedene Limitierungen nicht immer möglich oder auch gewollt,
+auf alle Informationen zuzugreifen.
+Im BlackBox-Testing hat der Tester keinen Zugriff auf interne Funktionsweisen der Software.
+Schwerpunkt des Testens ist es, dass die Software das tut was sie soll.
+Wir interessieren uns hier nicht dafür was intern im System abläuft sondern nur, ob Eingabe zu Ausgabe passt.
+In dieser Arbeit werden wir uns vor allem auf das BlackBox-Testing beziehen.
+Dies folgt einerseits aus dem methodischen bezug zu \textit{Property-based Testing}\cite{property-based-testing}
+als auch aus dem Fakt, dass das Testtool unabhängig von Implementierungsdetails nutzbar sein soll.
+
 \subsection{Arten von Tests}
 
 Es existieren verschiedene Arten von Tests welche unterschiedliche Ziele haben.

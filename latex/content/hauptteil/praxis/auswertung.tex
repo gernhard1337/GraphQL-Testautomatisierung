@@ -237,7 +237,62 @@ Dies sind die Felder, in denen ein falscher Wert eines Objektes genutzt wurde um
 Hierbei verhindert der Black-Box Ansatz, dass der Fehler gefunden wird.
 Hierzu jedoch später mehr.
 
+\subsection{Auswertung GraphQL-Toy}
+
+Von den 15 injezierten Bugs wurden von beiden Tools jeweils 11 gefunden.
+Die injizierten Bugs klassifizierten sich in Syntax-Bug, Validierungs-Bugs, Filtering-Bug und Wrong-Type-Bug. \cite[vgl. RQ 2 Type Errors]{property-based-testing}.
+In \textit{Property-based Testing} fand der entwickelte Prototyp 11 Bugs.
+Es wurden alle Bugs gefunden die nicht in der Kategorie Filtering-Bug waren.
+Bugs der Kategorie Filtering-Bug wurden nicht gefunden da diese Bugs valide 200er Statuscodes zurückgeben aber oft
+leere Felder.
+Da durch den BlackBox Ansatz jedoch keine Information existiert, die uns verlässlich sagen kann, dass Daten falsch sind,
+werden diese Fehler akzeptiert und es wird kein Fehler erkannt.
+Diese Limitierung existiert in unserem hier entwickelten Prototyp auch.
+Wir haben exakt die selben Fehler finden können wie das Property-based Tool.
+Da wir in unserem Prototypen auch den Ansatz BlackBox-Testing gewählt haben, haben wir mit diesem Problem auch zu kämpfen.
+\\
+Unser hier entwickelter Prototyp hat jedoch für die allgemeine Fehlerfindung wesentlich weniger Tests benötigt.
+Das Schema des GraphQL-Toy umfasste einen sehr simplen Graphen.
+
+\begin{tikzpicture}
+    \node[circle, draw] (n1) at (0,0) {Query};
+    \node[circle, draw] (n2) at (2,0) {Project};
+    \node[circle, draw] (n3) at (2,2) {User};
+
+    \draw[->] (n1) -- (n2);
+    \draw[->] (n2) -- (n3);
+    \draw[->] (n3) -- (n2);
+\end{tikzpicture}
+
+Unsere Methode ermittelte zwei Pfade als ausreichend für die Testgenerierung.
+Pro Pfad wurden dann 5 Tests erstellt.
+Aus diesen insgesamt 10 ermittelten Tests ergaben sich dann Tests die ausreichend waren ebenso alle Fehler zu finden.
+Bemerkenswert ist hier, dass das Tool nur ein einziges Mal seine Tests generieren musste.
+Es wurden somit 10 Tests generiert, die fähig waren, alle Fehler zu finden.
+In diesem kleinen Beispiel hat unser hier entwickelter Prototyp die selben Fähigkeiten wie der \textit{Property-based Prototyp}.
+Die ausgeführten Experimente befinden sich im GitHub \cite{github-toy-experimente}.
+
 \subsection{GitLab}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Auswertung GitLab}
 
 
 
