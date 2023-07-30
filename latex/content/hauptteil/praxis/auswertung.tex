@@ -310,22 +310,20 @@ Die Fehler wurden gefunden durch folgende Querys:
 \end{lstlisting}
 
 Alle vom Property-based Tool gefunden Fehler wurden durch unseren Prototypen gefunden mit den Querys
+
 \hyperref[query1]{Query 1},
 \hyperref[query2]{Query 2},
 \hyperref[query3]{Query 3} und
 \hyperref[query4]{Query 4}.
 
-
-
-
-
-
-
-
+Getestet wurde auf dem offiziellen GitLab-Docker Image in der Version 12.6.3
+Damit im GitLab auch Daten verfügbar sind wurde ein Population-Skript geschrieben, dass im GitLab
+50 User anlegt und jedem User einige Projekte, Commit, MergeRequests etc. zuordnet.
+Das Population-Skript kann im~\cite[Github]{populationscript} gefunden werden.
 Da die Querygenerierung stets im Query-Knoten beginnt und die PrimePaths gefunden werden sollen, ergeben sich in diesem
 Schema sehr viele ähnliche Querys.
 Diese unterscheiden sich insbesondere am Ende der jeweiligen Query.
-Der zuvor vorgestellte Algorithmus errechnet für das Schema von GitLab 12.6.3 eine Pfadanzahl von 41744 für eine
+Der zuvor vorgestellte Algorithmus errechnet für das Schema von GitLab eine Pfadanzahl von 41744 für eine
 PrimePath-Coverage des Schemas.
 Eine genaue Auflistung aller Pfade findet sich im~\cite[GitHub]{gitlabpaths}.
 Mit der Maßgabe, dass wir pro Pfad 5 Tests erzeugen wollen wurden dann 208.720 Tests erzeugt.
@@ -340,45 +338,39 @@ eingeführtes Measurement erfüllen.
 In nahezu allen Fällen haben die generierten Tests eine tatsächliche Pfadlänge die kleiner ist als die erwartete.
 In mehreren Durchläufen zeigte sich, dass im Schnitt nur ca. 20 Tests eine ideale Pfadlänge erreichen.
 Die Tests, die das erreichen sind im allgemeinen auch Tests, die einen sehr kurzen Pfad abbilden.
-Hier verringert sich einfach das Risiko, dass Eingabeargumente generiert werden, die keine zugrundeliegenden Daten haben.
+Hier verringert sich einfach das Risiko, dass Eingabeargumente generiert werden, die keine zugrundeliegenden Daten haben und somit die
+Pfadausführung verhindern.
+Ein Beispiel hierfür ist der Pfad $Query -> Project -> MergeRequest -> Time$
 
+\begin{lstlisting}[language=GraphQL]
+{ project(fullPath: "groupx_3/projectx_2_1") {
+    archived
+    avatarUrl
+    containerRegistryEnabled
+    ...
+    mergeRequest(iid: "1") {
+        allowCollaboration
+        createdAt
+        mergeStatus
+        ...
+        }
+    }
+}
+\end{lstlisting}
 
+durch gutes Mocken des FullPath Argumentgenerators war es möglich, eine Query zu generieren, die somit passende Argumente generiert hat
+um für eine ideale Testausführung (d.h. Länge Ergebniss = Länge Testpfad) zu sorgen.
+Generell zeigt sich sehr schnell, dass bei unserer Methode ähnliche Limitierungen wie im Property-based Testing auftreten.
+So ist eine Anpassung an das Domänenwissen nötig.
+Für GitLab bedeutet dies unter anderem, dass die ID-Struktur um z.B. Projekte abzufragen in der Form \verb+<user>/<project>+ sein muss. \cite[vgl. S.8]{property-based-testing}
+Da wir vom Prinzip her ähnliche Argumentgeneratoren verwendet haben wie in Property-based Testing, haben wir auch diese Limitierungen.
+Wir generieren zwar sehr viele Tests die auch PrimePath Coverage ideal erreichen würden.
+Wenn jedoch die Generierung der Tests auf Zufall basiert, so können wir auch nicht garantieren, dass unsere Eingabeargumente passend sind und ein valides Ergebniss zurückgeben.
+Wird kein Ergebniss zurückgegeben, so folgert GraphQL, dass spätere Funktionen nicht ausgeführt werden müssen und somit werden diese auch nicht getestet.
+Es ist möglich, dieses Problem zu beheben, hierzu jedoch in FutureWork mehr.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+TODO -> Fehlerabdeckung eingehen (Property-based Testing: 40\% Malformed Queries vs. Wir 10\% (zu fast 100\% wegen Eingabeargumenten die nicht zusammen genutzt werden können
+z.B. first,last zusammen) )
 
 
 
@@ -393,7 +385,108 @@ sichern wir durch unseren Generierungsalgorithmus zu, dass die generierten Tests
 Dies stellt ein stärkeres Coveragekriterium dar als die Nodecoverage.
 Dennoch möchten wir untersuchen, wie gut die Coverage in der Praxis funktioniert.
 Dafür betrachten wir erneut die beiden zuvor benutzten Beispiele: einerseits das GraphQL-Toy als minimales Beispiel und andererseits GitLab als komplexes Beispiel.
+Wir betrachten die Abdeckung des Schemas eher auf theoretischer Seite.
+Die Limitierung der zufälligen Argumentgeneratoren behindern eine tatsächliche Umsetzung der hier vorgestellten Methode.
+Allerdings lösen sich diese auf, sobald das Problem der Argumentgeneratoren gelöst ist.
 
 \subsection{GraphQL-Toy Schema Coverage}
 
+Wie zuvor gesehen in $8.3.1$, ist das Schema des GraphQL-Toys ein sehr simples.
+3 Knoten, 5 Kanten bilden den ganzen Graphen.
+Das Property-based Tool nutzt zur Überdeckung des Graphens die Edge-Coverage. \cite[vgl. Measuring Schema Coverage]{property-based-testing}
+Wie eingeführt in \textit{Property-based Testing}\cite{property-based-testing} muss für eine zufriedenstellende Coverage
+die Tatsache erfüllt sein, dass jedes paar von \verb+(Type, objectField)+ abgedeckt sein.
+Dies bedeutet für das Schema, dass die Felder
+
+\begin{itemize}
+    \item \verb+(Query, project)+
+    \item \verb+(Query, userProject)+
+    \item \verb+(Project, owner)+
+    \item \verb+(Project, members)+
+    \item \verb+(User, projects)+
+\end{itemize}
+
+abgedeckt sein müssen um Edge-Coverage zu erfüllen.
+Da nur die beiden initialen Felder aus dem Query-Type Eingabeargumente benötigen ist die Querygenerierung relativ simpel.
+Wir können keine Aussage darüber machen ob die generierten Querys von \textit{Property-based Testing}\cite{property-based-testing} diese Coverage erfüllen
+denn bei der Querygenerierung spielt es keine Rolle ob dieses Measurement erreicht wird.
+Es gibt lediglich eine Messung die zeigt, dass der Prototyp mit hinreichender Wahrscheinlichkeit in der Lage ist, durch zufällige Querygenerierung
+Tests zu generieren, die Edge-Coverage erfüllen. \cite[vgl. D.Results RQ1 ]{property-based-testing}.
+Im Gegensatz zum Property-based Testing hat der heir entwickelte Prototyp den Vorteil, dass die Pfadgenerierung nicht zufällig ist.
+Wir berechnen PrimePaths, diese sind ein stärkeres Coveragekriterium als die Edge-Coverage.
+Dadurch ergibt sich, dass die Tests die vom hier entwickelten Prototyp erstellt werden, stets diese Coverage erfüllen.
+Die Coverage muss nun also nicht mehr durch hinreichend viele Tests sichergestellt werden.
+Ein einziger Durchlauf reicht aus um sicherzustellen, dass die gewünschte Coverage erreicht ist.
+Natürlich bleibt offen ob die generierten Tests diese Coverage tatsächlich erreichen jedoch ist auch ein Problem im Property-based Testing.
+Dort wird auch nur geprüft, ob die Felder in der Anfrage existieren.
+Um dies eben messbar zu machen haben wir in $8.1.3$ eine neue Metrik eingeführt die überprüfen soll ob die erwartete Coverage der Query mit der
+tatsächlichen Übereinstimmt.
+
 \subsection{GitLab Schema Coverage}
+
+Das GitLab Schema ist wesentlich komplexer.
+Im Gegensatz zum GraphQL Toy besteht das GitLab Schema aus 37 Knoten welche jeweils zahlreiche Kanten hinzufügen.
+Generell lässt sich sagen, dass das Schema sehr komplex und stark rekursiv ist. \cite[vgl. Studied Cases 2]{property-based-testing}
+Da der Property-based Testing Ansatz ein Rekursionslimit benötigt stellt sich hier die Frage inwiefern überhaupt das Schema überdeckt werden kann.
+Laut Paper hat sich ein Rekursionslimit von 4 als hinreichend ausgezeichnet \cite[vgl. Table 1 ]{property-based-testing} und wurde auch so
+im Code übernommen.
+Ein Rekusionslimit von 4 bedeutet, dass die maximale zu erreichende Pfadlänge des Testpfades 4 ist.
+Da das GitLab-Schema aber nun einen Graphen aufspannt, der durchaus wesentlich längere Pfade als 4 hat, ist es fragwürdig wie die 100\% Schema-Coverage
+in \cite[Table 1]{property-based-testing} berechnet wurden.
+Es seien hier einige Pfade beispielhaft genannt, die einzigartig sind, bei denen sich keine Kante doppelt und deren Länge 4 stark überschreitet: \\
+
+\verb+Query -> User -> SnippetConnection -> SnippetEdge -> Snippet -> DiscussionConnection -> DiscussionEdge -> Discussion -> NoteConnection -> NoteEdge -> Note -> Project -> IssueConnection -> Issue -> Milestone -> Time+ \\
+\verb+Query -> Project -> Issue -> DiscussionConnection -> DiscussionEdge -> Discussion -> NoteConnection -> NoteEdge -> Note -> User -> SnippetConnection -> SnippetEdge -> Snippet -> Time+ \\
+\verb+Query -> Namespace -> ProjectConnection -> Project -> MergeRequestConnection -> MergeRequestEdge -> MergeRequest -> UserConnection -> User -> SnippetConnection -> Snippet -> DiscussionConnection -> PageInfo+ \\
+
+Somit gilt, dass in Property-based Testing der Graph des GraphQL-Schemas zum Coverage-Measurement beschnitten wurde, dass nur noch zum jeweils passenden
+Rekursionslimit die Pfadlänge berücksichtigt wird.
+Im Grunde lässt sich sagen, dass die genannten 100\% Schema Coverage bedeuten, dass alle erreichbaren Felder mit Pfadlänge = Rekursionslimit
+in den Tests berücksichtigt sind.
+Dies ist ein sehr großer, struktureller Einschnitt und die in Property-based Testing genannten 100\% Edge-Coverage sind keine
+100\% Edge-Coverage auf dem Scchema im eigentlichen Sinne so wie es hier erarbeitet wurde.
+Die genannten 100\% Coverage sind eine Edge-Coverage für einen reduzierten Graphen der aufgrundlage der
+Rekursionstiefe reduziert wird.
+Wie auch zuvor erwähnt, erzeugt unser hier entwickelter Prototyp Tests die in unserem Fall die PrimePath-Coverage umsetzen.
+Da PrimePath-Coverage ein stärkeres Coverage-Kriterium als Edge-Coverage darstellt, haben wir hier einen strukturellen Vorteil
+der uns garantiert, dass die Coverage besser ist.
+Außerdem reduzieren wir unseren Graphen nicht.
+Wir führen die Pfadgenerierung auf dem gesamten Graphen aus und erhalten, wie zuvor erwähnt, über 40.000 Pfade zurück die nötig sind
+um eine PrimePath-Coverage für das GitLab Schema zu erreichen.
+Hier zeigt sich auch ein direkter Unterschied.
+Während in Property-based Testing gesagt wird, dass 10.000 Tests mit einem Rekursionslimit von 4 ausreichen um ein 100\% Edge-Coverage zu erreichen \cite[vgl. Table 1]{property-based-testing}
+so sehen wir, dass 10.000 Tests nicht reichen können wenn allein schon über 40.000 PrimePaths existieren.
+Insbesondere sei hierbei angemerkt, dass die Pfad- \& Testgenerierung auf dem GitLab-Schema keine alzu komplexe Aufgabe war.
+Die Berechnung der Querys geschah auf einem hardwaretechnischen ähnlichem Level wie in Property-based Testing verwandt. \cite[vgl. Experimental Setup]{property-based-testing}.
+Hier wurde die Aussage getroffen, dass ein \cite[Tiefensuchen Ansatz nicht skaliert und deswegen ein iterativer Ansatz zu präferieren ist]{property-based-testing}.
+Der hier entwickelte Prototyp zeigt das Gegenteil.
+
+\section{Zusammenfassung der Experimente}
+
+Wir konnten in beiden Experimenten zeigen, dass unser Prototyp die selben Fehler findet wie der Prototyp aus Property-based Testing.
+Einige Verbesserungen konnten wir eingehen aber wir leiden auch unter ähnlichen Problem wie Property-based Testing.
+Durch unseren Ansatz ist es möglich geworden, die Schema-Coverage der Tests nachweisbar zu erhöhen und wesentlich verlässlicher zu machen.
+So ist im Property-based Ansatz immer ein gewisser Zufall entscheidend wie gut die Tests sind.
+Die Verlässlichkeit der Abdeckung mit Tests ist hier nicht gegeben.
+Hier konnten wir mit unserer neu entwickelten Methode Fortschritte erzielen indem wir zeigten, dass es möglich ist aus einem GraphQL Schema
+einen Graphen zu bilden, auf diesem Coverage Algorithmen laufen zu lassen und aus den gewonnen Tests-Pfade zu ermitteln.
+Somit kann der Ansatz des Property-based Testings mit unserer Methode erweitert werden und die Testcoverage verlässlich und nachweisbar erhöhen.
+Limitierungen unseres Prototypen bestehen genau wie im Property-based Testing noch.
+Hierbei generiert unser Tool sehr komplexe und präzise Querys die das System gut testen würden.
+Allerdings werden Argumente nur zufällig generiert und verhindern somit oft, dass diese komplexen Querys vollständig ausgeführt werden.
+Einerseits kann dieses Problem auf manuelle Art und Weise verbessert werden indem man die Argumentgeneratoren anpasst und diesen hilft indem
+man z.B. ID-Generierungen anpasst.
+Andererseits lässt sich dieses Problem wahrscheinlich auch lösen wenn man sich vom BlackBox-Testing lösen kann und die Methode weiterentwickelt, sodass
+aus dieser ein Grey oder WhiteBox Testing wird.
+Hierzu jedoch in futureWork mehr.
+
+
+
+
+
+
+
+
+
+
+
