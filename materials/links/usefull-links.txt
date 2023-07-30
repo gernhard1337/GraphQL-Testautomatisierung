@@ -8,3 +8,16 @@ Graph-Ql Funktionsweise:
 https://www.prisma.io/blog/graphql-server-basics-the-schema-ac5e2950214e
 GraphQL-Server:
 https://www.apollographql.com/docs/apollo-server/
+
+Issues:
+
+https://gitlab.com/gitlab-org/gitlab/-/issues/233921 -> mutation nicht berücksichtigt
+https://gitlab.com/gitlab-org/gitlab/-/issues/233922 -> mutation nicht berücksichtigt
+https://gitlab.com/gitlab-org/gitlab/-/issues/233924 -> mutation nicht berücksichtigt
+https://gitlab.com/gitlab-org/gitlab/-/issues/233927 -> mutation nicht berücksichtigt
+https://gitlab.com/gitlab-org/gitlab/-/issues/208672
+https://gitlab.com/gitlab-org/gitlab/-/issues/208125
+https://gitlab.com/gitlab-org/gitlab/-/issues/208122
+https://gitlab.com/gitlab-org/gitlab/-/issues/208121
+
+-> https://docs.gitlab.com/ee/api/graphql/#max-query-complexity

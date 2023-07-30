@@ -91,10 +91,10 @@ Hierfür wird folgende Metrik eingeführt:
 \begin{definition}
     Für alle Querys und dazugehörigen Responses wird die Pfadlänge bestimmt.
     Eine erfolgreiche Query hat dann zwei mögliche Szenarien:
-        \begin{enumerate}
-            \item Pfadlänge(Query) = Pfadlänge(Response)
-            \item Pfadlänge(Query) > Pfadlänge(Response)
-        \end{enumerate}
+    \begin{enumerate}
+        \item Pfadlänge(Query) = Pfadlänge(Response)
+        \item Pfadlänge(Query) > Pfadlänge(Response)
+    \end{enumerate}
 \end{definition}
 
 Tritt Fall 1 ein so hat die Query wirklich alle Funktionen getestet.
@@ -129,10 +129,10 @@ Idealerweise wollen wir jedoch sogar mehr Fehler finden.
 \subsection{GraphQL-Toy}
 
 Das Testssystem GraphQL-Toy hat ein sehr simples Schema in dem nur drei $OBJECT$ Typen exisitieren.
-Diese sind $Query$, $Project$ und $User$. 
+Diese sind $Query$, $Project$ und $User$.
 Das Schema hat folgende Struktur: \\
 \begin{center}
-    \includegraphics{img/graphqltoy}
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/graphqltoy}
 \end{center}
 
 Entwickelt wurde dieses System mit dem Hintergrund, dass bekannte Bugs im Code eingebracht werden und überprüft werden kann ob das Testtool diese findet.
@@ -274,25 +274,109 @@ Die ausgeführten Experimente befinden sich im GitHub \cite{github-toy-experimen
 
 \subsection{GitLab}
 
+Das Testsystem GitLab wurde schon in Property-based  Testing verwandt um an einem Industry-ready Projekt die Methode zu evaluieren.
+Wir wollen dies mit unserem Test-system auch durchführen.
+GitLab stellt sowohl eine REST als auch GraphQL-API zur Kommunikation  zur  Verfügung.
+Mit GitLab wird ein komplexes Softwareprodukt zur Versionsverwaltung und DevOps-Anwendung getestet.
+Die Komplexität dieser Softwarewird deutlich, wenn wir uns das GraphQL-Schema von GitLab ansehen.
+Dieses ist sehr komplex und stark zyklisch.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\begin{center}
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/gitlabgraph}
+\end{center}
 
 \subsection{Auswertung GitLab}
+
+Das \textit{Property-based Testtool} fand insgesamt 4 Fehler die im Query-Bereich von GraphQL waren.
+Alle Fehler waren Fehler in der Validierung von Eingabevariablen.
+Hierbei lag der Fehler darin, dass die Resolver einen fehler verursachten wenn als Eingabe ein String mit leerem Zeichen kam.
+Dies bedeutet, ein leerer String \verb+""+ wird richtig behandelt aber ein String mit leerem Zeichen führt zum Fehler: \verb+e\u0000\+
+Die Fehler wurden gefunden durch folgende Querys:
+
+\begin{lstlisting}[language=GraphQL, caption=Fehler 1\cite{issue1}]
+{project(fullPath: "root/test-project") {sentryDetailedError(id: "") {count}}}
+\end{lstlisting}
+
+\begin{lstlisting}[language=GraphQL, caption=Fehler 2\cite{issue2}]
+{project(fullPath: "e\u0000") {name fullPath}}
+\end{lstlisting}
+
+\begin{lstlisting}[language=GraphQL, caption=Fehler 3\cite{issue3}]
+{namespace(fullPath: "e\u0000") {fullName name fullPath}}
+\end{lstlisting}
+
+\begin{lstlisting}[language=GraphQL, caption=Fehler 4\cite{issue4}]
+{group(fullPath: "e\u0000"){fullName name fullPath }}
+\end{lstlisting}
+
+Alle vom Property-based Tool gefunden Fehler wurden durch unseren Prototypen gefunden mit den Querys
+\hyperref[query1]{Query 1},
+\hyperref[query2]{Query 2},
+\hyperref[query3]{Query 3} und
+\hyperref[query4]{Query 4}.
+
+
+
+
+
+
+
+
+Da die Querygenerierung stets im Query-Knoten beginnt und die PrimePaths gefunden werden sollen, ergeben sich in diesem
+Schema sehr viele ähnliche Querys.
+Diese unterscheiden sich insbesondere am Ende der jeweiligen Query.
+Der zuvor vorgestellte Algorithmus errechnet für das Schema von GitLab 12.6.3 eine Pfadanzahl von 41744 für eine
+PrimePath-Coverage des Schemas.
+Eine genaue Auflistung aller Pfade findet sich im~\cite[GitHub]{gitlabpaths}.
+Mit der Maßgabe, dass wir pro Pfad 5 Tests erzeugen wollen wurden dann 208.720 Tests erzeugt.
+Diese Große Anzahl an Tests ergibt sich allerdings auch daraus, dass der Graph der von
+GraphQL erzeugt wird, einerseits wenige Einstiegspunkte hat.
+So hat der Query-Type nur 5 ausgehende Felder die für tiefere Pfadbildung relevant sind, 1 Feld hat nur MetaInformationen über
+die GitLab Software und erzeugt kein weiteren Pfade.
+Dies bedeutet, dass jeder Pfad auch mit einem dieser Felder beginnt da wir stets
+unsere Pfade aus dem Query-Type starten lassen müssen.
+Die zufällige Generierung von Argumenten limitiert hier dann dementsprechend, dass Tests sehr selten unser
+eingeführtes Measurement erfüllen.
+In nahezu allen Fällen haben die generierten Tests eine tatsächliche Pfadlänge die kleiner ist als die erwartete.
+In mehreren Durchläufen zeigte sich, dass im Schnitt nur ca. 20 Tests eine ideale Pfadlänge erreichen.
+Die Tests, die das erreichen sind im allgemeinen auch Tests, die einen sehr kurzen Pfad abbilden.
+Hier verringert sich einfach das Risiko, dass Eingabeargumente generiert werden, die keine zugrundeliegenden Daten haben.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -300,4 +384,16 @@ Die ausgeführten Experimente befinden sich im GitHub \cite{github-toy-experimen
 
 \section{Schema-Abdeckung}
 
+Für die Schemaabdeckung wurde im Property-based Testing die Edge-Coverage als zufriedenstellendes Coveragekriterium gewählt.
+Dieses Coveragekriterium findet allerdings keine Berücksichtigung in der Testgenerierung und ist in der Arbeit lediglich ein Measurement.
+Mit diesem soll gezeigt werden, wie viele Tests zufällig generiert werden müssen, damit im Durchschnitt eine zufriedenstellende Abdeckung erzielt wird.
+Dadurch wird die Überlegenheit bereits aus struktureller Sicht deutlich.
+Während im Property-based Testing nicht garantiert wird, dass eine zufriedenstellende Coverage erreicht wird,
+sichern wir durch unseren Generierungsalgorithmus zu, dass die generierten Tests der PrimePath-Coverage entsprechen.
+Dies stellt ein stärkeres Coveragekriterium dar als die Nodecoverage.
+Dennoch möchten wir untersuchen, wie gut die Coverage in der Praxis funktioniert.
+Dafür betrachten wir erneut die beiden zuvor benutzten Beispiele: einerseits das GraphQL-Toy als minimales Beispiel und andererseits GitLab als komplexes Beispiel.
 
+\subsection{GraphQL-Toy Schema Coverage}
+
+\subsection{GitLab Schema Coverage}

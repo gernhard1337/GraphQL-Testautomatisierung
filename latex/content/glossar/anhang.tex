@@ -519,3 +519,511 @@ fragment TypeRef on __Type {
   }
 }
 \end{lstlisting}
+
+
+\section*{Query1}
+\label{query1}
+\begin{lstlisting}[language=elixir]
+{
+  group(fullPath: "e\u0000") {
+    avatarUrl
+    description
+    descriptionHtml
+    fullName
+    fullPath
+    id
+    lfsEnabled
+    name
+    path
+    requestAccessEnabled
+    visibility
+    webUrl
+    projects(
+      includeSubgroups: false,
+      after: "CXPnWOYLTuOjSbbwJqqY",
+      before: "CrGVlZBseDurRlgzEbtU",
+      first: 2522,
+      last: 3011
+    ) {
+      nodes {
+        archived
+        avatarUrl
+        containerRegistryEnabled
+        createdAt
+        description
+        descriptionHtml
+        forksCount
+        fullPath
+        httpUrlToRepo
+        id
+        importStatus
+        issuesEnabled
+        jobsEnabled
+        lastActivityAt
+        lfsEnabled
+        mergeRequestsEnabled
+        mergeRequestsFfOnlyEnabled
+        name
+        nameWithNamespace
+        onlyAllowMergeIfAllDiscussionsAreResolved
+        onlyAllowMergeIfPipelineSucceeds
+        openIssuesCount
+        path
+        printingMergeRequestLinkEnabled
+        publicJobs
+        removeSourceBranchAfterMerge
+        requestAccessEnabled
+        sharedRunnersEnabled
+        snippetsEnabled
+        sshUrlToRepo
+        starCount
+        tagList
+        visibility
+        webUrl
+        wikiEnabled
+        issues(
+          iid: "ijrhRHNqHyAjlpaJknYi",
+          iids: "oSTpjUyfHvXKPFvrnNAK",
+          state: closed,
+          labelName: "NGJwsiFoOWbPIDPCEOPS",
+          createdBefore: "2023-07-19T22:26:43",
+          createdAfter: "2023-04-15T21:00:50",
+          updatedBefore: "2023-07-10T11:48:12",
+          updatedAfter: "2023-02-24T21:34:52",
+          closedBefore: "2023-04-23T17:41:34",
+          closedAfter: "2023-01-28T01:02:27",
+          search: "ZnbnsbggmMpWkRkQfZDT",
+          sort: DUE_DATE_DESC,
+          after: "onPOzYJlSSdeVODfTFZd",
+          before: "crsihXiPwGbeXvUzAHCM",
+          first: 7038,
+          last: 5497
+        ) {
+          nodes {
+            closedAt
+            confidential
+            createdAt
+            description
+            descriptionHtml
+            discussionLocked
+            downvotes
+            dueDate
+            iid
+            reference
+            relativePosition
+            subscribed
+            timeEstimate
+            title
+            titleHtml
+            totalTimeSpent
+            updatedAt
+            upvotes
+            userNotesCount
+            webPath
+            webUrl
+            notes(
+              after: "EdfPOYFMhnmaRwXCdIXk",
+              before: "wMdIUdZSYCYGUHShEdSY",
+              first: 7363,
+              last: 8871
+            ) {
+              edges {
+                cursor
+                node {
+                  body
+                  bodyHtml
+                  createdAt
+                  id
+                  resolvable
+                  resolvedAt
+                  system
+                  updatedAt
+                  createdAt
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+\end{lstlisting}
+
+\section*{Query2}
+\label{query2}
+\begin{lstlisting}[language=elixir]
+{
+  namespace(fullPath: "e\u0000") {
+    description
+    descriptionHtml
+    fullName
+    fullPath
+    id
+    lfsEnabled
+    name
+    path
+    requestAccessEnabled
+    visibility
+    projects(
+      includeSubgroups: true,
+      after: "LzGUwINJWDSdeHYamsoy",
+      before: "VdRsarUsfXODNvMdrBWx",
+      first: 6482,
+      last: 3087
+    ) {
+      nodes {
+        archived
+        avatarUrl
+        containerRegistryEnabled
+        createdAt
+        description
+        descriptionHtml
+        forksCount
+        fullPath
+        httpUrlToRepo
+        id
+        importStatus
+        issuesEnabled
+        jobsEnabled
+        lastActivityAt
+        lfsEnabled
+        mergeRequestsEnabled
+        mergeRequestsFfOnlyEnabled
+        name
+        nameWithNamespace
+        onlyAllowMergeIfAllDiscussionsAreResolved
+        onlyAllowMergeIfPipelineSucceeds
+        openIssuesCount
+        path
+        printingMergeRequestLinkEnabled
+        publicJobs
+        removeSourceBranchAfterMerge
+        requestAccessEnabled
+        sharedRunnersEnabled
+        snippetsEnabled
+        sshUrlToRepo
+        starCount
+        tagList
+        visibility
+        webUrl
+        wikiEnabled
+        repository {
+          empty
+          exists
+          rootRef
+          tree(
+            path: "XNQtaUctgSGfziijhXQv",
+            ref: "zCYbJRMCKGotQJmpBcZa",
+            recursive: true
+          ) {
+            lastCommit {
+              authorName
+              authoredDate
+              description
+              id
+              message
+              sha
+              signatureHtml
+              title
+              webUrl
+              author {
+                avatarUrl
+                name
+                username
+                webUrl
+                snippets(
+                  ids: ["e\u0000", "", "TEST", "2"],
+                  visibility: private,
+                  type: project,
+                  after: "gVweJjzTOptsXXmrvTtA",
+                  before: "uSKONOPlLKFpiKNhBIyN",
+                  first: 3982,
+                  last: 2317
+                ) {
+                  pageInfo {
+                    endCursor
+                    hasNextPage
+                    hasPreviousPage
+                    startCursor
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+\end{lstlisting}
+
+\section*{Query 3}
+\label{query3}
+\begin{lstlisting}[language=elixir]
+{
+  project(fullPath: "e\u0000") {
+    archived
+    avatarUrl
+    containerRegistryEnabled
+    createdAt
+    description
+    descriptionHtml
+    forksCount
+    fullPath
+    httpUrlToRepo
+    id
+    importStatus
+    issuesEnabled
+    jobsEnabled
+    lastActivityAt
+    lfsEnabled
+    mergeRequestsEnabled
+    mergeRequestsFfOnlyEnabled
+    name
+    nameWithNamespace
+    onlyAllowMergeIfAllDiscussionsAreResolved
+    onlyAllowMergeIfPipelineSucceeds
+    openIssuesCount
+    path
+    printingMergeRequestLinkEnabled
+    publicJobs
+    removeSourceBranchAfterMerge
+    requestAccessEnabled
+    sharedRunnersEnabled
+    snippetsEnabled
+    sshUrlToRepo
+    starCount
+    tagList
+    visibility
+    webUrl
+    wikiEnabled
+    snippets(
+      ids: ["e\u0000", "e\u0000", "e\u0000", "2"],
+      visibility: private,
+      after: "GCGqcYIymVfIjZJrghZx",
+      before: "jbZllxYHDwZVZKgtdtBQ",
+      first: 7612,
+      last: 3392
+    ) {
+      edges {
+        cursor
+        node {
+          content
+          createdAt
+          description
+          descriptionHtml
+          fileName
+          id
+          rawUrl
+          title
+          updatedAt
+          webUrl
+          discussions(
+            after: "XwwfgUTrYgPYJwgMBmmb",
+            before: "oUeZWQMPwSveCHQrBEts",
+            first: 8210,
+            last: 974
+          ) {
+            edges {
+              cursor
+              node {
+                createdAt
+                id
+                replyId
+                notes(
+                  after: "GfzdyMEZcMMPkByUduYi",
+                  before: "MMqCqCBXDTYiNgFgERvS",
+                  first: 95,
+                  last: 5742
+                ) {
+                  nodes {
+                    body
+                    bodyHtml
+                    createdAt
+                    id
+                    resolvable
+                    resolvedAt
+                    system
+                    updatedAt
+                    position {
+                      filePath
+                      height
+                      newLine
+                      newPath
+                      oldLine
+                      oldPath
+                      width
+                      x
+                      y
+                      positionType
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+\end{lstlisting}
+
+\section*{Query 4}
+\label{query4}
+\begin{lstlisting}[language=elixir]
+{
+  project(fullPath: "groupx_3/projectx_32_6") {
+    archived
+    avatarUrl
+    containerRegistryEnabled
+    createdAt
+    description
+    descriptionHtml
+    forksCount
+    fullPath
+    httpUrlToRepo
+    id
+    importStatus
+    issuesEnabled
+    jobsEnabled
+    lastActivityAt
+    lfsEnabled
+    mergeRequestsEnabled
+    mergeRequestsFfOnlyEnabled
+    name
+    nameWithNamespace
+    onlyAllowMergeIfAllDiscussionsAreResolved
+    onlyAllowMergeIfPipelineSucceeds
+    openIssuesCount
+    path
+    printingMergeRequestLinkEnabled
+    publicJobs
+    removeSourceBranchAfterMerge
+    requestAccessEnabled
+    sharedRunnersEnabled
+    snippetsEnabled
+    sshUrlToRepo
+    starCount
+    tagList
+    visibility
+    webUrl
+    wikiEnabled
+    issues(
+      iid: "ksXuZMlxdVxzlAaqAjrf",
+      iids: "NNAPRcqvnZwDucszkDnh",
+      state: locked,
+      labelName: "UfeLauqqxLVxuylCFelM",
+      createdBefore: "2023-06-30T19:05:54",
+      createdAfter: "2023-07-10T04:47:34",
+      updatedBefore: "2023-05-14T23:47:22",
+      updatedAfter: "2022-09-13T21:09:10",
+      closedBefore: "2023-04-28T02:51:59",
+      closedAfter: "2022-09-21T20:23:50",
+      search: "vAlPWbLSJmlVURpSjmwp",
+      sort: created_asc,
+      after: "ZuiCQglYmENZJKKScvzv",
+      before: "CKMgjxLkrigiXrEPsCPO",
+      first: 1092,
+      last: 7980
+    ) {
+      nodes {
+        closedAt
+        confidential
+        createdAt
+        description
+        descriptionHtml
+        discussionLocked
+        downvotes
+        dueDate
+        iid
+        reference
+        relativePosition
+        subscribed
+        timeEstimate
+        title
+        titleHtml
+        totalTimeSpent
+        updatedAt
+        upvotes
+        userNotesCount
+        webPath
+        webUrl
+        discussions(
+          after: "dDaOgakGAttuToCxHVCh",
+          before: "GcPWhODVHIJXhRgyVMIo",
+          first: 326,
+          last: 1256
+        ) {
+          edges {
+            cursor
+            node {
+              createdAt
+              id
+              replyId
+              notes(
+                after: "OKLaEyaCRXZzPbczOzzL",
+                before: "aALrKAxqGqTKmbIaQBIW",
+                first: 6876,
+                last: 1571
+              ) {
+                edges {
+                  cursor
+                  node {
+                    body
+                    bodyHtml
+                    createdAt
+                    id
+                    resolvable
+                    resolvedAt
+                    system
+                    updatedAt
+                    author {
+                      avatarUrl
+                      name
+                      username
+                      webUrl
+                      snippets(
+                        ids: [
+                          "gid://gitlab/PersonalSnippet/20",
+                          "gid://gitlab/PersonalSnippet/23",
+                          "e\u0000",
+                          "e\u0000"
+                        ],
+                        visibility: public,
+                        type: project,
+                        after: "VkZPAFgXGsLOdfHFUDRv",
+                        before: "nWqYnCGxOSAGVQZHyclO",
+                        first: 8620,
+                        last: 9077
+                      ) {
+                        edges {
+                          cursor
+                          node {
+                            content
+                            createdAt
+                            description
+                            descriptionHtml
+                            fileName
+                            id
+                            rawUrl
+                            title
+                            updatedAt
+                            webUrl
+                            visibilityLevel
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+\end{lstlisting}
