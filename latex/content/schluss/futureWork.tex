@@ -1,5 +1,43 @@
 \chapter{zukünftige Arbeit}
 
+Einige bereits angesprochene Punkte bieten Möglichkeiten für eine Erweiterung der hier geleisteten Arbeit.
+Während hier ein erheblicher Beitrag zur theoretischen Testabdeckung von GraphQL-APIs geleistet wurde,
+so ist nicht garantiert, dass die entwickelten Tests tatsächlich die ermittelte Abdeckung erreichen.
+Dies folgert sich aus der zufälligen Argumentgenerierung in den einzelnen Querys.
+Ziel ist es nun, den Zufall möglichst weit zu begrenzen oder aber die erlangten Ergebnisse intelligenter zu nutzen
+Wir wollen im folgenden zwei Ansätze vorstellen, die eine praktische Testausführung zuverlässiger und
+präziser machen können.
+
 \section{BlackBox-Testing in WhiteBox-Testing umwandeln}
 
+Die bisherige Testgenerierung verfolgt den BlackBox-Ansatz bzw. im experimentellen Teil den GreyBox-Ansatz.
+Das Testsystem hat im ursprünglichen Sinn keinerlei Informationen über das SUT.
+Im experimentellen Ansatz haben wir den BlackBox Ansatz ein wenig abgeschwächt und zu einem GreyBox-Ansatz verändert, indem wir
+die Argumentgeneratoren an das jeweilige SUT angepasst haben, sodass die zufällige Argumentgenerierung mit höherer Wahrscheinlichkeit
+ein Argument liefert, dass dem Test eine bessere, tatsächliche Abdeckung liefert.
+Idealerweise wäre nun, dass die Testgenerierung auf einem WhiteBox-Ansatz fußt.
+Hierdurch ist spezifisches Domänenwissen über das SUT vorhanden.
+Insbesondere die zugrundeliegende Datenstruktur, Programmcode etc.
+Durch einen White-Box Ansatz wäre es nun möglich, die Argumentgeneratoren automatisch anzupassen, sodass sich diese
+am Schema und den zugrunde-liegenden Daten orientieren.
+Außerdem wäre eine Code-Analyse möglich die dazu führen kann, dass Testcases noch präziser und exakter Fehler finden.
+Die von unserem Prototypen generierten Pfade könnten hierbei weiterhin als Basis dienen um eine gute Testabdeckung beziehungsweise Pfadabdeckung sicherzustellen.
+Mithilfe von optimierten Argumentgeneratoren ist es nun möglich unsere in $8.1.3$ eingeführte Metrik weiter an die 100\% zu bringen.
+
 \section{Adaptive Generierung}
+
+Die aktuelle Testgenerierung geschieht in einzelnen Phasen.
+Es werden erst aus einem Graphen die Pfade generiert, hieraus werden Tests erzeugt und diese werden dann an das SUT gestellt und ausgewertet.
+Alle generierten Tests werden dabei allerdings unabhängig voneinander generiert.
+Im Sinne einer besseren realen Testabdeckung  wäre es jedoch wünschenswert, Tests, bei denen die Argumente gut generiert wurden in weitere Testgenerierung einzubeziehen.
+Eine Aufteilung wäre hierbei, dass die zu testenden Pfade sich allmählich weiterentwickeln und somit die Testabdeckung erhöht wird.
+Ein allgemeiner Ablauf für ein solches Programm könnte wie folgt aussehen: \\
+\\
+\\
+HIER SCHAUBILD TODO
+\\
+\\
+Mithilfe einer solchen Generierung werden die ermittelten Pfade allmählich abgedeckt indem die Tests erst länger entwickelt werden
+wenn zuvor passende Argumente generiert wurden die einze tatsächliche Testausführung sicherstellen.
+Hierbei ist in jedem Generierungsabschnitt denkbar, dass sowohl passende als auch fehlerhafte Argumente generiert werden.
+In Kombination mit White-Box Testing ist auch eine Code-Analyse von Argumenthandlern denkbar.
