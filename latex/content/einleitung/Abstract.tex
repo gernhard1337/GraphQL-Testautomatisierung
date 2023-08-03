@@ -1,43 +1,54 @@
-\chapter{Abstract}
+\chapter{Zusammenfassung}
 
-Im Zuge der digitalen Transformation nimmt die Anzahl von Softwareanwendungen rasant zu und insbesondere durch das
-Internet of Things und die generelle fortschreitende Vernetzung diverser Geräte nimmt in diesem Maße auch die Netzwerklast
-zu.
-Bisheriger Standard für Kommunikation von Geräten über das Internet waren REST-APIs diese haben jedoch gewisse
-Limitierungen wie zum Beispiel: Ineffizienz durch Overfechting/Underfetching, Anzahl an Requests, Versionierung und Komplexität uvm.
+Im Zuge der digitalen Transformation nimmt die Anzahl von Softwareanwendungen rasant zu~\cite{digitale-transformation} und insbesondere durch das
+Internet of Things und die generelle fortschreitende Vernetzung diverser Geräte nimmt in diesem Maße auch die Netzwerklast zu.~\cite{iot-traffic}
+Bisheriger Standard für Kommunikation von Geräten über das Internet waren REST-APIs~\cite[vgl. Introduction]{hygraph} diese haben jedoch gewisse
+Limitierungen wie zum Beispiel: Ineffizienz durch Overfetching/Underfetching, Anzahl an Requests, Versionierung, Komplexität und vieles mehr.~\cite{hygraph}
 Mit der Veröffentlichung von GraphQL in 2015 wurde ein Konkurrent zu REST in das Leben gerufen der diese Probleme beheben kann.
 Durch GraphQL lässt sich insbesondere die Netzwerklast reduzieren da eine GraphQL-Request, im Gegensatz zu REST, mehrere Anfragen in einer
-einzigen HTTP-Request zusammenfassen kann und dabei auch nur die wirklich gewünschten Daten überträgt.
+einzigen HTTP-Request zusammenfassen kann~\cite{awsrestgraphql} und dabei auch nur die wirklich gewünschten Daten überträgt.~\cite[vgl. Advantages of GraphQL APIs]{hygraph}
 Dadurch, dass jedoch die wachsende Anzahl von Softwareanwendungen auch in immer kritischere Bereiche des Lebens vordringt, ist es
-enorm wichtig die Qualität der Software sicherzustellen.
+enorm wichtig die Qualität der Software sicherzustellen.~\cite[S. 16]{software-testing}
 Eine Methodik zum Sicherstellen der korrekten Funktionalität von Software ist das Testen von Software im Sinne von Validierungstests die sicherstellen sollen,
 dass die Software vorher definierte Szenarien nach Erwartung behandelt.
 Für REST-APIs existieren zahlreiche Tools die solche Validierungstests automatisch übernehmen können wohingegen es noch einen Mangel
-an Tools dieser Art für GraphQL gibt.
-Im Rahmen der IEEE/ACM 2021 wurde ein Paper veröffentlicht, dass eine Methode vorstellt wie GraphQL-APIs mithilfe von
-"Property-based" Tests automatisch getestet werden können.
-"Property-based" bzeieht sich darauf, dass die Eigenschaften eines Objektes genutzt werden um diese zu testen.
-Diese Methode generiert zufällig Tests und bietet so eine Möglichkeit, Fehler zu entdecken und
-generell erstmal eine Grundlage an Tests zu schaffen frei nach dem Motto: "lieber irgendwelche Tests als gar keine Tests".
+an Tools dieser Art für GraphQL gibt.~\cite[vgl. Introduction]{property-based-testing}
+Im Rahmen der internationalen Konferenz für Automatisierung von Softwaretests IEEE/ACM 2021 wurde ein Paper veröffentlicht, dass eine Methode vorstellt wie GraphQL-APIs mithilfe von
+Property-based Tests automatisch getestet werden können.
+Property-based bezieht sich darauf, dass die Eigenschaften eines Objektes genutzt werden, um diese zu testen.
+Diese Methode generiert, der Datenstruktur angepasste, zufällige Tests und bietet so eine Möglichkeit, Fehler zu entdecken, ohne ein tiefgreifendes Wissen
+des zu testenden System zu besitzen.~\cite[vgl. Proposed Method]{property-based-testing}
 Die zufallsbasierte Testgenerierung weist allerdings einige Schwachstellen auf.
-So kann Sie nicht garantieren, dass die API zu jeder Zeit eine gute Coverage hat denn es können einzelne Routen der API
+So kann Sie nicht garantieren, dass die generierten Tests zu jeder Zeit eine gute Abdeckung der GraphQL-API haben, denn es können einzelne Routen der API
 komplett ausgelassen werden.
-Es sind Testszenarios denkbar, die sehr viele false-positives durchlassen \& somit die Qualität der Software nicht ausreichend sicherstellen können.
-GraphQL ermöglicht außerdem einen potentiell unendlichen Suchraum für die Tests.
-Um diesem Problem zu entgehen wurde ein einfaches rekursions-limit definiert was jedoch dazu führt, dass die Testabdeckung nur bis zu einem
-bestimmten Grad überhaupt reichen kann.
-Längere Pfade die mit GraphQL definiert werden können, werden deshalb niemals getestet.
+Es sind Testszenarios denkbar, die sehr viele false-positives durchlassen und somit die Qualität der Software nicht ausreichend sicherstellen können.
+GraphQL ermöglicht außerdem einen potenziell unendlichen Suchraum für die Tests.
+Um den potenziell unendlichen Suchraum einzugrenzen wurde ein Rekursionslimit eingeführt, dass die Testlänge limitiert.
+Diese Limitierung führt dazu, dass die Testabdeckung nur bis zu einem bestimmten Komplexitätsgrad des zu testenden System ausreichend ist.
+Mit dieser Arbeit wurde ein anderer Ansatz für die automatisierte Testgenerierung untersucht, um die Testabdeckung verlässlich zu verbessern.
+Ein Schwerpunkt der Arbeit lag hierbei darin, zuerst die theoretische Verknüpfung von GraphQL mit der Graphentheorie herzustellen.
+Das gewonnene Wissen wurde verwandt um zu analysieren, welches Graphüberdeckungskriterium sich ideal eignen würde für einen Prototyp.
+Die erlangten Kenntnisse halfen bei der Entwicklung eines Prototypes für die Testentwicklung.
+In zwei Experimenten konnte gezeigt werden, dass die entwickelte Methode in der Lage ist, Fehler in GraphQL-APIs zu finden.
+Insgesamt war es möglich, einen Punkt aus~\cite[VI. Future Work]{property-based-testing} zu erweitern, indem wir es schafften,
+für eine bessere Graphabdeckung zu sorgen.
 
-Mit dieser Arbeit soll ein anderer Ansatz für die automatisierte Testgenerierung untersucht werden.
-Hierbei soll untersucht werden, inwiefern Graphcoverage auf GraphQL angewendet werden kann zur Generierung von
-Tests.
-Mithilfe von einem allgemeinen Graphalgorithmus, der sonst zur Kontrollflussgraphen Analyse benutzt wird, wollen wir zeigen,
-dass es möglich ist mit einem iterativen Verfahren GraphQL zu testen.
-Wir versprechen uns von den Graphcoverage-Algorithmen einer verlässliche und sichere Generierung von Tests die
-einerseits effizient jegliche Methoden abdecken und andererseits die Anzahl der Tests minimal hält.
-Um die Methodik zu validieren werden am Ende beide Tools einem Experiment unterzogen um zu sehen ob die hier
-vorgestellte Methode eine Verbesserung erzielen kann.
 
+
+
+%Hierbei soll untersucht werden, inwiefern Graphüberdeckungskriterien auf GraphQL angewendet werden können und wie Sie zur Generierung von
+%Tests beitragen.
+%In dieser Arbeit haben wir verschiedene Graphüberdeckungskriterien analysiert und übe
+
+
+%Mithilfe von einem allgemeinen Graphalgorithmus, der sonst zur Kontrollflussgraphen Analyse benutzt wird, haben wir gezeigt,
+%dass es möglich ist mit einem iterativen Verfahren Test für GraphQL-APIs zu generieren.
+%Wir versprechen uns von den Graphüberdeckungskriterien, dass wir eine verlässliche und sichere Generierung von Tests
+
+%einer verlässliche und sichere Generierung von Tests die
+%einerseits effizient jegliche Methoden abdecken und andererseits die Anzahl der Tests minimal hält.
+%Um die Methodik zu validieren werden am Ende beide Tools einem Experiment unterzogen um zu sehen ob die hier
+%vorgestellte Methode eine Verbesserung erzielen kann.
 
 %Mit zunehmender Popularität von GraphQL werden Tools benötigt, die Sicherheit, Zuverlässigkeit und korrekte Funktionalität
 %von GraphQL verifizieren und validieren können.

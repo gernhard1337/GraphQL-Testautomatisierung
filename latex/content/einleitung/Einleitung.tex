@@ -2,22 +2,93 @@
 %! Date = 07.12.2022
 \chapter{Einleitung}
 
-In diesem Kapitel wird an das Thema und die Motivation dieser Arbeit herangeführt.
-Außerdem wird definiert, welche Ziele diese Arbeit erreichen soll und eine grobe Übersicht über die
-Kapitelstruktur gegeben.
+In diesem Kapitel führen wir an das Thema heran und stellen unsere Motive dar.
+Wir definieren, welche Ziele wir in dieser Arbeit verfolgen und geben abschließend eine grobe Übersicht über die
+Kapitelstruktur.
 
 \section{Motivation}
 
-Mit einer steigenden Nutzung von GraphQL wird es immer wichtiger, geeignete Tests für GraphQL-API's zu entwickeln damit eine
+Mit einer steigenden Nutzung von GraphQL wird es immer wichtiger, Tests für GraphQL-APIs zu entwickeln damit eine
 gute Softwarequalität sichergestellt werden kann.
-Tests können manuell geschrieben oder automatisch generiert werden.
-Während bei Unit-Tests für einzelne Methoden der Programmierer frei entscheiden kann, ob er die Tests selbst schreiben will
-oder doch eher von einem Tool generieren lassen will sind bei Integrations-Tests die Testräume teilweise so groß, dass ein
-manuelles Schreiben dieser Tests einerseits fehleranfällig aber auch schlicht zu langwierig ist.
+Die Entwicklung von Tests kann manuell oder automatisch geschehen.
+Bei Unit-Tests, also Tests für einzelne Funktionen, kann ein Programmierer selbst entscheiden, ob er die Tests selbst schreiben will
+oder sie von einem Tool automatisch generieren lasen will.
+Integrations-Tests, also Tests die Kombinationen einzelner Interaktionen von Funktionen miteinander testen, hingegen haben sehr oft
+einen sehr großen Testraum, sodass ein manuelles Schreiben dieser Tests fehleranfällig und langwierig ist.
 Für REST-APIs existieren schon automatische Integrationstesttools wie zum Beispiel: EvoMaster \cite{evo-master} , QuickREST \cite{karlsson2019quickrest} oder RESTTESTGEN \cite{rest-test-gen}.
 GraphQL-APIs haben leider noch einen Mangel an solchen automatischen Testtools.
-Im Rahmen der IEEE/ACM 2021 wurde mit ''Automatic Property-based Testing of GraphQL APIs''\cite{property-based-testing} eine Methode vorgestellt die diesen Mangel angehen soll.
-Ergebnis der Arbeit war hierbei ein Prototyp der die vorgestellte Methode umsetzten sollte.
+Im Rahmen der internationalen  Konferenz für Automatisierung  von  Softwaretests IEEE/ACM 2021 wurde mit
+\textit{Automatic Property-based Testing of GraphQL APIs}\cite{property-based-testing} eine Methode vorgestellt, die diesen Mangel angehen soll.
+Es wurde eine Methode entwickelt die aus dem GraphQL-Schema, also der Beschreibung der Datenstruktur der API, Tests zufällig generiert und damit versucht Fehler in der Programmierung zu finden.
+Die entwickelte Methode arbeitet nach folgendem Prinzip:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{content/einleitung/toolchain}
+    \caption{Methode von~\cite{property-based-testing}}
+    \label{property-based-method}
+\end{figure}
+
+Es wird aus einem GraphQL-Schema ein Query-Generator entwickelt.
+Dieser kann aus der Typspezifikation, die GraphQL vorgibt, valide GraphQL-Querys entwickeln und diese anreichern mit verschiedenen Argumenten.
+Die generierten Querys stellen die entwickelten Tests dar.
+Das Besondere an GraphQL ist jedoch, dass es, wie der Name schon andeutet, einen Graphen umsetzt.
+Ein sehr einfaches Schema lässt sich beispielhaft in diesen Graphen übersetzen:
+
+\begin{figure}[h!]
+    \centering
+    % Linke Seite: Code
+    \begin{minipage}{0.45\textwidth}
+        \begin{lstlisting}[language=GraphQL]
+  type Query {
+    book(id: ID): Book
+  }
+
+  type Book {
+    id: ID
+    title: String
+    sequel: Book
+  }
+        \end{lstlisting}
+    \end{minipage}
+    \hfill % Fügt horizontalen Abstand zwischen den Minipages hinzu
+    % Rechte Seite: Grafik
+    \begin{minipage}{0.45\textwidth}
+        \begin{tikzpicture}
+            \node[circle, draw] (n1) at (0,0) {Query};
+            \node[circle, draw] (n2) at (2,0) {Book};
+
+            \draw[->, line width=1.5pt] (n1) -- (n2);
+            \draw[->, line width=1.5pt, looseness=8] (n2) to[out=70, in=110] (n2);
+        \end{tikzpicture}
+    \end{minipage}
+    \caption{Schema zu Graph}
+\end{figure}
+
+Generell starten alle GraphQL-Querys im Query-Type.
+Erlaubte Anfragen sind dann alle Pfade mit Ursprung im Query Knoten wobei Limitierungen implementiert werden können.
+Property-based Testing nimmt nun die definierten Felder im Query-Type und geht die Pfade welche sich im Graphen ergeben zufällig ab.
+Nach einer bestimmten Anzahl an zufälligen Iterationen wird die Query aus dem erlangten Pfad generiert und ausgeführt.
+Nutzen wir nun jedoch ein wesentlich größeres Schema, zum Beispiel die GraphQL-API von GitLab~\cite{gitlab} so erkennt man schnell, dass
+der Graph so komplex wird, dass eine zufällige Pfadgenerierung zu unzuverlässig und ineffizient ist um
+eine große Struktur zuverlässlich zu testen.
+
+
+TODO:
+- Auf Graphstruktur zu sprechen kommen
+- Hinleitung auf Graphen als Kontrollflussgraphen
+- Graphcoverage Kriterien
+- Anwendung an GraphQL zeigen
+- Motivation abschließen
+
+
+
+
+
+
+
+
+
 Die vorgestellte Methode bezieht sich auf ''Property-based Testing'' wobei diese gleichzusetzen ist mit ''Random Testing'' \cite{property-based-testing}[vgl. 2.B]
 Durch die starke Typisierung und Schema-Definition, welche prinzipiell ein Graph ist, lässt sich in GraphQL
 sehr einfach auswerten welche Anfragen nun zulässig sind.
@@ -29,10 +100,7 @@ Der unendliche Suchraum wurde durch ein Rekursionslimit begrenzt allerdings wird
 \newpage
 Die bisher entwickelte Methode funktioniert auf folgende Weise:
 
-\begin{center}
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{content/einleitung/toolchain}
-    \caption{Methode von~\cite{property-based-testing}}
-\end{center}
+
 
 wobei neben dem vorher erwähnten Rekursionslimit außerdem Punkt 6. ''Verify response Properties'' kritisch
 zu betrachten ist da die Auswertung wirklich nur auf die Properties schaut.
@@ -44,6 +112,50 @@ Hierbei sollen Graphcoverage-Algorithmen zum Einsatz kommen, die mit iterativen 
 überdecken können und dabei immer verlässlich arbeiten, sodass die generierten Tests stets für vergleichbare Ergebnisse sorgen und nicht
 davon abhängig sind, dass der Zufall eine gute Überdeckung liefert.
 Zusammenfassend sei gesagt, dass bei der Testgenerierung und Testauswertung Verbesserungen möglich sind und dies Gegenstand dieser Arbeit sein soll.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Umsetzung}
 

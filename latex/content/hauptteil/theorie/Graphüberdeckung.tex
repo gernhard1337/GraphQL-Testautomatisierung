@@ -1,4 +1,4 @@
-\chapter{Graphcoverage}
+\chapter{Graphüberdeckung}
 
 Wie zuvor gesehen, existieren verschiedene Coverage-Kriterien um Testabdeckung zu prüfen.
 Graphcoverage ist hierbei eine Herangehensweise um graphenbasierte Datenstrukturen zu überdecken.
@@ -16,7 +16,7 @@ Wir erklären zuerst verschiedene Techniken, die einen Graphen überdecken und e
 an Beispielen.
 Erst sortieren wir Graphcoverage ein im Kontext von Code-Coverage und bilden im zweiten Schritt eine Coverage für GraphQL\@.
 
-\section{Graphcoverage allgemein}
+\section{Graphüberdeckung allgemein}
 
 Um Graphcoverage zu nutzen, verfeinern wir zuerst die allgemeine Definition von gerichteten Graphen.
 Ein gerichteter Graph ist ein Paar $G = (V, E)$ zweier disjunkter Mengen mit $E \subseteq V^2$ wobei alle Elemente aus E gerichtete Kanten sind. [vgl. 4.1.2]
@@ -33,7 +33,7 @@ Mithilfe dieser Definition können nun zum Beispiel Kontrollflussgraphen abgebil
 Ein Pfad innerhalb von eben definierten Graphen, mit möglicher Länge Null, der in einem Knoten $N_{0}$ startet und in einem Knoten $N_{f}$ endet, nennt sich Testpfad \cite[vgl. S. 28]{software-testing}
 Ziel ist es nun mit hilfe von Coverage-Kriterien Testpfade zu ermitteln die unser Problem ausreichend testen - was hierbei ausreichend ist, ist von Fall zu Fall unterschiedlich.
 
-\section{Graphcoverage Kriterien}
+\section{Graphüberdeckung Kriterien}
 
 Mithilfe voriger Definition können wir nun Coveragekriterien entwickeln, die uns Testpfade liefern, die je nach Kriterium für eine spezielle Abdeckung
 des Graphens mit Test-Requirements sorgen.
