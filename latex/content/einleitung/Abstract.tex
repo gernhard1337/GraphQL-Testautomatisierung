@@ -1,7 +1,7 @@
 \chapter{Zusammenfassung}
 
-Im Zuge der digitalen Transformation nimmt die Anzahl von Softwareanwendungen rasant zu~\cite{digitale-transformation} und insbesondere durch das
-Internet of Things und die generelle fortschreitende Vernetzung diverser Geräte nimmt in diesem Maße auch die Netzwerklast zu.~\cite{iot-traffic}
+Im Zuge der digitalen Transformation nimmt die Anzahl von Softwareanwendungen rasant zu~\cite{digitale-transformation}.
+Insbesondere durch das Internet of Things und die generelle fortschreitende Vernetzung diverser Geräte nimmt Netzwerklast stark zu.~\cite{iot-traffic}
 Bisheriger Standard für Kommunikation von Geräten über das Internet waren REST-APIs~\cite[vgl. Introduction]{hygraph} diese haben jedoch gewisse
 Limitierungen wie zum Beispiel: Ineffizienz durch Overfetching/Underfetching, Anzahl an Requests, Versionierung, Komplexität und vieles mehr.~\cite{hygraph}
 Mit der Veröffentlichung von GraphQL in 2015 wurde ein Konkurrent zu REST in das Leben gerufen der diese Probleme beheben kann.
@@ -27,13 +27,10 @@ Um den potenziell unendlichen Suchraum einzugrenzen wurde ein Rekursionslimit ei
 Diese Limitierung führt dazu, dass die Testabdeckung nur bis zu einem bestimmten Komplexitätsgrad des zu testenden System ausreichend ist.
 Mit dieser Arbeit wurde ein anderer Ansatz für die automatisierte Testgenerierung untersucht, um die Testabdeckung verlässlich zu verbessern.
 Ein Schwerpunkt der Arbeit lag hierbei darin, zuerst die theoretische Verknüpfung von GraphQL mit der Graphentheorie herzustellen.
-Das gewonnene Wissen wurde verwandt um zu analysieren, welches Graphüberdeckungskriterium sich ideal eignen würde für einen Prototyp.
+Das gewonnene Wissen wurde verwendet um zu analysieren, welches Graphüberdeckungskriterium sich ideal eignen würde für einen Prototyp.
 Die erlangten Kenntnisse halfen bei der Entwicklung eines Prototypes für die Testentwicklung.
 In zwei Experimenten konnte gezeigt werden, dass die entwickelte Methode in der Lage ist, Fehler in GraphQL-APIs zu finden.
-Insgesamt war es möglich, einen Punkt aus~\cite[VI. Future Work]{property-based-testing} zu erweitern, indem wir es schafften,
-für eine bessere Graphabdeckung zu sorgen.
-
-
+Insgesamt war es möglich, einen Punkt aus~\cite[VI. Future Work]{property-based-testing} zu erweitern, indem für eine bessere Graphabdeckung gesorgt wurde.
 
 
 %Hierbei soll untersucht werden, inwiefern Graphüberdeckungskriterien auf GraphQL angewendet werden können und wie Sie zur Generierung von

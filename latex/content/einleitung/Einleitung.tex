@@ -11,8 +11,8 @@ Kapitelstruktur.
 Mit einer steigenden Nutzung von GraphQL wird es immer wichtiger, Tests für GraphQL-APIs zu entwickeln damit eine
 gute Softwarequalität sichergestellt werden kann.
 Die Entwicklung von Tests kann manuell oder automatisch geschehen.
-Bei Unit-Tests, also Tests für einzelne Funktionen, kann ein Programmierer selbst entscheiden, ob er die Tests selbst schreiben will
-oder sie von einem Tool automatisch generieren lasen will.
+Bei Unit-Tests, also Tests für einzelne Funktionen, kann ein Programmierer selbst entscheiden, ob er diese selbst schreiben will
+oder von einem Tool automatisch generieren lasen will.
 Integrations-Tests, also Tests die Kombinationen einzelner Interaktionen von Funktionen miteinander testen, hingegen haben sehr oft
 einen sehr großen Testraum, sodass ein manuelles Schreiben dieser Tests fehleranfällig und langwierig ist.
 Für REST-APIs existieren schon automatische Integrationstesttools wie zum Beispiel: EvoMaster \cite{evo-master} , QuickREST \cite{karlsson2019quickrest} oder RESTTESTGEN \cite{rest-test-gen}.
@@ -28,9 +28,10 @@ Die entwickelte Methode arbeitet nach folgendem Prinzip:
     \caption{Methode von~\cite{property-based-testing}}
     \label{property-based-method}
 \end{figure}
+\newpage
 
-Es wird aus einem GraphQL-Schema ein Query-Generator entwickelt.
-Dieser kann aus der Typspezifikation, die GraphQL vorgibt, valide GraphQL-Querys entwickeln und diese anreichern mit verschiedenen Argumenten.
+Es wird aus einem GraphQL-Schema ein Testgenerator entwickelt.
+Dieser kann aus der Typspezifikation, die GraphQL vorgibt, valide GraphQL-Querys entwickeln und diese mit verschiedenen Argumenten anreichern.
 Die generierten Querys stellen die entwickelten Tests dar.
 Das Besondere an GraphQL ist jedoch, dass es, wie der Name schon andeutet, einen Graphen umsetzt.
 Ein sehr einfaches Schema lässt sich beispielhaft in diesen Graphen übersetzen:
@@ -62,7 +63,7 @@ Ein sehr einfaches Schema lässt sich beispielhaft in diesen Graphen übersetzen
             \draw[->, line width=1.5pt, looseness=8] (n2) to[out=70, in=110] (n2);
         \end{tikzpicture}
     \end{minipage}
-    \caption{Schema zu Graph}
+    \caption{GraphQL-Schema als Graph}
 \end{figure}
 
 Generell starten alle GraphQL-Querys im Query-Type.
@@ -72,100 +73,32 @@ Nach einer bestimmten Anzahl an zufälligen Iterationen wird die Query aus dem e
 Nutzen wir nun jedoch ein wesentlich größeres Schema, zum Beispiel die GraphQL-API von GitLab~\cite{gitlab} so erkennt man schnell, dass
 der Graph so komplex wird, dass eine zufällige Pfadgenerierung zu unzuverlässig und ineffizient ist um
 eine große Struktur zuverlässlich zu testen.
-
-
-TODO:
-- Auf Graphstruktur zu sprechen kommen
-- Hinleitung auf Graphen als Kontrollflussgraphen
-- Graphcoverage Kriterien
-- Anwendung an GraphQL zeigen
-- Motivation abschließen
-
-
-
-
-
-
-
-
-
-Die vorgestellte Methode bezieht sich auf ''Property-based Testing'' wobei diese gleichzusetzen ist mit ''Random Testing'' \cite{property-based-testing}[vgl. 2.B]
-Durch die starke Typisierung und Schema-Definition, welche prinzipiell ein Graph ist, lässt sich in GraphQL
-sehr einfach auswerten welche Anfragen nun zulässig sind.
-Die hier vorgestellte Methode nutzt den Fakt, dass zum Beispiel alle möglichen Anfragen immer im Query-Knoten
-beginnen müssen und somit alle weitergehenden Felder im Schema innerhalb des Query-Knoten definiert sein müssen.
-Da die Definition des Schemas der eines Graphens entspricht ist jedoch der mögliche Suchraum potentiell unendlich da GraphQL
-Zyklen innerhalb des Graphens erlaubt.
-Der unendliche Suchraum wurde durch ein Rekursionslimit begrenzt allerdings wird so eine schlechtere Test-Coverage erreicht.
-\newpage
-Die bisher entwickelte Methode funktioniert auf folgende Weise:
-
-
-
-wobei neben dem vorher erwähnten Rekursionslimit außerdem Punkt 6. ''Verify response Properties'' kritisch
-zu betrachten ist da die Auswertung wirklich nur auf die Properties schaut.
-Dies bedeutet, dass ein zurückgegebens Objekt nur auf seinen Typ überprüft wird aber nicht, ob seine tatsächlichen Rückgabewerte, die exakt erwartet sind.
-Hierdurch können false-positives entstehen.
-
-Die vorgestellte Methode wollen wir verbessern durch Änderung einiger Ansätze.
-Hierbei sollen Graphcoverage-Algorithmen zum Einsatz kommen, die mit iterativen Verfahren auch zyklische Graphen ideal
-überdecken können und dabei immer verlässlich arbeiten, sodass die generierten Tests stets für vergleichbare Ergebnisse sorgen und nicht
-davon abhängig sind, dass der Zufall eine gute Überdeckung liefert.
-Zusammenfassend sei gesagt, dass bei der Testgenerierung und Testauswertung Verbesserungen möglich sind und dies Gegenstand dieser Arbeit sein soll.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Einen ähnlichen Sachverhalt findet man in der Testgenerierung für Programmcode.
+Dieser kann sehr komplex werden und es müssen Strategien gefunden werden um diese effizient und zuverlässlich zu testen.
+Ein häufig verwendeter Ansatz ist es, den Code in einen Kontrollflussgraphen zu überführen, bei dem die Knoten Anweisungen oder Operationen darstellen
+und die Kanten den möglichen Pfaden entsprechen, die während der Ausführung des Programms genommen werden können.
+Hierbei wurde schon erhebliche Arbeit geleistet und diverse Kriterien entwickelt wie man eine gute Testabdeckung entwickelt.
+An dieser Stelle sei insbesondere an \textit{Introduction to Software Testing}\cite{software-testing} verwiesen.
+In ~\cite{software-testing} wird die Graphenüberdeckung erarbeitet und praktisch gezeigt, wie sie helfen kann um Tests zu generieren.
+Es werden verschiedene Kriterien vorgestellt, die den Graphen auf unterschiedliche Art und Weise betrachten.
+Wir wollen zeigen, dass das in~\cite{software-testing} erarbeitete Wissen nicht nur für Testentwicklung von Programmcode zielführend ist,
+sondern auch für die Testgenerierung von anderen Graphstrukturen verwandt werden kann, in unserem Fall für die Testgenerierung für GraphQL-APIs.
+Unser Fokus wird sich auf die PrimePath-Überdeckung~\cite[vgl. Criterion 2.4]{software-testing} richten da wir uns erhoffen, dass diese einen guten Mittelweg zwischen
+Testgenauigkeit, Fehlerfindung und Effizienz bietet.
 
 \section{Umsetzung}
 
-Zuallererst wird in dieser Arbeit etwas Theorie definiert und in Bezug gesetzt.
-Wir beginnen damit die Graphentheorie als mathematisches Konzept zu definieren denn dieses liegt GraphQL zugrunde.
-Darauffolgend kommt eine kleine Einführung in GraphQL und dann bilden wir schon die Schnittstelle von GraphQL zur Graphentheorie.
-Sobald diese Verbindung erfolgt ist können wir uns dem eigentlichen Problem widmen: Wie kann man mithilfe von Graphcoverage-Algorithmen
-Tests generieren?
-Hierfür erfolgt ein letzter Theorie-Exkurs über Software-Tests.
-Mit diesen Grundlagen schaffen wir es dann unsere Methode zu entwickeln und können Sie auch mit ''Automatic Property-based Testing of GraphQL APIs''\cite{property-based-testing}
-vergleichen.
-Unsere Methode wird konzeptionell vorgestellt und dann folgen einige Implementierungsdetails sowie ein Vergleich beider Tools durch Experimente.
-Abschließen wird die Arbeit mit einem Ausblick für zukünftige Arbeit und einem Fazit über unsere erreichten Verbesserungen.
+Zuallererst wird in dieser Arbeit die grundlegende Theorie in Kapitel~\ref{theorie} definiert und in Bezug zueinander gesetzt.
+Wir beginnen mit der Definition einiger Konzepte aus der Graphentheorie in Abschnitt~\ref{sec:graphentheorie}.
+Darauffolgend sehen wir uns GraphQL präziser in Absatz ~\ref{graphql} an und verbinden dann beide Absätze miteinander, indem wir einen
+konkreten Zusammenhang zwischen beiden Themen herstellen.
+Abschließend für die grundlegende Theorie führen wir in Absatz~\ref{test} umfassend in das Thema Softwaretests ein.
+Die zuvor erarbeitete Theorie wird dann im Kapitel Graphüberdeckung~\ref{graphueberdeckung} erweitert durch Theorien und Definitionen.
+In diesem Kapitel zeigen wir außerdem, inwiefern die zuvor definierten Übderdeckungskriterien hinreichend für Testgenerierung für Programmcode und GraphQL sind.
+Bevor wir unsere Methode entwickeln besprechen wir im Kapitel verwandte Arbeiten~\ref{relatedWork} wie der aktuelle Stand der Forschung zum Thema
+automatisiertes Testen von GraphQL ist.
+Mithilfe der zurvor entwickelten Theorie erarbeiten wir dann im Kapitel Testentwurf~\ref{testentwurf} ein Konzept, wie GraphQL automatisiert getestet werden kann.
+Dieses Konzept wird im Kapitel Testautomatisierung~\ref{testautomatisierung} eine praktische Umsetzung in einem Prototyp finden.
+Um nachzuweisen, dass der entwickelte Prototyp fähig ist, Fehler zu finden werden einige Experimente ausgeführt und mit
+der \textit{Property-based} Methode~\cite{property-based-testing} verglichen im Kapitel~\ref{experimente}.
+Enden wird die Arbeit mit einem kleinen Ausblick in Kapitel~\ref{futurework} und einem Fazit über unsere erreichten Verbesserungen.

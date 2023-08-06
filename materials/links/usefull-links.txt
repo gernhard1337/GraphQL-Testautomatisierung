@@ -21,3 +21,8 @@ https://gitlab.com/gitlab-org/gitlab/-/issues/208122
 https://gitlab.com/gitlab-org/gitlab/-/issues/208121
 
 -> https://docs.gitlab.com/ee/api/graphql/#max-query-complexity
+
+
+
+
+https://cs.gmu.edu:8443/offutt/coverage/GraphCoverage

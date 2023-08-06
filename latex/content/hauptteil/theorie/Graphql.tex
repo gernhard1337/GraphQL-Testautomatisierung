@@ -1,78 +1,38 @@
 \section{GraphQL}
+\label{graphql}
 
-GraphQL ist eine Open-Source Query-Language (Abfragesprache) und Laufzeitumgebung die von Facebook entwickelt wurde. \cite[vgl. Introduction]{graphqlspecification}
+GraphQL~\cite{graphqlspecification} ist eine Open-Source Query-Language (Abfragesprache) und Laufzeitumgebung die von Facebook entwickelt wurde\cite[vgl. Introduction]{graphqlspecification}.
 Die Besonderheiten von GraphQL sind, dass man mit nur einer einzelnen Anfrage mehrere Ressourcen gleichzeitig abfragen kann \cite[vgl. No More Over- and Underfetching]{howtographql} und die
-Daten in einem Schema durch einen Typgraphen definiert sind \cite[vgl. Benefits of a Schema & Type System]{howtographql}.
-So lässt sich die Effizienz stark erhöhen, indem weniger Anfragen
-gestellt werden die zeitgleich eine höhere Informationsdichte haben.
-Außerdem erleichtert GraphQL die Kommunikation von Schnittstellen, indem die gewünschten Felder schon in der Query definiert werden
+Daten in einem Schema durch einen Typgraphen definiert sind~\cite[vgl. Benefits of a Schema \& Type System]{howtographql}.
+So lässt sich die Effizienz stark erhöhen, indem weniger Anfragen gestellt werden die zeitgleich eine höhere Informationsdichte haben.
+GraphQL erleichtert außerdem die Kommunikation von Schnittstellen, indem die gewünschten Felder schon in der Query definiert werden
 und direkt den erwarteten Datentyp zusichern.
-Hier liegt auch der große Vorteil im Vergleich zum direkten technologischen Konkurenten REST API.
-Bei REST-APIs sind nämlich für verschiedene Ressourcen auch jeweils eine eigene Anfrage nötig und die Typsicherheit ist nicht so stark gegeben
-wie bei GraphQL-APIs. \cite[vgl. No More Over- and Underfetching]{howtographql}
-Diese beiden großen Vorteile sorgen dafür, dass GraphQL an Popularität gewinnt und zunehmend eingesetzt wird.
+Hier liegt auch der große Vorteil im Vergleich zum direkten technologischen Konkurenten REST API \cite[vgl. Welche REST-Einschränkungen versucht GraphQL zu überwinden?]{awsrestgraphql}.
+Bei REST-APIs sind nämlich für verschiedene Ressourcen auch jeweils eine eigene Anfrage nötig \cite[vgl. No More Over- and Underfetching]{howtographql} und die Typsicherheit ist nicht so stark gegeben
+wie bei GraphQL-APIs~\cite[vgl. Zusammenfassung der Unterschiede: REST vs. GraphQL]{awsrestgraphql}.
+Diese beiden großen Vorteile sorgen dafür, dass GraphQL an Popularität gewinnt und zunehmend eingesetzt wird~\cite[vgl. Continued growth and the road ahead]{graphql-growing-report}.
+GraphQL ist eine Abfragesprache und Spezifikation, dies bedeutet, dass GraphQL selbst keine konkrete Implementierung für
+eine Schnittstelle ist.
+Implementierungen von der GraphQL-Spezifikation sind in GraphQL-Servern umgesetzt die in verschiedenen Programmiersprachen existieren.
+Eine umfassende Auswahl verschiedenster Implementierungen findet sich in \cite{gqlimplementation}.
+Besonderer Beliebtheit erfreuen sich ApolloServer~\cite{apolloqgl}, Express GraphQL~\cite{expressgql} und HyGraph \cite{hygql}.
+Da jedoch alle Server die GraphQL-Spezifikation umsetzen müssen und unsere Tests aus GraphQL Anfragen bestehen, ist es für uns
+irrelevant welche konkrete GraphQL Serverimplementierung das zu testende System verwendet.
 Im Kontext dieser Arbeit ist ein tiefgreifendes, technologisches Verständniss von GraphQL essenziell, deshalb wird hier
 eine tiefgreifende Erklärung von GraphQL folgen.
 
 \subsection{Schema \& Typen}
+\label{schematypes}
 
-Grundlage einer jeden GraphQL-API ist ein GraphQL-Schema. \cite[vgl. Core Concepts]{graphqlspecification}
-Dieses Schema definiert genau wie die Daten der API aufgebaut sind und welche Informationen exisitieren.
-Ein GraphQL-Schema ist eine Sammlung von Typen.
-Typen sind Objekte einer Datenstruktur.
-Ein Typ definiert alle Informationen über sich, hierbei wird für jede Information ein Feld angelegt.
-Das Feld kann entweder ein Standarddatentyp wie String, Integer etc. sein oder ein anderer Typ.
-Falls das Feld ein anderer Typ ist, so entspricht diese Beziehung einer Kante in einem Graphen.
-Dies bedeuet, dass eine Abfrage dieses Feldes dann ein Objekt des Types zurückliefert und hier auch die gewünschten Felder
-definiert werden müssen.
-Ein sehr einfaches Schema wäre zum Beispiel die Beziehung zwischen Büchern und Authoren.
-Ein Buch hat einen Titel und einen Author.
-Ein Author hat einen Namen und ein Geburtsdatum.
-Zugehöriges Schema für dieses Beispiel sähe wie folgt aus:
-
-\begin{center}
-    \begin{verbatim}
-        type Buch {
-            title: String
-            author: Author
-        }
-        type Author{
-            name: String
-            geburtsdatum: Date
-        }
-    \end{verbatim}
-\end{center}
-
-Es lässt sich also festhalten, dass ein GraphQL-Typ immer als ein Tupel \verb+(Name, Felder)+ definiert wird wobei
-die Felder eine Liste an Tupeln \verb+(Feldname, Feldtyp, Datentyp)+ sind.
-Hierbei gelten folgende Einschränkungen für die Elemente des Tupels:
-
-\begin{center}
-    \begin{itemize}
-        \item[Feldname] ein eindeutiger Feldbezeichner
-        \item[Feldtyp] gibt Einschänkungen vor, z.B. nicht Null (durch \verb+!+), Listentyp (durch \verb+[]+) etc.
-        \item[Datentyp] der explizite Typ den das Feld hat, kann Standarddatentyp oder anders definierter Type sein
-    \end{itemize}
-\end{center}
-
-Wenn ein Typ ein Feld enthält, das kein Standarddatentyp ist so entspricht dieses Feld einer Kante in einem Graphen.
-Dieses Feld muss dann in einer Query näher definiert werden indem angegeben wird, welche Felder nun vom Typ zu dem die
-Kante führt, ausgegeben werden sollen.
-
-\subsection{vordefinierte Typen}
-
-Jedes GraphQL-Schema definiert initial mehrere Typen die spezielle Aufgaben haben und nicht vom User überschrieben werden können.
-Hierunter zählen unter anderem auch Standarddatentypen wie Sie gemeinhin bekannt sind.
-Im folgenden werden wir auf einige wichtige dieser Typen eingehen.
-
-\subsubsection{Scalar-Types}
-
-Grundlegende Datentypen (Standarddatentypen) werden durch Scalar Types ausgedrückt. Scalar-Types repräsentieren einzelne Werte
-wie z.B. einen Integer, einen String, Boolean Werte oder auch Datumstypen.
-Ein Scalar-Type kann nicht vom User geändert werden und enthält auch keine anderen Typen (im Gegensatz zu Objekttypen die das können).
-Es ist möglich auch eigene Scalar-Types festzulegen jedoch sind in der offiziellen Spezifikation von GraphQL
-lediglich folgende Scalar-Types definiert:
-
+Grundlage einer jeden GraphQL-API ist ein GraphQL-Schema.~\cite[vgl. Core Concepts]{graphqlspecification}
+Das Schema definiert exakt, wie die Daten in der API aufgebaut sind und welche Informationen exisitieren \cite[vgl. 3.2 Schema]{graphqlspecification}.
+Ein GraphQL-Schema ist eine Sammlung von einzigartigen Typen und definiert die Einstiegspunkte der API.
+Es gibt drei Einstiegspunkte, die $query$ zum Daten abfragen, $mutation$ zum Daten verändern und $subscription$ um über Datenänderungen informiert zu werden \cite[vgl. 3.2.1 Root Operation Types]{graphqlspecification}
+$Query$ ist dabei als einziger verpflichtend, die anderen sind optional. \cite[vgl. 3.2.1]{graphqlspecification}
+Die drei Einstiegspunkte sind als Typen definiert.
+Ein Typ ist die fundamentale Einheit eines jeden GraphQL Schemas. \cite[vgl. 3.4 Types]{graphqlspecification}.
+\newpage
+Es gibt 6 verschiedene Typdefinitionen, diese sind:
 
 \newcolumntype{C}{>{\Centering\arraybackslash}X}
 \begin{center}
@@ -81,114 +41,94 @@ lediglich folgende Scalar-Types definiert:
             \hline
             \textbf{ Typ } & \textbf{ Beschreibung} \\
             \hline
-            \textbf{ Int } & \textbf{ 32-bit Integer } \\
+            \textbf{ ScalarTypeDefinition } & Primitive Datentypen die keine Verbindungen zu anderen Typen haben dürfen. (Strings, Integer, \ldots) \\
             \hline
-            \textbf{ Float  } & \textbf{ Gleitkommazahl nach IEEE 754 } \\
+            \textbf{ ObjectTypeDefinition  } & Komplexere Datentypen die Verbindungen untereinander haben und in Feldern ihre Verbindungen definieren \\
             \hline
-            \textbf{ String } & \textbf{ frei wählbarer Text (leerer String zählt nich als non-Null!) } \\
+            \textbf{ InterfaceTypeDefinition } & Ein abstrakter Datentyp der die Struktur für andere Typen vorgibt \\
             \hline
-            \textbf{ Boolean } & \textbf{ einzigartiger Identifier, intern behandelt wie ein String } \\
+            \textbf{ UnionTypeDefinition } & Ein Typ der die Vereinigung verschiedener Typen ist \\
             \hline
-            \textbf{ ID } & \textbf{ Rohkonstrukt von dem geerbt werden kann für eigen definierte Typen } \\
+            \textbf{ EnumTypeDefinition } & Ein Typ der nur eine feste Anzahl an vorher festgelegten Werten hat \\
             \hline
-            \textbf{ Scalar Extensions } & \textbf{ Rohkonstrukt von dem geerbt werden kann für eigen definierte Typen } \\
+            \textbf{ InputObjectTypeDefinition } & Zusammensetzung von ScalarTypes um komplexere Eingabeargumente zu bilden  \\
             \hline
         \end{tabularx}
     \end{table}
-    \cite[vgl. 3.5 Scalars]{graphqlspecification}
+    \caption{GraphQL Typen}
+    \cite[vgl. 3.4 Types]{graphqlspecification}
 \end{center}
 
+Ein Typ hat einen einzigartigen Namen und definiert alle Informationen über sich, hierbei wird für jede Information ein Feld angelegt.
+Das Feld setzt dann wieder jeweils einen Typen um (InputObjectTypeDefinition ist dabei ausgeschlossen).
+Ein sehr einfaches Schema wäre zum Beispiel die Beziehung zwischen Büchern und Autoren.
+Ein Buch hat einen Titel und einen Author.
+Ein Author hat einen Namen und ein Geburtsdatum.
+Zugehöriges Schema für dieses Beispiel sähe wie folgt aus:
 
-\subsubsection{Query-Type}
-
-Der Query-Type definiert alle erlaubten Anfragen (Leseoperationen) an die GraphQL-API.
-Hierbei können Anfragen mit und ohne Eingabeparameter angegeben werden.
-Die definierten Anfragen haben, wie jeder Typ, einen eindeutigen Bezeichner, welcher dann auch in der zustellenden Query
-benutzt wird.
-Die Felder der Antwort hängen hierbei vom Feldtypen ab. Ist das Ergebnis der Query-Definition ein Standarddatentyp, so wird
-es direkt ausgegeben. Ist es ein anderer definierter Typ, so müss näher bestimmt werden welche Felder erwartet werden.
-Nutzen wir das Beispiel der Bücher & Autoren weiter, könnte man wie folgt einen Query-Type definieren:
-
-\begin{verbatim}
-    type Query{
-        # returns a List of all Books
-        getBooks: [Book]
-        # returns one random Book
-        getBook: Book
-        # returns the Author from a Book Title
-        getBookByTitle(String title): Author
-    }
-\end{verbatim}
-
-
-\subsubsection{Mutation}
-
-Der Mutation-Type ist das Pendant des Query-Types. Im Mutation-Type werden alle erlaubten Schreiboperationen definiert.
-Dies beeinhaltet das Erstellen, Aktualisieren und Löschen von Daten in der GraphQL-API.
-Felder im Mutation-Type haben auch immer einen Rückgabewert, Konvention ist es hierbei, die veränderten Objekte zurückzugeben,
-sodass der Client als Validierung exakt das Objekt bekommt, welches er sich "gewünscht hat".
-Die Operationen die mittels Mutation hervorgerufen werden, werden linear abgearbeitet. So ist es in GraphQL möglich, die
-Operationen miteinander zu verknüpfen. Man stelle sich z.B. vor, dass ein User seine Mail ändern will und gleichzeitig noch
-seinen Namen. Mit REST wären hier zwei Anfragen nötig, GraphQL kann dies mit einer Anfrage erledigen.
-Kehren wir wieder auf unser bisheriges Beispiel zurück, ein Mutationstyp hierfür könnte wie folgt aussehen:
-
-\begin{verbatim}
-    type Mutation{
-        # erstelle einen Author, return den erstellten Author
-        createAuthor(name: String!, birthdate: Date):Author
-        # erstelle ein Buch, return das erstellte Buch
-        createBok(title: String!, author:Author): Book
-        # ändere den Titel eines Buches, return des Buches mit geänderten Titel
-        changeBookTitle(title: String! , newTitle: String!): Book
-        # ändere den Geburtstag eines Autors, return des geänderten Authors
-        changeBirthdateFromAuthor(author: Author!, newBirthDate: Date!)
-    }
-\end{verbatim}
-
-eine einzelne Mutation kann Pflichtfelder und optionale Felder markieren.
-Pflichtfelder werden mit einem \verb+!+ markiert.
-Diese Felder müssen dann als Argument bei jeder Ausführung mitgesendet werden.
-Optionale Felder benötigen dies nicht.
-
-\subsubsection{Subscription}
-
-Eine Besonderheit von GraphQL ist der Subscription-Type.
-Dieser ermöglicht eine Echtzeitkommunikation zwischen Server und Client, indem mithilfe des WebSocket-Protokolls eine
-permanente Verbindung zwischen Server und Client hergestellt wird.
-Diese permantente Verbindung ermöglicht es dem Server direkt Daten an den Client zu senden ohne, dass der Client dafür
-eine Anfrage schicken muss.
-Wie auch in allen anderen Typen definiert der Subscription-Type Felder mit einem Namen und Rückgabetyp.
-Im Beispiel der Bücher & Autoren wäre hierbei nun denkbar, dass eine Subscription für neue Bücher & neue Autoren wünschenswert
-wäre.
-Hierdurch folgt dann dieser Subscription-Type:
-
-\begin{verbatim}
-    type Subscription{
-        # neues Buch veröffentlicht
-        newBook: Book
-        # ein neuer Author erscheint
-        newAuthor: Author
-    }
-\end{verbatim}
-
-Ein Client könnte sich auf diese Kanäle nun subscriben.
-Angenommen, wir wollen immer über ein neues Buch informiert werden so muss der Client diese Anfrage stellen:
-
-\begin{verbatim}
-    subscription{
-        newBook{
-            title
-            author{
-                name
-            }
+\begin{figure}[htb]
+    \begin{center}
+        \begin{lstlisting}[language=GraphQL]
+        type Buch {
+            title: String
+            author: Autor
         }
-    }
-\end{verbatim}
+        type Autor{
+            name: String
+            geburtsdatum: Date
+        }
+        \end{lstlisting}
+    \end{center}
+    \caption{minimales Schema mit zwei Types}
+    \label{buchauthorschema}
+\end{figure}
 
-Hierdurch wird eine permanente Verbindung hergestellt und immer ein Objekt vom Type Book mit den Feldern title \& author gesendet, wenn ein neues erschienen ist.
-Es ist wie auch in anderen Typen möglich, Felder wegzulassen falls diese nicht.
-Ein spezieller Client muss gewählt werden, der den WebSocket offen lässt, um den die Nachrichten zu empfangen, dies ist
-jedoch spezifisch abhängig von dem Projekt (Sprache, gewählte GraphQL Server Instanz).
+Es lässt sich also festhalten, dass ein GraphQL-Typ immer als ein Tupel \verb+(Name, Felder)+ definiert wird wobei
+die Felder eine Liste an Tupeln \verb+(Feldname, Feldtyp, Datentyp)+ sind.~\cite[vgl. 3.6 Objects]{graphqlspecification}
+\newpage
+Hierbei gelten folgende Einschränkungen für die Elemente des Tupels:
+
+\begin{center}
+    \begin{description}
+        \item[Feldname] ein eindeutiger Feldbezeichner
+        \item[Feldtyp] gibt Einschänkungen vor, z.B. nicht Null (durch \verb+!+), Listentyp (durch \verb+[]+) etc.
+        \item[Datentyp] der explizite Typ den das Feld hat, kann Standarddatentyp oder anders definierter Type sein
+    \end{description}
+\end{center}
+
+\subsection{Query}
+
+Da der Query-Type der Einstiegspunkt in alle Abfragen ist, welche es später zu testen gilt, soll dieser hier nocheinmal nähere Betrachtung finden.
+Sämtliche valide Abfragen beginnen im Query-Type.
+Abfragen können mit und ohne Eingabeparameter angegeben werden.
+Informationen darüber finden sich im Schema.
+Die definierten Anfragen haben, wie jeder Typ, einen eindeutigen Bezeichner, welcher dann auch in der zustellenden Abfrage
+benutzt wird.
+Die Felder der Antwort hängen hierbei vom Feldtypen ab.
+Ist das Ergebnis der Query-Definition ein ScalarType, so wird es direkt ausgegeben.
+Ist es ein anderer definierter Typ, so müss näher bestimmt werden welche Felder erwartet werden, dabei muss die Abfrage stets mindestens ein ScalarType enthalten.
+Nutzen wir das Beispiel der Bücher \& Autoren weiter, könnte man wie folgt einen Query-Type definieren:
+
+\begin{figure}[htb]
+    \begin{center}
+        \begin{lstlisting}[language=GraphQL]
+        type Query{
+            # liste aller bücher
+            getBooks: [Book]
+            # ein zufälliges buch
+            getBook: Book
+            # author zum jeweiligen Buch
+            getBookByTitle(String title): Author
+        }
+        \end{lstlisting}
+    \end{center}
+    \caption{Query Type für Buch und Autor}
+    \label{minimalquerytype}
+\end{figure}
+
+Eine solche API wäre in der Lage, 3 verschiedene Anfragen zu beantworten.
+Man muss beachten, dass die Anfrage \verb+getBookByTitle("Beispieltitel"){ author }+ zwingend einen Scalaren Typen aus dem Typ Autor ausweisen muss.
+Die Anfrage wäre somit erst in dieser Form valide: \verb+getBookByTitle("Beispieltitel"){ author{ name } }+
 
 \subsection{Resolver}
 
@@ -198,16 +138,18 @@ Ein wichtiger Baustein fehlt aber noch.
 Woher kommen die Daten?
 Wie werden Eingabedaten behandelt?
 Diese Fragen werden durch die Resolver beantwortet.
-Ein Resolver ist in GraphQL eine Funktion die zuständig für die Datenabfragen und Strukturierung ist.
+Ein Resolver ist in GraphQL eine Funktion die zuständig für die Datenabfragen und Strukturierung ist \cite[vgl.]{apolloqgl}.
 Im Schema haben wir bisher definiert in welcher Art und Weise wir die Daten haben wollen, der Resolver ist nun dafür zuständig,
 diese Daten im definierten Format zur Verfügung zu stellen.
 Die Resolver sind nicht, wie alle vorher benannten Teil von GraphQL offen einsehbar, sondern sind Funktionen einer Programmiersprache.
-Für jedes Feld im Schema, das Daten enthält, muss ein Resolver implementiert werden, dies umfasst insbesondere die Query, Mutation und Subscription Typen aber auch
-alle selbstdefinierten Typen.
+Sie setzen die Schnittstellenprogrammierung wie in Kapitel~\ref{api} angesprochen um.
+Für jeden Typ im Schema, muss ein Resolver implementiert werden, dies umfasst insbesondere die Query, Mutation und Subscription Typen aber auch
+alle selbstdefinierten Typen \cite[vgl.]{apolloqgl}.
 Die konkrete Implementierung der Resolver hängt von verschiedenen Dingen ab, insbesondere jedoch welchen GraphQL-Server man nutzt und welche Programmiersprache verwandt wird.
 Ein beispielhafter Resolver für die Query eines Buches anhand seines Titels mit ApolloServer in Javascript könnte folgende minimale Syntax haben:
 
-\begin{verbatim}
+\begin{figure}[htb]
+    \begin{verbatim}
     const resolvers = {
         Query: {
             book: (parent, args, context, info) => {
@@ -215,21 +157,18 @@ Ein beispielhafter Resolver für die Query eines Buches anhand seines Titels mit
             },
         },
     };
-\end{verbatim}
+    \end{verbatim}
+    \caption{ein einfacher Resolver}
+    \label{simpleresolver}
+\end{figure}
 
-Wobei hierbei zu beachten sei, dass alle Argumente die mitgegeben werden im \verb+args+ Argument gespeichert sind.
-Die Funktion getBookByID gibt ein, dem Schema entsprechendes, Json-Objekt zurück.
+Wobei zu beachten ist, dass alle Argumente die mitgegeben werden im \verb+args+ Argument gespeichert sind.
+Die Funktion $getBookByID$ gibt ein, dem Schema entsprechendes, Json-Objekt zurück.
 Da die Resolver konkrete Implementierungen außerhalb von GraphQL sind und die einzelnen Resolver untereinander aufrufen können, bedarf es hier
-einer Reihe an Tests da dieser Code gerne Fehlerhaft sein kann.
+einer Reihe an Tests da dieser Code Fehlerhaft sein kann.
 Ein Klassiker für GraphQL ist es, einzelne Attribute in einem Resolver zu vergessen.
-Ein Entwickler sollte für jeden Resolver, der ja eine Funktion darstellt, Unit-Tests zur Verfügung stellen.
-Da sich die einzelnen Resolver aber auch untereinander aufrufen können, muss hier auch die Integrität getestet werden.
-Hier setzten wir an, indem unsere Testgenerierung darauf aufbaut, jeden möglichen Resolver in mindestens einer Kombination mit anderen Resolvern zu testen.
-So kann sichergestellt werden, dass die Resolver untereinander integer sind.
-
-
-
-
-
-
-
+Ein Entwickler sollte für jeden Resolver, der eine Funktion darstellt, einen beziehungsweise mehrere Tests zur Verfügung stellen.
+Da sich die einzelnen Resolver aber auch untereinander aufrufen können, kann sich ein teils riesiger Testraum ergeben.
+Hierzu mehr in Kapitel~\ref{abfrgraph}
+Um sicherzustellen, dass der Kombinationsaufruf der Resolver fehlerfrei ist, wird im Folgenden eine Methode entwickelt die gewährleistet,
+dass die möglichen Kombinationen ausreichend durch Tests abgedeckt sind und so die Qualität und Zuverlässigkeit von GraphQL-APIs erhöht wird.

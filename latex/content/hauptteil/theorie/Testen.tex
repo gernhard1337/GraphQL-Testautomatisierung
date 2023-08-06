@@ -1,124 +1,251 @@
 \section{Testen}
+\label{test}
 
 Indem technische Geräte und somit auch Software im umfangreichen Maßstab Einzug nehmen in nahezu alle Bereiche des
-Lebens ist es wichtig die Sicherheit, Qualität und Zuverlässigkeit von Software sicherzustellen.
-Um all dies sicherzustellen sind strukturelle Tests von Software nötig.
+Lebens ist es wichtig die Sicherheit, Qualität und Zuverlässigkeit von Software sicherzustellen. \cite[vgl. Introduction]{software-testing}
+Um all dies sicherzustellen sind systematische Tests von Software nötig.
 Ziel ist es sicherzustellen, dass die Software den definierten Anforderungen und Spezifikation entspricht.
-Hierbei sind diverse Techniken und Ansätze verfolgt.
-Im Rahmen dieser Arbeit wird sich insbesondere auf Integrationstests fokussiert also Tests, die Zusammenarbeit von einzelnen Softwarekomponenten (Units)
-sicherstellen sollen.
+Hierbei werden diverse Techniken und Ansätze verfolgt, die im folgenden kurz vorgestellt werden.
 
 \subsection{Typen von Tests}
 
 Es gibt verschiedene Sichtweisen auf das zu testende System.
 Die Sichtweisen können intern oder extern bestimmt sein.
-So sind Faktoren wie möglicher Zugriff auf Quellcode oder Architekturdetails des Systems essentiell wichtig um
+So sind Faktoren wie möglicher Zugriff auf Quellcode oder Architekturdetails des Systems essenziell wichtig um
 zu entscheiden, welche Art von Tests angewandt werden.
-Es gibt zwei generelle Typen von Sichtweisen und eine Mischform.
-Wir betrachten hierbei das zu testende System als Box.
-Diese Box kann entweder transparent gesehen werden, halbtransparent oder untransparent.
-Der Transparente Ansatz nennt sich WhiteBox-Testing, der halbtransparente GreyBox-Testing und der Untransparente BlackBox-Testing.
-Die Ansätze unterscheiden sich vorallem in den zur Verfügung stehenden Informationen des Systems.
-Wir vernachlässigen hierbei das GreyBox-Testing da dieses keine Relevanz für das hier zugrunde liegende Problem besitzt.
+Es gibt zwei generelle Sichtweisen und eine Mischform.
+Das zu testende System wird als Box betrachtet.
+Diese Box kann aus verschiedenen Sichten gesehen werden, die wir im Folgenden näher erläutern.
+Die Ansätze unterscheiden sich vor allem in den zur Verfügung stehenden Informationen über das System.
 
 \subsubsection{White-Box Testing}
 
-Im WhiteBox-Testing stehen alle Informationen über das System zur Verfügung.
-Der Tester hat Zugriff auf Code, Architekturdetails und besitzt Kenntniss über alle möglichen Details des Systems.
+Im WhiteBox-Testing stehen alle Informationen über das System zur Verfügung~\cite[vgl. 1.4.2 Code-Based Testing]{software-testing-craftmans}.
+Der Tester hat Zugriff auf Code, Architekturdetails und besitzt Kenntnisse über alle möglichen Details des Systems~\cite[vgl. 1.4.2 Code-Based Testing]{software-testing-craftmans}.
 Somit kann der Tester auf alle möglichen Informationen über das System zugreifen und damit seine Tests generieren.
 Die erstellten Tests fundieren dann auf einem soliden Niveau, dass begründet wird durch das Domänenwissen über das System.
+Verschiedene Techniken zur Analyse des Domänenwissens wurden entwickelt um die Informationen für die Testentwicklung zu nutzen.
+Wir werden anschließend in Kapitel~\ref{graphueberdeckung} eine dieser Techniken näher untersuchen.
 
 \subsubsection{Black-Box Testing}
 
-Der Idealfall des Testens ist zwar der WhiteBox-Test allerdings ist es durch verschiedene Limitierungen nicht immer möglich oder auch gewollt,
-auf alle Informationen zuzugreifen.
 Im BlackBox-Testing hat der Tester keinen Zugriff auf interne Funktionsweisen der Software.
-Schwerpunkt des Testens ist es, dass die Software das tut was sie soll.
-Wir interessieren uns hier nicht dafür was intern im System abläuft sondern nur, ob Eingabe zu Ausgabe passt.
-In dieser Arbeit werden wir uns vor allem auf das BlackBox-Testing beziehen.
-Dies folgt einerseits aus dem methodischen bezug zu \textit{Property-based Testing}\cite{property-based-testing}
-als auch aus dem Fakt, dass das Testtool unabhängig von Implementierungsdetails nutzbar sein soll.
+Schwerpunkt des Testens ist es, dass die Software das tut, was in den Anforderungen gefordert ist \cite[vgl. Specification-Based Testing]{software-testing-craftmans}.
+Da der Quellcode nicht einsehbar ist muss man sich darauf verlassen, dass die Anforderungen treffend forumliert wurden \cite[vgl.]{testmanagment}.
+Das BlackBox-Testing hat einen methodischen Bezug zu Property-based Testing~\cite{property-based-testing}.
+
+\subsubsection{Grey-Box Testing}
+
+Das Grey-Box Testing ist eine Mischform von White und BlackBox Tests~\cite[vgl.]{testmanagment}.
+Es sind in dieser Sicht Teile der Software bekannt aber man hat keinen umfassenden Einblick wie im White-Box Testing.
+Es werden funktionale als auch strukturelle Testansätze verfolgt, je nachdem wie viel Informationen über das System tatsächlich 
+verfügbar sind~\cite[vgl.]{graybox}.
+Das System wird aus der Sicht des Endbenutzers getestet~\cite[vgl.]{testmanagment}, jedoch mit zusätzlichem Wissen über Teile des internen Aufbaus.
 
 \subsection{Arten von Tests}
 
-Es existieren verschiedene Arten von Tests welche unterschiedliche Ziele haben.
-Nachfolgend wird eine Auswahl verschiedener Arten erklärt wobei wir in der Granularität aufsteigen, wir fangen mit feingranularen Unit-Tests an
-und steigen immer weiter zu kompletten System-Tests auf.
-In der Mitte davon liegt das Integrations-Testen.
-Diese Methode wird mit dieser Arbeit für einen Anwendungsfall benötigt.
-Die Erklärung der anderen Arten erfolgt für eine einfachere Einordnung ebendieser.
+Neben verschiedenen Transparenzen auf das zu testende System gibt es verschiedene Granularitätsebenen der Tests.
+Tests können von abgeleitet werden von Anforderungen, Spezifikationen, Designartifikaten und dem Programmcode~\cite[vgl. 1.1.1 Testing Levels Based on Software Activity]{software-testing}
+Dabei können verschiedene Level an Tests definiert werden, diese sind eng verbunden mit den Entwicklungsaktivitäten einer Software~\cite[vgl. 1.1.1]{software-testing}.
 
-\subsubsection{Unit Testing}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/vmodell}
+    \caption{Softwareentwicklung und Test-Levels im V-Modell \cite[vgl. Figure 1.2]{software-testing}}
+    \label{vmodelltest}
+\end{figure}
 
-Feingranulare Tests die zur Aufgabe haben, einzelne Funktionen/Methoden zu testen.
-Es wird insbesondere darauf geachtet, dass die einzelne Methode genau das macht, was Sie soll.
-Es existieren diverse Tools, die diesen Schritt vereinfachen.
-Diese Tools helfen einem dabei, dass man Tests definieren kann \& ein erwartetes Verhalten der Funktion angibt.
-Eine Auswertung dieser Funktionalität wird dann vom Tool übernommen und bei etwaiigen Fehlern gibt es eine Erklärung
-nach dem Muster: \vern+ABC+ war erwartet, \verb+DEF+ ist eingetreten.
-Unit-Tests werden bei der Entwicklung der einzelnen Funktionen von der Software entwickelt (sollten sie zumindest).
-Im Idealfall wird Test-Driven-Development verwendet, hierbei wird erst der Test entwickelt und dann die Methode entwickelt,
-die diese Tests erfüllen muss.
+Die verschiedenen Testebenen sollten schon im Designprozess Beachtung finden, denn die Formulierung von Test kann dabei helfen Designfehler zu finden
+noch bevor die Software entwickelt wird~\cite[vgl. 1.1.1].
+Die verschiedenen Ebenen der Tests spiegeln auch verschiedene Ansichten in den Tests wieder.
+\newpage
+\begin{figure}[h!]
+    \begin{description}
+        \item[Akeptanz Test] - Betrachten der Software hinsichtlich der Anforderungen
+        \item[System Test] - Betrachten der Software hinsichtlich der Architektur
+        \item[Integrationstest] - Betrachten der Software hinsichtlich der Teilsysteme
+        \item[Modultest] - Betrachten der Software hinsichtlich detaiiliertem Design
+        \item[Unit Test] - Betrachten der Software hinsichtlich konrekter Implementierung
+    \end{description}\cite[vgl. 1.1.1]{software-testing}
+\end{figure}
 
-\subsubsection{Integration Testing}
+Im folgenden gehen wir noch einmal kurz auf jede einzelne Testebene etwas präziser ein.
+Dabei ist die Reihenfolge von feingranular zu grobgranular.
 
-Eine Granularitätsebene höher sind die Integrationstests.
-Hier wird getestet, ob einzelne Komponenten der Software miteinander gut zusammen arbeiten, d.h.\ ob sie integer sind.
-Die Testentwicklung ist hierbei meist eher komplex da einzelne Komponenten der Software selbst eine sehr hohe Komplexität haben können.
-Eine automatische Testentwicklung ist auf dieser Granularitätseben eigentlich eher selten der Fall, allerdings bietet sich
-im Kontext von GraphQL die Automatisierung durchaus an da die Zusammenarbeit von Softwarekomponenten mit klar definierter Struktur
-lohnenswert scheint.
-Will man allerdings die Intergration von großen Librarys als einzelne Komponente in der eigenen Anwendung testen, so gestaltet sich dies
-meist schwer und muss manuell getestet werden da meist komplexe Datenstrukturen händisch gemockt (Mocken als Kapitel oder Glossar?) werden müssen.
 
-\subsubsection{System Testing}
+\subsubsection{Unit Test}
 
-Auf der Ebene des System-Testing wird das komplette entwickelte System getestet.
-Hierbei ist sicherzustellen, dass alle funktionalen Anforderungen an das System eingehalten werden.
-Die Tests werden hierbei so realistisch wie möglich ausgeführt, d.h. das Testsystem soll möglichst nah am späteren Produktivsystem sein
-und Testfälle sollen die funktionalen Anforderungen der Software abdecken.
-So sind insbesondere alle Geschäftsprozesse zu testen.
-Im allgemeinen werden System-Tests als Blackbox Tests durchgeführt, dies bedeutet, dass nur externe Funktionsmerkmale getest werden,
-z.B. ob eine gewünschte Interaktion stattfand.
-Hierbei wird keine Rücksicht auf interne Zustände genommen.
-Ziel ist es, die Funktionsweise so zu testen wie ein realer Benutzer die Software nutzen würde.
+Als feingranularste Testbene ist das Ziel des Unit-Testings den entwickelten Code zu testen.
+Eine einzelne $Unit$ ist in Objekt-Orientierter Programmierung eine Funktion oder Methode~\cite[vgl. Unit Testing]{software-testing-craftmans}.
+Ein einzelner Unit Test konzentriert sich dabei auf eine Funktion oder Methode.
 
-\subsection{Test-Coverage}
+\begin{figure}[h!]
+    \begin{lstlisting}[language=Python]
+        def add(a, b):
+            return a + b
+    \end{lstlisting}
+    \caption{Eine einfache Python-Funktion}
+    \label{unitfkt}
+\end{figure}
 
-Es ist nun bekannt, welche Arten des Testens es gibt.
-Allerdings ist noch nicht klar, wie viele Tests ausreichend sind.
-Man könnte nun argumentieren, dass man einfach jede einzelne Eingabe in einem Programm testen könnte um zu sehen,
-dass für jede Eingabe die korrekte Ausgabe kommt.
-Hierbei bemerkt man jedoch relativ schnell, dass dies mit heutigen Prozessoren nicht mehr möglich ist.
-Als Beispiel sei hier eine simple Addition von 2 64-bit Integern genannt.
+\begin{figure}[h!]
+    \begin{lstlisting}[language=Python]
+    def test_add_positive():
+        self.assertEqual(add(3, 5), 8)
+
+    def test_add_negative():
+        self.assertEqual(add(-3, -5), -8)
+
+    def test_add_mixed():
+        self.assertEqual(add(5, -3), 2)
+    \end{lstlisting}
+    \caption{Drei Unit Tests für die add-Funktion}
+    \label{unitfkttest}
+\end{figure}
+
+Er prüft, ob die gegebene Einheit bei bekannten Eingaben die erwarteten Ausgaben liefert.
+Für diese Tests werden häufig Testframeworks genutzt die bei der Entwicklung und Ausführung der Tests helfen~\cite{software-testing}.
+In Abbildung~\ref{unitfkt} wurde eine Funktion defineirt und in Abbildung~\ref{unitfkttest} sind drei UnitTest mit PyTest~\cite{pytest} definiert.
+Die Tests führen verschiedene Methoden aus und prüfen, dass das Ergebnis mit der Erwartung übereinstimmt.
+Das $assertEqual$ übernimmt dabei die Auswertung.
+
+\subsubsection{Modul Test}
+
+Eine Granularitätsebene höher ist das Modul Testen.
+Ein Modul ist eine Sammlung von Units~\cite[vgl. S. 6]{software-testing}.
+Ziel ist es, die Interoperabilität der einzelnen Units in einem Modul sicherzustellen~\cite[vgl. S. 6]{software-testing}.
+
+\begin{figure}[h!]
+    \begin{lstlisting}[language=Python]
+        def add(a, b):
+            return a + b
+        def sub(a, b):
+            return a - b
+        def mul(a, b):
+            return a * b
+        def quo(a, b):
+            return a / b
+    \end{lstlisting}
+    \caption{Eine Python Rechenmodul}
+    \label{modul}
+\end{figure}
+
+Ein Modul wird nun getestet, indem geprüft wird, dass die einzelnen Funktionen untereinander richtig miteinander interagieren.
+
+\begin{figure}[h!]
+    \begin{lstlisting}[language=Python]
+    def test_rechenmodul():
+        testResult = (mul(add(2,3), sub(3,2)))
+        self.assertEqual(testResult, 5)
+    \end{lstlisting}
+    \caption{Eine Modul Test}
+    \label{modultest}
+\end{figure}
+
+Anzumerken ist jedoch, dass die Interoperabilität im Modul-Test nur innerhalb eines Moduls getestet wird~\cite[vgl. S. 6]{software-testing}.
+
+\subsubsection{Integrations Test}
+
+Das Integrationstesten übernimmt das Testen von Interoperabilität zwischen verschiedenen Modulen~\cite[vgl. S. 7]{software-testing}.
+Es wird dabei davon ausgegangen, dass die einzelnen Module zuvor korrekt getestet worden sind und die einzelnen Module korrekt arbeiten~\cite[vgl. S. 7]{software-testing}.
+Testobjekt sind vor allem die Schnittstellen der einzelnen Module und damit auch die Kommunikation zwischen den Modulen.
+
+\begin{figure}[h!]
+    \begin{lstlisting}[language=Python]
+def nnwUser(name, gb, email):
+    pw = generateRandomPw()
+    return new User(name, gb, email, pw)
+    \end{lstlisting}
+    \caption{Modul 1}
+    \label{modul1}
+\end{figure}
+
+\begin{figure}[h!]
+    \begin{lstlisting}[language=Python]
+def saveUser(User user):
+    db.save(user)
+def getUser(name):
+    db.findUser(name)
+    \end{lstlisting}
+    \caption{Modul 2}
+    \label{modul2}
+\end{figure}
+
+Ein Integrationstest für beide Module wäre nun, zu testen, ob ein neu angelegter Nutzer ordentlich gespeichert wird und ob dabei die zugewiesenen Daten
+auch passend bleiben.
+
+\begin{figure}[h!]
+    \begin{lstlisting}[language=Python]
+def testAddNewUserAndSaveUserAndGetUser():
+        user = newUser("Peter", "01.04.1980", "p@test.de")
+        saveUser(user)
+        self.assertEqual(getUser("Peter"), user)
+    \end{lstlisting}
+    \caption{Integrationstest zwischen Modul 1 und Modul 2}
+    \label{integtest}
+\end{figure}
+
+Im Kontext dieser Arbeit werden wir untersuchen, wie solche Tests automatisiert für GraphQL erstellt werden können.
+Hinter jedem verschiedenen Typen von GraphQL steckt ein Resolver, welcher als ein eigenes Modul gesehen werden kann.
+Die Interoperabilität dieser Module gilt es im folgenden dann automatisiert zu testen.
+
+\subsubsection{System Test}
+
+Um zu testen, ob nun nicht nur einzelne Teile des Systems gut miteinander funktionieren, sondern auch das ganze System als
+solches, nutzt man die System-Tests~\cite[vgl. S. 6]{software-testing}.
+Die Tests werden auf Grundlage der Spezifikation des Systems erstellt.
+Es wird davon ausgegangen, dass die einzelnen Module hier wie erwartet funktionieren.
+Im Vordergrund dieser Testebene steht, dass die Software die Spezifikation, also die Erwartungen an sich, erfüllt.
+
+\subsubsection{Akzeptanz Test}
+
+Die finale Ebene des Testprozesses ist der Akzeptanz Test.
+In dieser Ebene wird die Software aus Sicht des Endnutzers geprüft, oft ist der Endnutzer auch Teil dieses Prozesses~\cite[vgl. S.6]{software-testing}.
+Ziel ist es, zu verifizieren, dass die Analyse und Umsetzung des Problems erfolgreich ist und der Nutzer mit der entwickelten Lösung
+zufrieden ist~\cite[vgl. S.6]{software-testing}.
+
+\subsection{Testabdeckung}
+
+Wir kennen nun verschiedene Ebenen und Sichtweisen des Testens.
+Allerdings ist noch nicht klar, wann ausreichend getestet wurde und ob wir überhaupt genügend testen können.
+Hier zu nutzen wir formale Abdeckungskriterien wie sie in~\cite{software-testing} eingeführt werden.
+Sie helfen uns, sinnvolle Testfälle zu entwickeln und zu entscheiden, wann ausreichend getestet wurde.
+Sollte man nämlich davon ausgehen, dass man einfach alle möglichen Eingaben an eine Funktion testen kann, so kommt
+man sehr schnell an die Erkentniss, dass dies unmöglich ist.
+Als Beispiel sei hier eine simple Addition von 2 64-bit Integer genannt.
 Für eine komplette Testung dieser simplen Addition gibt es \verb+2^64 ≈ 18 Trillionen+ Kombinationen.
-Mit einem 3GHz Prozessor wäre eine vollständige Testung nach \verb+2^64 / 3.000.000.000 ≈ 6.149.571+ Sekunden (69 Tage) erledigt.
-Es ist also ersichtlich, dass schon so eine vermeintlich einfache Funktion nicht komplett testbar ist.
-Daher wird also ein strukturierter Ansatz benötigt, der den Testraum einerseits klein hält, andererseits trotzdem dafür sorgt, dass
-Fehler ausgeschlossen werden können.
-Hierfür wurden formale Coverage-Kriterien entwickelt.\cite[vgl. S.17]{software-testing}
+Mit einem 3GHz Prozessor wäre eine vollständige Testung nach \\ 2^{64} / 3.000.000.000 $ \approx $ 6.149.571 Sekunden (69 Tage) erledigt.
+Betrachten wir weiterhin einen Java-Compiler so ist der Eingaberaum von Programmen die zum Test stehen effektiv unendlich und somit nicht testbar \cite[vgl. 1.3 Coverage Criteria for Testing]{software-testing}.
 
-\subsubsection{Coveragekriterien}
+\subsubsection{Abdeckungskriterien}
 
 Wie gezeigt ist ein "vollständiges Testen" - also ein ausprobieren aller Möglichkeiten einfach unmöglich.
 Hierdurch sind wir gezwungen einen anderen Ansatz zu verfolgen.
-Coveragekriteren liefern hierbei einen Ansatz die einem dabei helfen können, sinnvolle Tests zu entwickeln und zu entscheiden,
-wann genug Tests entwickelt wurden.
-Die Grundidee ist hierbei, dass wir Test-Requirements definieren.
-Ein Test Requirement ist ein spezielles Element eines Software-Artefakts, dass von einem Testfall erfüllt sein muss.~\cite[vgl. S.17]{software-testing}
-Hiermit ist gemeint, dass ein Test-Requirement ein spezifisches Kriterium definiert, dass durch einen Test überprüfbar
-wird.
-Ein Beispiel für ein Test-Requirement wäre es, das wir prüfen, ob die Division von 2 und 1 wirklich 2 ergibt.
-Ein Coveragekriterium ist dann eine Regel beziehungsweise eine Sammlung von Regeln die eine Menge an Test-Requirements erzeugen.~\cite[vgl. S.17]{software-testing}
-Bleiben wir bei dem eben genannten Beispiel wäre ein Coveragekriterium hierbei, dass wir die Divison durch 0 auch noch überprüfen
-da diese speziell ausgeschlossen wird.
-Es gibt diverse Methoden wie ein Coveragekriterium entwickelt werden kann.
-Einige grundlegende Typen wären zum Beispiel Call-Coverage, Branch-Coverage, Boundary-Coverage oder Statement-Coverage.
-(Man könnte hier noch weiter darauf eingehen aber das wäre nur um mehr Text zu haben TODO)
+Abdeckungskriterien liefern hierbei einen Ansatz, die einem dabei helfen können, sinnvolle Tests zu entwickeln und zu entscheiden, wann genug Tests entwickelt wurden.
+Im folgenden sehen wir die Abdeckungskriterien auch als Testanforderungen~\cite[vgl. 1.3 Coverage Criteria for Testing]{software-testing}
 
+\begin{definition}
+    Eine Testanforderung ist ein spezifisches Element eines Softwareartifkates das einen Testfall erfüllen muss.~\cite[Def. 1.20]{software-testing}
+\end{definition}
 
+Dabei soll ein Abdeckungskriterium erfüllt sein, wenn alle seine Testanforderungen erfüllt sind.
 
+\begin{definition}
+    Ein Abdeckungskriterium ist eine Regel oder eine Sammlung von Regeln, die Testanforderungen an eine Menge von Testfällen stellen~\cite[Def. 1.21]{software-testing}
+\end{definition}
 
+Um zu messen, wie gut ein Abdeckungskriterium durch eine Menge an Tests umgesetzt wird, führen wir die Abdeckung ein.
+Einerseits ist es manchmal sehr schwierig ein Abdeckungskriterium vollständig zu erreichen, andererseits können
+wir so messen, ob das Kriterium erfüllt wurde~\cite[vgl. S. 18]{software-testing}.
 
+\begin{definition}
+    Gegeben sei eine Menge an Testanforderungen $TR$ für ein Abdeckungskriterium $C$. 
+    Eine Menge an Testfällen $T$ erfüllt $C$ wenn gilt, 
+    dass für jede Testanforderung mindestens ein Test existiert der diese Testanforderung erfüllt.~\cite[vgl. Def. 1.22]{software-testing}
+\end{definition}
 
-
+Es gibt diverse Abdeckungskriterien die auf verschiedenen Annahmen beruhen.
+Ist das Ziel, dass alle Entscheidungen in einem Programm abgedeckt sein soll (Branch-Coverage), so führt jede Entscheidung zu zwei
+Testanforderungen, eine Anforderung für den positiven und eine für den negativen Entscheidungsfall~\cite[vgl. S. 17]{software-testing}.
+Soll jede Methode mindestens einmal aufgerufen werden (Call-Coverage), so führt jede Methode zu einer Testanforderung um diese Methode abzudecken~\cite[vgl. S. 17]{software-testing}
+Im folgenden Kapitel~\ref{graphueberdeckung} konzentrieren wir uns auf Abdeckungskriterien für Graphen.

@@ -1,16 +1,21 @@
 \chapter{Grundlagen}
+\label{theorie}
 
 Das automatisierte Testen von GraphQL-APIs erfordert ein spezifisches Domänenwissen in verschiedenen Teilbereichen der
-Informatik und Mathematik.
-Dieses Domänenwissen wird in den folgenden Abschnitten aufgrund Lage zweier Lehrbücher erarbeitet
+Informatik und Mathematik, insbesondere die Graphentheorie und das Softwaretesten.
+Dieses Domänenwissen wird in den folgenden Abschnitten auf Grundlage zweier Lehrbücher~\cite{software-testing,graphentheorie} erarbeitet
 und in Kontext gesetzt.
-Wissen über die Graphentheorie wird benötigt, da GraphQL eine Implementierung von graphenähnlichen Strukturen
-ist und wir somit Algorithmen darauf anwenden wollen beziehungsweise können.
-Die mathematische Formalisierung hilft hierbei dann insbesondere
-bei der Beweisführug für eine allgemeine Termination der zu entwickelnden Algorithmen.
-Desweiteren ist es nötig sich bewusst zu machen, welche Arten des Testens von Software es gibt und wann man ''genug'' oder ''zu wenig'' getestet hat.
-Hierfür gibt es Metriken die auch insbesondere auf Graphen angewandet werden können und uns dann verraten können ob unsere Tests ausreichend sind.
-Im konkreten ist das Theorie-Kapitel so strukturiert, dass erst einmal die mathematischen Grundlagen der Graphentheorie
-vermittelt werden und im Anschluss dazu wird eine Beziehung zwischen GraphQL \& Graphentheorie hergestellt.
-Mit der Beziehung können wir dann zeigen, dass Graphalgorithmen auch bei GraphQL anwendbar sind.
-Darauffolgend zeigen wir verschiedene Kriterien die eine Testüberdeckung ermöglichen würden und erklären die Unterschiede.
+Wir benötigen die Graphentheorie um die Struktur von GraphQL auf einer abstrakten Ebene besser verstehen zu können.
+Außerdem setzen die in~\cite{software-testing} vorgestellten Überdeckungskriterien ein grundlegendes Wissen über Graphentheorie und Softwaretests voraus.
+
+% alter Text
+%Wissen über die Graphentheorie wird benötigt, da GraphQL eine Implementierung von graphenähnlichen Strukturen
+%ist und wir somit Algorithmen darauf anwenden wollen beziehungsweise können.
+%Die mathematische Formalisierung hilft hierbei dann insbesondere
+%bei der Beweisführug für eine allgemeine Termination der zu entwickelnden Algorithmen.
+%Desweiteren ist es nötig sich bewusst zu machen, welche Arten des Testens von Software es gibt und wann man ''genug'' oder ''zu wenig'' getestet hat.
+%Hierfür gibt es Metriken die auch insbesondere auf Graphen angewandet werden können und uns dann verraten können ob unsere Tests ausreichend sind.
+%%Im konkreten ist das Theorie-Kapitel so strukturiert, dass erst einmal die mathematischen Grundlagen der Graphentheorie
+%vermittelt werden und im Anschluss dazu wird eine Beziehung zwischen GraphQL \& Graphentheorie hergestellt.
+%Mit der Beziehung können wir dann zeigen, dass Graphalgorithmen auch bei GraphQL anwendbar sind.
+%Darauffolgend zeigen wir verschiedene Kriterien die eine Testüberdeckung ermöglichen würden und erklären die Unterschiede.

@@ -1,21 +1,23 @@
 \section{Zusammenhang Graphentheorie und GraphQL}
+\label{graphtheorieQL}
 
-Nun, da wir ein grundlegendes Wissen über Graphentheorie und GraphQL erlangt haben, müssen wir noch zeigen,
-dass Graphentheorie auch anwendbar ist auf GraphQL. Ohne diese Verknüpfung könnten wir uns nicht sicher sein,
-dass die zukünftig vorgestellten Algorithmen ausführbar sind für eine GraphQL-API.
+Da wir nun ein grundlegendes Wissen über Graphentheorie und GraphQL erlangt haben, muss noch gezeigt werden,
+dass Graphentheorie auch anwendbar ist auf GraphQL.
+Wir nutzen diese Verknüpfung dann später, um Algorithmen die für Graphen gedacht sind für GraphQL zu nutzen.
 
-\subsection{Typen als Knoten}
+\subsection{Schema als Graph}
 
-Wie in $4.2.1$ schon gezeigt, ermöglicht GraphQL das Erstellen von eigenen Typen.
-Diese Typen repräsentieren einzelne Datenobjekte.
-Somit liegt es nahe, dass die einzelnen Typen als Knoten eines Graphens repräsentiert werden können.
-Bleiben wir bei vorigem Beispiel, so definieren wir einen Typen $Book$:
+Das GraphQL-Schema ist wie in Kapitel~\ref{schematypes} gezeigt eine Komposition von Typen.
+Ein Typ definiert Felder in sich.
+Jedes Feld eines Typens zeigt seinerseits wieder auf ein anderes Feld~\cite[vgl. Modelling with GraphQL]{graphqlgraphtheory}.
+Somit wird jedes Feld eines Typens zu einer ausgehenden Kante.
+Definieren wir nun einen simplen Typen $Buch$ welcher nur zwei Skalare Typen hat.
 
 \begin{figure}[ht]
     \centering
     \begin{minipage}[b]{0.4\textwidth}
         \begin{verbatim}
-        type Book {
+        type Buch {
             id: Int
             title: String
         }
@@ -23,99 +25,90 @@ Bleiben wir bei vorigem Beispiel, so definieren wir einen Typen $Book$:
     \end{minipage}
     \hfill
     \begin{minipage}[b]{0.4\textwidth}
-        \centering
-        \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/book}
-        \caption{Book als Knoten}
-        \label{fig:mein_bild}
+        \begin{tikzpicture}
+            \node[circle, draw] (n1) at (1,1) {Book};
+            \node[circle, draw] (n2) at (0,0) {id};
+            \node[circle, draw] (n3) at (2,0) {title};
+            \draw[->] (n1) -- (n2);
+            \draw[->] (n1) -- (n3);
+        \end{tikzpicture}
     \end{minipage}
 \end{figure}
 
-\subsection{Felder als Kanten}
+Dann hat der Typ $Buch$ zwei Kanten, zu den jeweils beiden definierten Feldern $id$ und $title$.
+In Kapitel~\ref{schematypes} haben wir festegelegt, dass Skalare Typen keine eigenen Beziehungen haben.
+Daher können die Felder $id$ und $title$ selbst keine ausgehenden Kanten haben.
+Das generelle Prinzip der Graphbildung ist:
 
-Der eben definierte Typ Book besitzt aktuell nur zwei Felder, id und title.
-Beides sind Skalare-Datentypen und bilden somit keine ausgehenden Kanten, denn Kanten symbolisieren Beziehungen zwischen Objekten.
-Wir können einen Graphen mit $G$ = $(V,E)$ wobei $E =\emptyset$ definieren.
-Allerdings wäre dies sehr restriktiv da wir überhaupt keine Verbindungen haben würden und viele Vorteile von GraphQL würden wegfallen.
-Es ist aber auch möglich, dass ein Type ein Feld definiert das nicht vom Skalaren Datentyp ist.
-So können wir das Buch um einen Typen $Author$ erweitern wobei der Author gleich definiert wird wie in $4.2.1$.
-Diese Typdefinitionen führen dann zu diesem Graphen:
+\begin{enumerate}
+    \item Erstelle Knoten aus jedem Typen und den definierten Feldern des Knotens
+    \item Ziehe für jeden Typ seine Kanten, indem alle Felder des Typens zum entsprechenden Knoten verbunden werden
+\end{enumerate}
 
-\begin{center}
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/book-author}
-\end{center}
+Nach diesem Prinzip kann nun aus einem beliebig großen Schema ein gerichteter Graph gebildet werden.
+\newpage
 
-Wir nutzen also die Typdefinitionen aus um die Beziehungen zwischen einzelnen Objekten zu bekommen.
-Hierbei wird ein Typ dann mit einem anderen Typen verbunden, wenn dieser als Feld im Ursprungstyp vorkommt.
-Man muss hierbei klar beachten, dass dies eine gerichtete Beziehung ist.
-Eben erstellte Beziehung definiert nur, dass ein Book das Feld Author hat. Wir können nach aktuellem Stand nicht
-die Bücher eines Autoren herausfinden da wir diese Kante nicht deklariert haben.
-Dies ist allerdings möglich. Definieren wir den Author dann also wie folgt:
+\subsection{Abfragen im Graphen}
+\label{abfrgraph}
 
-\begin{verbatim}
-    type Book {
-        id: Int
-        title: String
-        author: Author
-    }
-    type Author {
-        id: Int
-        name: String
-        written: [Books!]
-    }
-\end{verbatim}
+Wie behandelt GraphQL nun Anfragen intern und wie können wir dies in unserer Graphstruktur visualisieren?
+Für die Erklärung definieren wir zuerst ein Schema als Beispiel:
 
-so ergibt sich folgender, zyklischer Graph:
-
-\begin{center}
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/book-author-circle}
-\end{center}
-
-\subsection{der komplette Graph}
-
-Wir wissen nun also wie ein GraphQL-Schema einen Graphen repräsentiert und können Algorithmen die auf Graphen funktionieren auch
-auf einem GraphQL-Schema anwenden.
-Abschließend zu diesem Kapitel sei gesagt, dass es in GraphQL allerdings nicht möglich ist, jeden einzelnen Knoten direkt
-abzufragen.
-Dies hängt stets von der Definition des Query/Mutation-Types ab, denn alle eingehenden Anfragen müssen vom Query-Type bzw. alle
-eingehenden Veränderungen müssen über den Mutation-Type ablaufen.
-Der Einfachheit halber werden wir uns jetzt erstmal dem Query-Type widmen.
-Jede Anfrage die in GraphQL getätigt werden kann, hat ihren Ursprung im Query-Type.
-Somit folgt auch, dass alle Routen stets im Query-Type entspringen müssen.
-Dies bedeutet, dass nur Knoten mit Erreichbarkeit vom Query-Type überhaupt abgefragt werden können.
-In diesem Beispiel:
-
-\begin{figure}[ht]
+\begin{figure}[htb]
     \centering
-    \begin{minipage}[b]{0.4\textwidth}
-        \begin{verbatim}
-    type Query {
-        book: Book
-        author: Author
-    }
-
-    type Book {
-        id: Int
-        title: String
-        author: Author
-    }
-        \end{verbatim}
+    \begin{minipage}[h!tb]{0.4\textwidth}
+        \begin{lstlisting}[language=GraphQL]
+type Query {
+    buch: Buch
+    autor: Autor
+}
+type Buch {
+    id: Int
+    title: String
+    autor: Autor
+    verleger: Verlag
+}
+        \end{lstlisting}
     \end{minipage}
     \hfill
-    \begin{minipage}[b]{0.4\textwidth}
-        \begin{verbatim}
-    type Author {
-        id: Int
-        name: String
-        written: [Books!]
-    }
-
-    type Publisher {
-        name: String
-        published:  [Book]
-    }
-        \end{verbatim}
+    \begin{minipage}[h!tb]{0.4\textwidth}
+        \begin{lstlisting}[language=GraphQL]
+type Author {
+    id: Int
+    name: String
+    schrieb: [Buch!]
+}
+type Verlag {
+    name: String
+}
+        \end{lstlisting}
     \end{minipage}
+    \label{schemdef}
+    \caption{Schemadefinition}
 \end{figure}
 
+Dieses Schema wird durch folgenden Graphen repräsentiert: \\
 
-wäre es nicht möglich einen Knoten des Publishers abzufragen da dieser Knoten nicht erreichbar ist vom Query-Type.
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{img/graph}
+    \caption{Graph für Schemadefinition aus Abbildung~\ref{schemdef}}
+\end{figure}
+
+Valide Anfragen an eine GraphQL-API sind nun alle Pfade, die mit Startknoten $Query$ beginnen und mindestens einen Knoten beinhalten,
+der keine ausgehenden Kanten hat (also ein Scalar-Type)~\cite[vgl. Modelling with GraphQL]{graphqlgraphtheory}.
+Auf jeder Ebene des Graphens werden Resolver ausgeführt welche für die Datenbereitstellung verantwortlich sind.
+Wollen wir nun einen GraphQL-Server mit dem zuvor definierten Schema ein Buch mit id, Titel und Verlag mit Verlagsnamen abfragen,
+so können wir diese Query nutzen: \verb+{ buch { id title verleger { name }}}+.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{img/graphresolver}
+    \caption{Graph für Schemadefinition nach \cite{graphqlgraphtheory}}
+\end{figure}
+
+Mit Ausführung dieser Query wird initial der Resolver $getBuch()$ ausgeführt.
+Liefert dieser ein valides Ergebnis zurück, also gibt es ein solches Buch,
+dann wird der nächste Resolver $getVerlag()$ ausgeführt~\cite[vgl. Resolver]{graphqlgraphtheory}.
+Dadurch, dass die Typen $Buch$ und $Autor$ aufeinander verweisen, ist der Graph des Schemas zyklisch und die Pfadmenge,
+das heißt die validen Abfragen die gestellt werden können, unendlich.

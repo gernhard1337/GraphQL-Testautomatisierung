@@ -1,151 +1,202 @@
 \section{Graphentheorie}
 \label{sec:graphentheorie}
-Da GraphQL es ermöglicht, dass komplexe Beziehungen innerhalb eines Datenmodells in Form von Graphen modelliert werden, benötigen
-wir die Graphentheorie, da diese Methoden liefert um Graphen systematisch zu definieren und analysieren.
-Desweiteren sind Teile der Testcoverage-Kriterien eng mit Graphenstrukturen verbunden sodass wir gezwungen sind uns
-einführend mit der Graphentheorie zu beschäftigen damit wir die Grundlagen erarbeiten, die wir später benötigen werden.
-Generell wird es im folgenden eher etwas theoretischer gehalten, die Zusammenhänge werden sich in späteren Kapiteln
-erschließen wenn wir Graphen mit GraphQL verbunden oder Tests aus Graphenstrukturen entwickeln.
 
-\subsection{allgemeiner Graph}
+Da GraphQL es ermöglicht, dass komplexe Beziehungen innerhalb eines Datenmodells in Form von Graphen modelliert werden~\cite[vgl. Modelling with Graph(QL)]{graphqlgraphtheory}
+benötigen wir die Graphentheorie, da diese Methoden liefert, um Graphen zu definieren und analysieren.
+Desweiteren sind die Testabdeckungskriterien die wir nutzen eng mit der Graphentheorie verbunden.
+Die folgenden Absätze werden eher theoretisch gehalten.
+Die Zusammenhänge zwischen der Graphentheorie und Testen von GraphQL-APIs werden sich jedoch später erschließen.
 
-Ein Graph ist ein Paar $\textrm{G = (V, E)}$ zweier disjunkter Mengen mit E $\subseteq$ V^2~\cite[vgl. S.2 0.1 Graphen]{graphentheorie}
+\subsection{Graph}
 
-Elemente von V nennt man Knoten eines Graphens, die Elemente von E nennt man Kanten, Knoten die in einem Tupel von E vorkommen
-nennt man auch inzident (benachbart)~\cite[vgl. S.3 0.1 Graphen]{graphentheorie}.
-Einen Graphen kann man nun definieren, indem wir zum Beispiel für V = {1, 2, 3} wählen und für E = {(1, 1), (1, 2), (1, 3)}.
-Dargestellt werden können Graphen, indem man die Elemente von V als, zum Beispiel, Kreis zeichnet und dann alle Kanten aus E
-einzeichnet, indem man die Punkte verbindet~\cite[vgl. S.2 0.1 Graphen]{graphentheorie}.
-Eben definierter Graph hat dann folgende Darstellung:
+Ein Graph ist ein mathematisches Modell.
+Es kann dazu verwendet werden, Beziehungen zwischen Objekten darzustellen.
+Nach~\cite{graphentheorie} ist ein Graph wie folgt definiert:
 
+\begin{definition}
+    Ein Graph ist ein Paar $\textrm{G = (V, E)}$ zweier disjunkter Mengen mit \\ E $\subseteq$ V^2
+    \label{graphdef}
+\end{definition}\cite[vgl. S.2 0.1 Graphen]{graphentheorie}
+\\
+\\
+Die Elemente der Menge $V$ nennt man Knoten (Vertices).
+Verbindungen zwischen den Knoten sind Elemente der Menge $E$ und diese nennt man Kanten (Edges).
+In dieser Definition spielt die Ordnung der Elemente von E keine Rolle daher nennt man solche Graphen auch ungerichtete Graphen.
+Um Graphen darzustellen gibt es verschiedene Ansätze.
+Der geläufigste Ansatz ist es, Knoten als Punkte und Kanten als Verbindungslinien zu zeichnen.
+Häufig wird auch eine Adjazenzmatrix genutzt, bei dieser wird mit $0,1$ aufgeschlüsselt, welche Knoten eine Verbindung haben.
+Bei $0$ existiert keine Kante zwischen den Knoten und bei $1$ existiert eine.
+
+\begin{example}
+    Ein Graph sei definiert mit $V = \{ 1, 2, 3 \}$ und $E = \{(1,1), (1,2), (1,3) \}$ \\
+    Mögliche Darstellungen des Graphen sind: \\
+
+    \begin{figure}[h!]
+        \centering
+        % Linke Seite: Code
+        \begin{minipage}{0.45\textwidth}
+            \centering
+            \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}]
+                \node[main] (1) {$1$};
+                \node[main] (2) [above right of=1] {$2$};
+                \node[main] (3) [below right of=1] {$3$};
+                \draw (1) to [out=180,in=270,looseness=5] (1);
+                \draw (1) -- (2);
+                \draw (1) -- (3);
+            \end{tikzpicture}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.45\textwidth}
+            \centering
+            \begin{array}{c|ccc}
+                & 1 & 2 & 3 \\
+                \hline
+                1 & 1 & 1 & 1 \\
+                2 & 0 & 0 & 0 \\
+                3 & 0 & 0 & 0 \\
+            \end{array}
+        \end{minipage}
+    \end{figure}
+    \label{graphexample}
+\end{example}
+\newpage
+
+\subsection{gerichteter Graph}
+
+Gerichtete Graphen sind die Grundlage vieler Überdeckungskriterien.~\cite[vgl. 2.1 Overview]{software-testing}.
+Daher definieren wir sie hier.
+
+\begin{definition}
+    Ein gerichteter Graph ist ein Paar $\textrm{G = (V, E)}$ zweier disjunkter Mengen mit zwei Funktionen
+    init: E \textrightarrow V und ter: E \textrightarrow V, die jeder Kante e eine Anfangsecke init(e) und eine
+    Endecke ter(e) zuordnen. \cite[S.26 0.10 Verwandte Begriffsbildungen]{graphentheorie}
+    \label{gerichtetergraphdef}
+\end{definition}
+
+Bei einem gerichteten Graphen ist somit die Sortierung der Kantenpaare wichtig.
+Die Funktionen $init$ und $ter$ können am einfachsten durch die Sortierung der Kantenpaare erreicht werden.
+Hierbei ist das erste Element des Kantenpaares die Anfangsecke und das zweite Element ist die Endecke.
+Die Kanten in einem gerichteten Graphen werden mit einem Pfeil gezeichnet.
+Dabei zeigt der Pfeil stets in Richtung Endecke.
+Der in Beispiel~\ref{graphexample} definierte Graph sieht als gerichteter Graph so aus:
 \begin{center}
-\begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}]
-    \node[main] (1) {$1$};
-    \node[main] (2) [above right of=1] {$2$};
-    \node[main] (3) [below right of=1] {$3$};
-    \draw (1) to [out=180,in=270,looseness=5] (1);
-    \draw (1) -- (2);
-    \draw (1) -- (3);
-\end{tikzpicture}
+    \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}]
+        \node[main] (1) {$1$};
+        \node[main] (2) [above right of=1] {$2$};
+        \node[main] (3) [below right of=1] {$3$};
+        \draw[->] (1) to [out=180,in=270,looseness=5] (1);
+        \draw[->] (1) -- (2); 
+        \draw[->] (1) -- (3);
+    \end{tikzpicture}
 \end{center}
 
-Es finden sich auch andere Darstellungsformen für Graphen, hier sei insbesondere die Adjazenzmatrix genannt.
-Für unseren Anwendungsfall belassen wir es jedoch bei Punkten und Linien.
-Mit dieser Definition lassen sich nun beliebig große, ungerichtete Graphen erstellen.
+\subsection{gewichteter Graph}
 
-\subsection{Grundbegriffe der Graphentheorie}
+Für die spätere Entwicklung unseres Testentwurfs ist es wichtig, gewichtete Graphen zu definieren.
+Zuvor wurden eine Kante in Definition~\ref{graphdef, gerichtetergraphdef} als ein Tupel $(x, y)$ eingeführt.
+Ein gewichteter Graph weist jeder Kante nun ein Kantengewicht zu, dies ist im allgemeinen eine positiv, reelle Zahl~\cite[vgl. S. 251]{graphentheorie3}.
 
-Verschiedene Begriffe sind grundlegend für ein weiterführendes Verständnis der Graphentheorie.
-Wir werden hier auf einige dieser Grundbegriffe näher eingehen, insbesondere auf diejenigen die im Testkontext unbedingt benötigt werden.
+\begin{definition}
+    Ein Graph G = (V,E) mit einer Abbildung g : E \textrightarrow $\mathbb{R}_{>0}$ heißt gewichteter Graph.
+    Die Abbildung g heißt Gewichtsfunktion. Für $e \in E$ heißt g(e) das Gewicht von e.
+    Das Gewicht von G ist die Summer der Gewichte aller Kanten, g(G) = \sum_{e \in G} g(e).\\
+    \cite[vgl.~Definition~6.1~S.~251]{graphentheorie3}
+    \label{gewichtetergraph}
+\end{definition}
+\\
+\\
+Für unsere späteren Anwendungszwecke muss die Definition jedoch ein wenig allgemeiner gefasst werden. 
+Wir wollen später die GraphQL-Typen, als Gewichte nutzen, um unsere Tests zu entwerfen. 
+Dafür verallgemeinern wir die Definition \ref{gewichtetergraph} indem die Gewichtsfunktion angepasst wird.
+Wir nennen dies vorerst allgemein gewichteter Graph.
 
-\subsubsection{Kante}
-Die Kante wurde zwar zuvor schon definiert als $e \in E \subseteq V^2$ also ein Tupel $(x, y)$ wobei $x,y \in V$ mit $E$ und $V$ wie in $4.1.1$ definiert.
-Hierbei zeigt die Kante, dass die Knoten $x$ und $y$ miteinander verbunden sind.
-Äquivalent ist auch die Aussage, dass $y$ und $x$ verbunden sind.
-Wir nennen diese Kanten auch ungerichtete Kanten~\cite[vgl. S.3 0.1 Graphen]{graphentheorie}
-Wir wollen nun zwei weitere Arten von Kanten definieren.
+\begin{definition}
+    Ein Graph G = (V,E) mit einer Abbildung g : E \textrightarrow X heißt allgemein gewichteter Graph.
+    Die Menge X ist frei wählbar.
+    \label{allgemeingewichtetergraph}
+\end{definition}
 
-\subsubsection{gewichtete Kante}
+Wir werden später auf Definition \ref{allgemeingewichtetergraph} verweisen wenn der konkrete Testentwurf entwickelt wird.
 
-Eine gewichtete Kante fügt einen dritten Parameter zu einer Kante hinzu, sein Gewicht.
-Dies ist ein dritter Parameter einer Kante $(x,y)$ wir erweitern also die Definition um einen dritten Parameter
-$(x,y,z)$ wobei z meist $z \in \mathbb{R}$ ist.
-Solche gewichte können benutzt werden um ideale Wege in Graphen zu finden da sie einer Kante eine Zahl zuweisen, die
-als Kosten genutzt werden können.
-Gewichtete Kanten werden in unserem Prototypen eine wichtige Rolle spielen allerdings wird bei uns die Kante
-keine Zahl aus $\mathbb{R}$ als Gewicht bekommen sondern Objekte aus GraphQL\@.
-
-\subsubsection{gerichtete Kante / gerichteter Graph}
-
-Eine gerichtete Kante besitzt im Gegensatz zu den ungerichteten Kanten eine Orientierung.
-Dies bedeutet, dass die Kante $(x,y)$ einen Startknoten und einen Endknoten definieren muss.
-Gekennzeichnet wird dies für den Startknoten durch $init()$ und für den Endkonten durch $end()$.
-Eine gerichtete Kante vom Knoten $x$ nach $y$ wird somit definiert als $(init(x), end(y))$ \cite[vgl. S.26 Verwandte Begriffsbildungen]{graphentheorie}
-Die Einführung von gerichteten Kanten ermöglicht es uns, gerichtete Graphen zu erstellen.
-Gerichtete Graphen sind Graphen, die nur gerichtete Kanten besitzen.
-Im Prinzip funktionieren gerichtete Kanten wie Einbahnstraßen - es ist nur möglich in die erlaubt Richtung vorzuschreiten.
-Die gerichteten Graphen sind besonders wichtig für uns, da alle späteren Analysen von GraphQL auf gerichteten Graphen
-basieren.
-
-\subsubsection{Grad eines Knoten}
-
-Der Grad eines Knoten gibt an, wie viele andere Knoten mit diesem Knoten verbunden sind und wird als $d_G(node)$ benannt.
-In ungerichteten Graphen ist der Grad eines Knoten $x$ mit 4 Kanten also $d_G(x) = 4$.
-Bei gerichteten Graphen unterscheiden wir zwischen Eingangs- und Ausgangsgrad.
-Der Eingansgrad ist definiert als Anzahl aller Kanten die auf den Knoten eingehen und der Ausgangsgrad ist genau entgegengesetzt,
-die Anzahl aller Kanten die ausgehend vom gewählten Knote sind.
-
-\subsubsection{Pfad / Weg}
+\subsection{Pfad}
 
 Ein Pfad, oft auch Weg genannt, ist eine Sequenz von Knoten die nachfolgend durch Kanten miteinander verbunden sind.~\cite[vgl. S. 7 0.3]{graphentheorie}
-Der Pfad von einem Knoten $x$ zu einem Knoten $y$ über Knoten $n_1$ bis $n_7$ hat dann zum Beispiel diese
-Struktur $p = \{(x, n2), (n2, n3), (n3, n6), (n6, y)\}$ wobei hierbei gilt,
-dass die Kanten $\{(x, n2), (n2, n3), (n3, n6), (n6, y)\} \in E$.
-Graphisch würde dies wie folgt aussehen (der Pfad in Rot markiert):
 
-\begin{tikzpicture}
-    \node[circle, draw] (n1) at (0,0) {X};
-    \node[circle, draw] (n2) at (2,0) {n2};
-    \node[circle, draw] (n3) at (2,2) {n3};
-    \node[circle, draw] (n4) at (0,2) {n4};
-    \node[circle, draw] (n5) at (4,0) {n5};
-    \node[circle, draw] (n6) at (4,2) {n6};
-    \node[circle, draw] (n7) at (6,0) {n7};
-    \node[circle, draw] (n8) at (6,2) {Y};
+\begin{definition}
+    Ein Weg ist ein nicht leerer Graph P = (V,E) der Form $V = {x_{0}, x_{1}, ..., x_{k}}$ und $E = {x_{0}x_{1}, x_{1}x_{2}, \ldots, x_{k-1}x_{k}}$ wobei die $x_{i}$
+    paarweise verschieden sind.~\cite[vgl. S. 7]{graphentheorie}
+\end{definition}
 
-    \draw[->, red, line width=1.5pt] (n1) -- (n2);
-    \draw[->, red, line width=1.5pt] (n2) -- (n3);
-    \draw[->] (n3) -- (n4);
-    \draw[->] (n4) -- (n1);
-    \draw[->] (n2) -- (n5);
-    \draw[->, red, line width=1.5pt] (n3) -- (n6);
-    \draw[->] (n5) -- (n7);
-    \draw[->, red, line width=1.5pt] (n6) -- (n8);
-\end{tikzpicture}
+Ein Weg wird oft durch die Folge seiner Knoten beschrieben also $P=x_{0} x_{1} \ldots x_{k}$ \cite[vgl. S.7]{graphentheorie}
+Die Länge eines Weges ist die Anzahl der Kanten die dieser besucht.~\cite[vgl. S. 7]{graphentheorie}
+In gewichteten Graphen ist das Gewicht eines Pfades die Summe aller Gewichte der einbezogenen Kanten. \cite[vgl. 7.2 kürzeste Wege]{graphentheorie3}
 
-Pfade haben immer eine Länge.
-Die Länge des Pfades entspricht der Anzahl der Kanten innerhalb dieses Pfades, das bedeutet, dass Pfadl"ange $ = |p|$ wobei $p = \{(x, n2), (n2, n3), (n3, n6), (n6, y)\}$.
-Zu beachten ist, dass Pfade in gerichteten Graphen immer die Orientierung der Kanten beachten müssen.
-In obigem, gerichteten Pfad wäre also ein Weg $ \{ (X,N4), (N4, N3) \} $ nicht zulässig.
+\begin{example}
+    Definieren wir einen Graphen G mit V = $\{n1,n2,n3,n4,n5,n6,n7,n8\}$ und E = $\{(n1,n2),(n2,n3),(n3,n4),(n4,n1),(n2,n5),(n3,n6),(n5,n7),(n6,n8)\}$
+    so wäre ein möglicher Pfad von Knoten $n1$ zu $n8$ der Pfad $p = \{(n1, n2), (n2, n3), (n3, n6), (n6, n8)\}$
+    Graphisch würde dies wie folgt aussehen (der Pfad in Rot markiert): \\ \\
+    \begin{center}
+        \begin{tikzpicture}
+            \node[circle, draw] (n1) at (0,0) {n1};
+            \node[circle, draw] (n2) at (2,0) {n2};
+            \node[circle, draw] (n3) at (2,2) {n3};
+            \node[circle, draw] (n4) at (0,2) {n4};
+            \node[circle, draw] (n5) at (4,0) {n5};
+            \node[circle, draw] (n6) at (4,2) {n6};
+            \node[circle, draw] (n7) at (6,0) {n7};
+            \node[circle, draw] (n8) at (6,2) {n8};
 
-\subsubsection{Zyklus / Kreis}
+            \draw[->, red, line width=1.5pt] (n1) -- (n2);
+            \draw[->, red, line width=1.5pt] (n2) -- (n3);
+            \draw[->] (n3) -- (n4);
+            \draw[->] (n4) -- (n1);
+            \draw[->] (n2) -- (n5);
+            \draw[->, red, line width=1.5pt] (n3) -- (n6);
+            \draw[->] (n5) -- (n7);
+            \draw[->, red, line width=1.5pt] (n6) -- (n8);
+        \end{tikzpicture}
+    \end{center}
+    \label{pfadbsp}
+\end{example}
 
-Ein Zyklus, auch Kreis genannt, ist ein Pfad bei dem gilt, dass der Startpunkt und Endpunkt der Pfadsequenz identisch ist.
-Formell bedeutet dies, dass ein Pfad eine Sequenz p = $ \{ (X, e1), (e2, e3), ...., (e_n, X) \}$ ist wobei es auch möglich ist, dass
-der Kreis Länge 1 hat also die Sequenz p = $ \{ (X, X) \}$ ist.
-Zyklen können in gerichteten und ungerichteten Graphen auftreten wobei das Vorkommen in ungerichtete Graphen eigentlich garantiert ist,
-insofern eine Kante existent ist.
-Das Auftreten in ungerichteten Graphen ist nicht garantiert aber kann durchaus geschehen.
-Der Graph aus vorigem Beispiel definiert exemplarisch den Pfad p = $ \{ (X, n2), (n2, n3), (n3, n4), (n4, X) \}$  welcher ein Kreis ist.
-Graphisch hervorgehoben:
+\subsection{Kreis}
 
-\begin{tikzpicture}
-    \node[circle, draw] (n1) at (0,0) {X};
-    \node[circle, draw] (n2) at (2,0) {n2};
-    \node[circle, draw] (n3) at (2,2) {n3};
-    \node[circle, draw] (n4) at (0,2) {n4};
-    \node[circle, draw] (n5) at (4,0) {n5};
-    \node[circle, draw] (n6) at (4,2) {n6};
-    \node[circle, draw] (n7) at (6,0) {n7};
-    \node[circle, draw] (n8) at (6,2) {Y};
+Ein Kreis in einem Graphen ist ein Weg bei dem gilt: $Anfangsknoten = Endknoten$ \cite[vgl. S. 8]{graphentheorie}
+Die Größe eines Kreises ist die Länge des Wegs die dieser Kreis bildet.
+Der kürzeste Kreis eines Graphens nennt sich $Tailenweite g(G)$ und der längste Kreis ist der Umfang \cite[vgl. S.8]{graphentheorie}
+Der Graph aus Beispiel~\ref{pfadbsp} hat einen Kreis der Länge 4 und ist in Abbildung~\ref{zyklgraph} rot eingezeichnet.
 
-    \draw[->, red, line width=1.5pt] (n1) -- (n2);
-    \draw[->, red, line width=1.5pt] (n2) -- (n3);
-    \draw[->, red, line width=1.5pt] (n3) -- (n4);
-    \draw[->, red, line width=1.5pt] (n4) -- (n1);
-    \draw[->] (n2) -- (n5);
-    \draw[->] (n3) -- (n6);
-    \draw[->] (n5) -- (n7);
-    \draw[->] (n6) -- (n8);
-\end{tikzpicture}
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        \node[circle, draw] (n1) at (0,0) {X};
+        \node[circle, draw] (n2) at (2,0) {n2};
+        \node[circle, draw] (n3) at (2,2) {n3};
+        \node[circle, draw] (n4) at (0,2) {n4};
+        \node[circle, draw] (n5) at (4,0) {n5};
+        \node[circle, draw] (n6) at (4,2) {n6};
+        \node[circle, draw] (n7) at (6,0) {n7};
+        \node[circle, draw] (n8) at (6,2) {Y};
+
+        \draw[->, red, line width=1.5pt] (n1) -- (n2);
+        \draw[->, red, line width=1.5pt] (n2) -- (n3);
+        \draw[->, red, line width=1.5pt] (n3) -- (n4);
+        \draw[->, red, line width=1.5pt] (n4) -- (n1);
+        \draw[->] (n2) -- (n5);
+        \draw[->] (n3) -- (n6);
+        \draw[->] (n5) -- (n7);
+        \draw[->] (n6) -- (n8);
+    \end{tikzpicture}
+    \label{zyklgraph}
+    \caption{Ein zyklischer Graph}
+\end{figure}
+In unserem Kontext des Testentwurfs sind Kreise besonders interessant da diese für einen potentiell unendlich großen Testsraum sorgen.
+In einem azyklischen gerichteten Graphen, einem gerichteten Graphen der keinen Kreis besitzt, ist die Menge aller möglichen Pfade endlich.
+Bei einem Graphen mit Zyklen ist die Menge aller möglichen Pfade unendlich.
+Dies folgt aus der Tatsache, dass jeder Pfad der den Kreis beeinhaltet, diesen Kreis ein weiteres Mal ablaufen kann
+und somit stets ein neuer Pfad generiert wird.
 
 \subsection{Zusammenfassung}
-
 Wir haben nun eine kleine mathematische Einführung in das Gebiet der Graphentheorie hinter uns.
-Mithilfe der hier erarbeiteten Begriffe und Definitionen werden wir im folgenden verehrt arbeiten.
-Insbesondere wenn wir die Coverage-Algorithmen im Bezug des Testens einführen benötigen wir das hier erarbeitete Wissen.
-
-
-
-
-
+Mithilfe der hier erarbeiteten Begriffe und Definitionen werden wir im folgenden vermehrt arbeiten.
+Insbesondere, wenn wir die Überdeckungskriterien im Bezug des Testens einführen benötigen wir das hier erarbeitete Wissen.
