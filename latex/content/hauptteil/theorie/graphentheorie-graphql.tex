@@ -93,6 +93,7 @@ Dieses Schema wird durch folgenden Graphen repräsentiert: \\
     \centering
     \includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{img/graph}
     \caption{Graph für Schemadefinition aus Abbildung~\ref{schemdef}}
+    \label{schemg}
 \end{figure}
 
 Valide Anfragen an eine GraphQL-API sind nun alle Pfade, die mit Startknoten $Query$ beginnen und mindestens einen Knoten beinhalten,
@@ -104,7 +105,8 @@ so können wir diese Query nutzen: \verb+{ buch { id title verleger { name }}}+.
 \begin{figure}[htb]
     \centering
     \includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{img/graphresolver}
-    \caption{Graph für Schemadefinition nach \cite{graphqlgraphtheory}}
+    \caption{Graph für Abfrage nach~\cite{graphqlgraphtheory}}
+    \label{abfrage}
 \end{figure}
 
 Mit Ausführung dieser Query wird initial der Resolver $getBuch()$ ausgeführt.

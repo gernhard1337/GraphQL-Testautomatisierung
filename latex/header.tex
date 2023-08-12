@@ -18,6 +18,7 @@
 \usepackage{lipsum}  % Platzhaltertext (kann entfernt werden)
 \usepackage[backend=bibtex,style=ieee]{biblatex}  % Moderne Literaturverwaltung
 \usepackage{tikz} % Graphen zeichnen
+\usepackage{float}
 
 \usetikzlibrary{positioning,shapes,shadows,arrows}
 
@@ -31,7 +32,7 @@
 }
 
 \makeatletter
-
+\setlength{\parindent}{0pt}
 \newcommand\frontmatter{
 	\cleardoublepage
 	\pagenumbering{roman}}
