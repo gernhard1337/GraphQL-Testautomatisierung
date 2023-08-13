@@ -178,10 +178,11 @@ Dabei wird der Typ des Arguments genutzt um zufällig ein Argument des entsprech
 Ergebnis des Prozesses ist schließlich eine valide GraphQL-Query.
 In einer konkreten Implementierung ist die Syntax von GraphQL zu beachten, diese ist einsehbar in \cite[2.3 Language Operations]{graphqlspecification}.
 
-\subsection{Querys an SUT senden}
+\subsection{Querys an Server senden}
 \label{testf}
 
-Die generierten Querys stellen die konkreten Tests für GraphQL dar.
+Die generierten Querys stellen die konkreten Tests für den GraphQL-Server dar.
+Im folgenden nennen wir den zu testenden GraphQL-Server vermehrt SUT - System under Test.
 Um diese auszuführen, werden alle generierten Querys per \textit{HTTP-POST} an den GraphQL-Server geschickt und die Antworten
 werden gespeichert, dies ist analog zu \cite{property-based-testing}.
 Es ist wünschenswert, dass die generierten Querys in einem Testframework abgebildet und gespeichert werden.
