@@ -1,20 +1,20 @@
 \chapter{Testautomatisierung}
 \label{testautomatisierung}
 
-Nach der Einführung der Methode im vorherigen Kapitel soll nun der entwickelte Prototyp umfassend erklärt werden.
-Der entwickelte Prototyp lässt sich unter \href{https://github.com/gernhard1337/graphql-primepath-tester} finden und testen.
-Eine erklärende Readme existiert im Root-Verzeichnis.
-Vorraussetzungen zum Ausführen der Anwendung ist Python und diverse Dritt-Bibliotheken die in der Readme vermerkt sind.
+Nach der Einführung der Methode im vorherigen Kapitel soll nun der entwickelte Prototyp erklärt werden.
+Der entwickelte Prototyp lässt sich im \href{https://github.com/gernhard1337/graphql-primepath-tester}{GitHub} und im \href{https://git.informatik.tu-cottbus.de/sst/abschlussarbeiten/master/lorenz_tom/graphql-tester-prototyp}{BTU-GitLab} finden und testen.
+Eine Anleitung findet sich in der Readme im Root-Verzeichnis.
+Vorraussetzungen zum Ausführen der Anwendung ist Python und einige Dritt-Bibliotheken die in der Readme vermerkt sind.
 
-\section{Tool- / Dependencyauswahl}
-Um die vorgestellte Methode umzusetzen war insbesondere wichtig, dass eine einfache und mächtige Bibliothek für die Definition und Bearbeitung
-von Graphen zur Verfügung steht.
-Die erste Wahl fiel hierbei auf NetworkX, eine Graphenbibliothek in Python.
-Sie wurde ausgewählt da der Ersteller schon einige Erfahrungen mit dieser Bibliothek hat und somit eine effiziente Umsetzung möglich war.
-Dadurch, dass diese Bibliothek als Grundlage gewählt wurde hat sich die Programmiersprache Python schnell ergeben.
-Im folgenden werden einige weitere benutzte Bibliotheken kurz vorgestellt sodass der Applikationsstack übersichtlich wird.
-Wir werden auch auf NetworkX und seine Features eingehen.
-Es werden nicht alle Bibliotheken eine Berücksichtigung finden sondern nur diese, die einen signifikanten Einfluss auf das Programm haben und besonders herausstechen.
+\section{Auswahl der Bibliotheken}
+
+Um die vorgestellte Methode umzusetzen war insbesondere wichtig, dass eine einfache und mächtige Bibliothek für die Definition und Bearbeitung von Graphen zur Verfügung steht.
+Die erste Wahl fiel hierbei auf NetworkX, eine Graphenbibliothek für Python.
+Sie wurde ausgewählt da schon einige Erfahrungen mit dieser Bibliothek exisitieren und somit eine effiziente Umsetzung ohne langwierige Einarbeitung möglich war.
+Durch die Auswahl der Bilbiothek wurde gleichzeitig auch die Sprache Python festgelegt.
+Einige weitere Bibliotheken wurden benötigt um den Applikationsstack zu vervollständigen.
+Insgesamt waren Bibliotheken in den Bereichen Graphen, API-Kommunikation, JSON-Bearbeitung und Argumentgenerierung nötig um einen Prototypen umzusetzen.
+Es werden nicht alle Bibliotheken eine Berücksichtigung hier finden, sondern nur diese, die einen signifikanten Einfluss auf das Programm haben und besonders herausstechen.
 
 \subsection{NetworkX}
 
@@ -22,32 +22,33 @@ NetworkX ist eine Python-Biblitohek für \textit{Erstellung, Manipulation und Un
 Mit einer Star-Anzahl von \textit{12.8k}\cite{networkxgithub} auf GitHub ist networkX eine sehr beliebte Bibliothek.
 NetworkX ist die ideale Wahl um Graphen zu erstellen für unseren Use-Case denn es nimmt jeden möglichen Datentypen als Wert für einen Knoten und Kante.
 Wir können also sehr simpel Graphen definieren.
-Für das simple Beispiel von Author, Book, Publisher und deren Verbindungen benötigen wir nur folgende Zeilen:
+Für ein simples Beispiel von Author, Book, Publisher und deren Verbindungen benötigen wir nur folgende Zeilen:
 
 \begin{lstlisting}[language=Python]
-    import networkx as nx
+import networkx as nx
 
-    G = nx.Graph()
-    G.add_edge("Query", "Book", "book")
-    G.add_edge("Query", "Author", "author")
-    G.add_edge("Query", "Publisher", "publisher")
+G = nx.Graph()
+G.add_edge("Query", "Book", "book")
+G.add_edge("Query", "Author", "author")
+G.add_edge("Query", "Publisher", "publisher")
 
-    G.add_edge("Publisher", "Book", "book")
-    G.add_edge("Book", "Publisher", "publisher")
+G.add_edge("Publisher", "Book", "book")
+G.add_edge("Book", "Publisher", "publisher")
 
-    G.add_edge("Book", "Author", "author")
-    G.add_edge("Author", "Book", "book")
+G.add_edge("Book", "Author", "author")
+G.add_edge("Author", "Book", "book")
 \end{lstlisting}
 
 Diese wenigen Zeilen reichen aus um unseren Graphen mit allen Knoten und Kanten zu definieren.
-Wie zuvor eingeführt existiert auch das Kantengewicht, dass der Feldbezeichner eines Types ist.
+Wir können hier auch direkt das Kantengewicht mit dem Feldbezeichner angeben, so ist es möglich, dass wir sofort
+wissen, welche Kante genutzt werden muss um zum nächsten Typ zu gelangen.
 Auf diesem Graphen können wir dann diverse Algorithmen ablaufen lassen.
 Diverse Hilfsfunktionen helfen dabei eine effiziente Programmierung zu erlangen.
 Hierbei seien insbesondere folgende Hilfsfunktionen genannt:
 
 \subsubsection{draw}
     \begin{lstlisting}[language=Python]
-        nx.draw(G, with_labels=True)
+nx.draw(G, with_labels=True)
     \end{lstlisting}
 
 Zeichnet einem den erstellten Graphen in ein beliebiges Format.
@@ -55,7 +56,7 @@ So fällt es einfach große Graphen darzustellen.
 
 \subsubsection{shortest\_path}
     \begin{lstlisting}[language=Python]
-        shortest_path = nx.shortest_path(G, Node1, Node5)
+shortest_path = nx.shortest_path(G, Node1, Node5)
     \end{lstlisting}
 
 Die Funktion $shortest\_path$ gibt eine Liste von Kanten zurück, die den kürzesten Weg zwischen zwei
@@ -63,89 +64,103 @@ Knoten angibt.
 
 \subsubsection{neighbors}
     \begin{lstlisting}[language=Python]
-        G.neighbors(Node)
+G.neighbors(Node)
     \end{lstlisting}
 Diese Funktion liefert alle Nachbarn eines Knotens.
-In unserem Kontext eine sehr wichtige Funktion wie wir später noch sehen werden.
+
+\subsubsection{simple\_paths}
+
+Diese Funktion liefert uns alle einfachen Pfade wie in Kapitel~\ref{testpfade} gewünscht.
+So ist es uns direkt möglich, aus dem Ergebnis dieser Funktion die PrimePfade herauszufiltern.
+Somit erleichtert die Biblitohek uns die Berechnung der Pfade stark.
+
+\begin{lstlisting}[language=Python]
+nx.all_simple_paths(G, source=start_node, target=end_node)
+\end{lstlisting}
+
 
 \subsection{Faker}
-Die gewählte Datengenerierungsbibliothek ist \textit{Faker}\cite{fakergithub}.
-Mit \textit{16k}\cite{fakergithub} Sternen auf GitHub ist Faker eine noch beliebtere Bilbiothek als NetworkX.
+Die gewählte Argumentgenerierungsbibliothek ist \textit{Faker}\cite{fakergithub}.
+Mit \textit{16k}\cite{fakergithub} Sternen auf GitHub ist Faker auch eine beliebte Bilbiothek.
 Faker ist eine Bilbiothek die es sehr einfach macht Daten zu generieren.
 Da wir im Kontext von GraphQL Argumenten nur sehr einfache Datentypen als Argumente benötigen reicht uns diese
 Bibliothek komplett aus da sie es schafft uns schnell und unkompliziert Daten in genau dem Format zu generieren wie wir sie brauchen.
 Angenommen wir benötigen einen String der 10 Zeichen lang ist, so reicht eine Zeile:
 
 \begin{lstlisting}[language=Python]
-        random_string = fake.pystr(min_chars=10, max_chars=10)
+random_string = fake.pystr(min_chars=10, max_chars=10)
 \end{lstlisting}
 
 Selbiges falls wir eine Zufallszahl benötigen zwischen 1 bis 1000
 
 \begin{lstlisting}[language=Python]
-        random_number = fake.random_int(min=1, max=1000)
+random_number = fake.random_int(min=1, max=1000)
 \end{lstlisting}
 
-Diese Schema des Einzeilers zieht sich für alle simplen $SCALAR$ Types in GraphQL.
+Dieses Schema des Einzeilers gilt für alle simplen $SCALAR$ Types in GraphQL.
 Daher fällt die Wahl für die Datengenerierung auf diese Bibliothek.
 
 \subsection{PyTest}
 
-Nicht zwingend notwendig ist ein Testframework.
-Allerdings soll unsere Implementation der Methode Tests erstellen sodass diese zu einem späteren Zeitpunk erneut ausgeführt werden können.
-Somit können wir z.B. überprüfen ob eine Korrektur des Servercodes eine Verbesserung gebracht hat.
-Hierfür wollen wir die Tests mithilfe eines Testframeworks erstellen.
-Die Wahl hierfür fiel dabei auf PyTest.
-PyTest ist ein Testframework für Python welches eine simple und einfache Testdefinition ermöglicht.
+Um die gewünschte Reproduzierbarkeit aus Kapitel~\ref{testf} zu erreichen, nutzen wir das Testframework PyTest.
+Dies ist ein Testframework für Python welches eine simple und einfache Testdefinition ermöglicht.
 Ein Test für eine einfache Funktion $inc$ kann mit $test\_inc$ umgesetzt werden.
 
 \begin{lstlisting}[language=Python]
-    def inc(x):
-        return x + 1
+def inc(x):
+    return x + 1
 
-    def test_inc():
-        assert inc(3) == 5
+def test_inc():
+    assert inc(3) == 5
 \end{lstlisting}
 
-Dies reicht schon vollkommen aus für unsere Testentwicklung daher wurde sich für diese Bibliothek entschieden.
+Die einfache Syntax von PyTest reicht für unseren Anwendungsfall vollkommen aus.
+Gleichzeitig sind Imports in PyTest sehr einfach umzusetzen daher nutzen wir dieses Testframework.
+\newpage
 
 \section{Umsetzung der Methode}
 
-Für die Umsetzung der Methode werden wir durch die einzelnen Teile des Codes gehen und die jeweiligen Stellen erklären die
-einzelne Schritte der entwickelten Methode durchgehen.
+Für die Umsetzung der Methode werden wir durch die einzelnen Teile des Codes gehen und die jeweiligen Schritte erklären.
 Hierbei gehen wir chronologisch in den einzelnen Schritten vor so wie in der Methode definiert.
+Im Allgemeinen funktioniert der Prototyp so wie in dem Sequenzdiagramm in Abbildung~\ref{sqzd} gezeigt.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/sequenz}
+    \end{center}
+    \caption{Sequenzdiagramm des Prototypens}
+    \label{sqzd}
+\end{figure}
+
+Hierbei sind auch die einzelnen Module zu erkennen.
+Dabei sind die Module main, Graphhandler, Querygenerator und Testgenerator Teile des Prototypens.
+Das Modul GraphQL API stellt das zu testende System dar und ist extern.
 
 \subsection{Schema in Graph abbilden}
 
-Wie in der Vorstellung der Methode unter $6.1$ bilden wir das GraphQL-Schema in einem Graphen ab.
-Hierfür nutzen wir die zuvor erwähnt Python Graphbibliothek NetworkX.
-Um die Informationen zu erlangen die für die Bildung des Graphens wichtig sind führen wir die Introspection-Query \ref{introspection-query}
-aus.
+Wie in der Vorstellung der Methode in Kapitel~\ref{schemagraph} bilden wir das GraphQL-Schema in einem NetworkX-Graphen ab.
+Um die Informationen zu erlangen die für die Bildung des Graphens wichtig sind führen wir zuerst die Introspection-Query~\ref{introspection-query} aus.
 Das Ergebnis ist dann das vollständige GraphQL-Schema der API.
 Hierbei sei angemerkt, dass einige GraphQL APIs so eine Introspection-Query verbieten, sei es einerseits durch direktes verbieten oder ein Tiefenlimit in den Querys.
-Egal was hierbei der Fall ist, die zu testende API muss unsere Introspection-Query \ref{introspection-query} unterstützen.
+Egal was hierbei der Fall ist, die zu testende API muss unsere Introspection-Query~\ref{introspection-query} unterstützen, da wir sonst keine Informationen erlangen können.
 Die Query wird mit einem simplen HTTP-POST an die zu testende URL gesendet.
 
 \begin{lstlisting}[language=Python]
-    r = requests.post(testUrl, json={'query': queries.introspection_query})
-    json_data = json.loads(r.text)
-    with open('schema.json', 'w') as f:
-        json.dump(json_data, f)
+r = requests.post(testUrl, json={'query': queries.introspection_query})
+json_data = json.loads(r.text)
 \end{lstlisting}
 
 Und die Response wird als JSON-Objekt in $json\_data$ gespeichert.
-Zudem speichern wir das JSON-Objekt der aktuellen API auch ab damit diese später gegebenenfalls untersucht werden kann.
-Es wurde ein Modul $Graphhandler$ entwickelt, dass verschiedene Graphoperationen für einen Übernimmt.
+Es wurde ein Modul $Graphhandler$ entwickelt, dass verschiedene Graphoperationen Übernimmt.
 Im Graphhandler ist eine Funktion $buildGraph$ definiert.
 Diese generiert einen Graphen von einem gegebenen Startknoten, einem leeren Graphen und dem Schema.
-Hierbei werden nur erreichbare Knoten von Startknoten berücksichtigt.
-Setzt man den Startknoten auf den Knoten $Query$ so inkludieren wir auf diese Weise nur alle erreichbaren Teile
-des Graphens ausgehend von $Query$.
-Dies ist insofern sinnvoll da andere Typen, wenn sie nicht von $Query$ aus erreichbar sind, nicht Teil des Testraumes wären da diese
-in keiner validen Anfrage vorkommen können.
-Die Funktion, die den Graphen generiert sieht wie folgt aus:
+Hierbei werden nur erreichbare Knoten vom Startknoten berücksichtigt.
+Setzt man den Startknoten auf den Knoten $Query$ so inkludieren wir auf diese Weise nur alle erreichbaren Teile des Graphens ausgehend von $Query$.
+Dies ist insofern sinnvoll da andere Typen, wenn sie nicht von $Query$ aus erreichbar sind, nicht Teil des Testraumes wären da diese in keiner validen Anfrage vorkommen können.
+Die Funktion, die den Graphen generiert ist in Abbildung~\ref{graphbuild} dargestellt.
 
-\begin{lstlisting}[language=Python]
+\begin{figure}
+    \begin{lstlisting}[language=Python]
 def buildGraph(graph, type_name, type_dict):
     if type_name.startswith(nonSchemaTypePrefix) or type_name in baseDatatypes:
         pass
@@ -162,8 +177,10 @@ def buildGraph(graph, type_name, type_dict):
                     graph.add_edge(type_name, adjacentNode['type']['ofType']['name'])
                     graph[type_name][adjacentNode['type']['ofType']['name']]["data"] = adjacentNode
                     buildGraph(graph, adjacentNode['type']['ofType']['name'], type_dict)
-
-\end{lstlisting}
+    \end{lstlisting}
+    \caption{Funktion die einen Graphen aufspannt}
+    \label{graphbuild}
+\end{figure}
 
 Die Funktion buildGraph arbeitet rekursiv.
 Vom Startknoten (im Allgemeinen $Query$) aus rufen wir die Funktion auf allen Folgeknoten von Query auf.
@@ -171,211 +188,226 @@ Dies sind alle Knoten die den Type $OBJECT$ besitzen und nicht mit einem $\_\_$ 
 GraphQL kann eigene Objekte definieren welche mit $\_\_$ starten, diese schließen wir explizit aus genau wie alle $SCALAR$ Types.
 Jeder Knoten definiert nun in seinem $fields$ Eintrag zu welchen Feldern er Beziehungen hat.
 Hierbei muss unterschieden werden, dass ein Eintrag entweder vom Type $OBJECT$ oder $LIST$ sein kann, um zulässig zu sein.
-Sollte es sich um einen $LIST$ Eintrag handeln müssen wir prüfen von welchem Type die $LIST$ ist.
+Sollte es sich um einen $LIST$ Eintrag handeln müssen wir prüfen, von welchem Type die $LIST$ ist.
 Wenn ein Knoten nun unsere Bedingungen erfüllt, so wird dieser dem Graphen hinzugefügt und auf ihm selbst wird $buildGraph$ ausgeführt.
 So erlangen wir die gesamte Graphstruktur da ausgehend von Query jeder erreichbare Knoten hinzugefügt wird und dann von diesem Knoten eben wieder alle erreichbaren Knoten
 hinzugefügt werden.
-
+\newpage
 \subsection{Pfade aus Graph bilden}
 
-Der Graphhandler implementiert verschiedene Coveragekriterien.
-Das Tool benötigt eine Liste $paths$ die aus Kanten besteht.
+Der Graphhandler implementiert verschiedene Abdeckungskriterien.
+Das Tool benötigt im späteren Verlauf lediglich eine Liste $paths$ aller Pfade, die für die Testgenerierung berücksichtigt werden sollen.
 
-\begin{lstlisting}[language=Python]
+\begin{figure}[H]
+    \begin{lstlisting}[language=Python]
 paths = graphhandler.generate_prime_paths("Query", graph)
-\end{lstlisting}
+    \end{lstlisting}
+    \caption{$paths$ als Liste von Pfaden für ein Abdeckungskriterium}
+\end{figure}
 
-Eine Funktion $generate\_CoverPaths$ kann jedes erdenkliche Coveragekriterium umsetzen.
-In unserem Fall sind es insbesondere PrimePaths, umgesetzt durch die Funktion $generare\_prime\_paths("Query", graph)$.
-Diese Funktion ermittelt die PrimePaths ausgehend vom Startknoten $Query$ im definierten Graphen.
-Will man ein anderes Coveragekriterium umsetzen, so muss die Funktion $generate\_CoverPaths$ eine Liste der Kanten zurückgeben
-die dem Coveragekriterium entsprechend den Graphen überdecken.
-Die Generierung der PrimePaths sehen wir uns nun noch genauer an.
-Wir starten mit der Funktion $generare\_prime\_paths()$.
-Diese bekommt einen Startknoten und einen Graphen.
-Sie gibt dann die Liste der Pfade genau wie zuvor spezifiziert zurück.
+Da wir jedoch in Kapitel~\ref{fazitcov} feststellten, dass die PrimePfade-Abdeckung am geeignetsten ist, erklären wir dieses Kriterium hier.
+Die PrimePfad Abdeckung ist durch die Funktion $generate_prime_paths$ implementiert.
+Diese Funktion verknüft dabei allerdings nur zwei andere Funktionen.
 
-\begin{lstlisting}[language=Python]
+\begin{figure}[H]
+    \begin{lstlisting}[language=Python]
 def generate_prime_paths(startknoten, g):
-    pfadliste = []
-    generate_paths(startknoten, [], pfadliste, g)
-    return pfadliste
-\end{lstlisting}
+    return shortest_path_to_prime(g, startknoten, get_prime_paths(g, startknoten))
+    \end{lstlisting}
+    \caption{valide PrimePfad Generierung}
+\end{figure}
 
-Es wird die Funktion $generate\_paths$ aufgerufen wobei generate\_paths sich immer wieder rekursiv selbst aufruft wenn die Nachfolger des Knotens
-noch nicht im Pfad sind. So werden Kreise verhindert, alle Pfade die so erzeugt werden sind SimplePaths.
+Da PrimePfade nicht im Query Knoten starten müssen, rufen wir zuerst die Funktion $get\_prime\_paths$ auf um eine Liste
+aller PrimePfade zu bekommen.
+Da jedoch ein Pfad stets im Query-Knoten starten muss, rufen wir anschließend $shortest\_path\_to\_prime$.
+Diese Funktion ermittelt den kürzesten Weg vom QueryKnoten zum Startknoten des PrimePfades.
+So können wir sicherstellen, dass die generierten Pfade stets valide Testpfade sind und dennoch alle PrimePfade abdecken.
+Die Funktion $get\_prime\_paths$ ist in Abbildung~\ref{getprime} dargestellt.
 
-\begin{lstlisting}[language=Python]
-def generate_paths(n, path, pathList, g):
-    path.append(n)
-    for m in g.successors(n):  # successors gibt die Nachfolger wieder
-        if m not in path:
-            generate_paths(m, copy.deepcopy(path), pathList, g)
-    if is_prime_path(path, pathList):
-        pathList.append(path)
-\end{lstlisting}
+\begin{figure}
+    \begin{lstlisting}[language=Python]
+def get_prime_paths(G, start_node):
+    all_prime_paths = []
+    nodes = list(G.nodes())
 
-Sollte ein SimplePath dann ein PrimePath sein so wird dieser zurückgegeben.
-Ein Pfad ist ein Prime-Pfad, wenn er kein Teil eines bereits existierenden Pfades ist und keine Kreise enthält.
-Diese drei hier vorgestellten Funktionen setzen den Pseudocode aus $6.3.2$ um
+    for end_node in nodes:
+        if end_node == start_node:
+            continue
+        simple_paths = list(nx.all_simple_paths(G, source=start_node, target=end_node))
 
-\begin{lstlisting}[language=Python]
-def is_prime_path(new_path, pathList):
-    for exisiting_paths in pathList:
-        if is_subpath(new_path, exisiting_paths):
-            return False
-    return True
-\end{lstlisting}
+        # Ein Pfad ist prime, wenn er kein Teilpfad ist
+        prime_paths_for_end_node = []
+        for path in simple_paths:
+            is_prime = True
+            for other_path in simple_paths:
+                if set(path).issubset(set(other_path)) and path != other_path:
+                    is_prime = False
+                    break
+            if is_prime:
+                prime_paths_for_end_node.append(path)
 
+        all_prime_paths.extend(prime_paths_for_end_node)
+    return all_prime_paths
+    \end{lstlisting}
+    \caption{PrimePfad Generierung}
+    \label{getprime}
+\end{figure}
+
+Sie nutzt die Gegebenheit, dass Anfragen zwar im Query-Knoten starten müssen, jedoch jeder andere Knoten des Graphens ein potentieller Endknoten ist.
+Jeder Knoten wird dabei einmal als Endknoten behandelt und die einfachen Pfade von Query-Knoten zu diesem Knoten werden ermittelt.
+Anschließend werden die Pfade so gefiltert, dass nur die längsten Pfade, die keine Unterpfade haben zurückgegeben werden.
+Dies entsprich laut Definition~\ref{primepfad} einem PrimePfad und der Algorithmus ist Deckungsgleich mit~\cite[Finding Prime Test Paths S.39]{software-testing}.
+
+\newpage
 \subsection{Querys aus Pfad ermitteln}
 
 Die entwickelten Pfade werden in diesem Schritt nun in Querys umgewandelt, sodass diese an die GraphQL-API
 gestellt werden können.
 Eine Query beginnt in GraphQL immer im Query-Knoten und so beginnen auch alle unseren ermittelten Pfade in diesem Knoten.
-Da wir uns bei der Argumentgenerierung stark an \textit{Property-based Testing}~\cite{property-based-testing} halten
-erstellen wir pro Pfad n Querys.
-Standardmäßig ist $n = 5$.
+Da wir die Wahrscheinlichkeit erhöhen wollen, dass ein Pfad gut abgedeckt wird, generieren wir pro Pfad nicht einen Test sondern führen eine
+Variable $testPerPath$ ein, die festlegt, wieviele Querys pro Pfad generiert werden sollen.
+Standardmäßig legen wir fest: $testPerPath = 5$.
 Um Querys aus einem Pfad zu erstellen wurde der $querygenerator$ entwickelt.
 Der Querygenerator hat die Methode $pathToQuery$ welche den Pfad, ein Typedict und den Graphen erwartet.
 Das Typedict ist ein Python-Dict, dass alle Informationen über das Schema enthält.
-Die Funktion erstellt nun eine Query indem der angegebene abgelaufen wird.
-Diese Funktionalität setzt die rekursive Funktion $resolvePathTillOnlyScalarTypesOrEnd(path, typedict, graph, query="")$ um.
+Die Funktion erstellt nun eine Query indem der angegebene Pfad abgelaufen wird.
+Diese Funktionalität setzt die rekursive Funktion $resolvePathTillOnlyScalarTypesOrEnd(path, typedict, graph, query="")$ um die in Abbildung~\ref{respath} dargestellt ist.
+
+\begin{figure}
+    \begin{lstlisting}[language=Python]
+def resolvePathTillOnlyScalarTypesOrEnd(path, typedict, graph, query=""):
+    if path:
+        edge = path.pop(0)
+    else:
+        return query
+    edge_data = graph[edge[0]][edge[1]]["data"]
+    if len(edge_data['args']) < 1:
+        if edge_data["type"]["kind"] == "SCALAR":
+            query = query + " " + edge_data["name"] + " "
+        else:
+            query = query + " " + edge_data["name"] + " { " + addScalarTypes(edge_data["type"], typedict, edge_data["name"]) + " " + resolvePathTillOnlyScalarTypesOrEnd(path, typedict, graph, query) + " } "
+    else:
+        argString = edge_data['name'] + "("
+        for args in edge_data['args']:
+            argString = argString + args["name"] + ": " + resolveArg(args["type"], typedict) + ", "
+        argString = argString + ")"
+        query = query + argString + " { " + addScalarTypes(edge_data["type"], typedict, edge_data["name"]) + " " + resolvePathTillOnlyScalarTypesOrEnd(path, typedict, graph, query) + " } "
+    return query
+    \end{lstlisting}
+    \caption{Pfadumwandlung in Query}
+    \label{respath}
+\end{figure}
+
 Die Funktion arbeitet dabei so, dass sie für jeden Ausgangspunkt einer Kante alle $SCALAR$ Felder hinzufügt.
 So wird sichergestellt, dass alle einfachen Felder eines Objektes abgefragt werden.
 Es kann so validiert werden, dass das Objekt übereinstimmt mit der Schema-Definition.
-Sind alle $SCALAR$ Types hinzugefügt, so wird geprüft, welches Feld vom Type $OBJECT$ hinzugefügt werden muss um die Kante
-zum nächsten Knoten abzubilden.
+Sind alle $SCALAR$ Types hinzugefügt, so wird geprüft, welches Feld vom Type $OBJECT$ hinzugefügt werden muss, um die Kante zum nächsten Knoten abzubilden.
 Sollte diese Kante Einträge im $args$ Feld besitzen, so werden die Argumente generiert.
 Da Argumente nur $SCALAR$ Types oder Aggregationen von $SCALAR$ Types sein können, benötigen wir Datengeneratoren für die Standarddatentypen.
-Hierbei kann es allerdings auch vorkommen, dass Argumente als Listen vorkommen.
-In allen Fällen sind die Argumente jedoch immer nur Varianten von Standarddatentypen.
-Die Auflösung der Argumente wird erledigt durch die Funktion $resolveArg$.
-Benötigt ein $OBJECT$ Feld nun Argumente, so werden diese der Query hinzugefügt.
+Die Zuweisung der Datengeneratoren geschieht hierbei mit der Funktion $resolveArg$.
+Benötigt ein $OBJECT$ Feld nun Argumente, so werden diese der Query hinzugefügt indem mit $resolveArg$ die Argumente zur Verfügung gestellt wurden.
 Anschließen wird die Kante aus der Liste des Pfades entfernt und die Funktion wieder rekursiv aufgerufen.
 Abbruchbedingung ist, dass der Pfad keine Kanten mehr besitzt.
-Wenn der Pfad keine Kanten mehr besitzt, so ist die entwickelte Query ein Test der den Pfad abdeckt.
-Es sei unbedingt angemerkt, dass durch die zufällige Argumentgenerierung keinesfalls garantiert ist, dass bei der
-Testausführung dann der volle Pfad getestet wird.
+Wenn der Pfad keine Kanten mehr besitzt, so ist die entwickelte Query ein Test, der den Pfad abdeckt.
+Es sei angemerkt, dass durch die zufällige Argumentgenerierung keinesfalls garantiert ist, dass bei der Testausführung dann der volle Pfad getestet wird.
 Sollte zum Beispiel ein Pfad direkt am Anfang Argumente benötigen, diese aber jedoch zu keinen Daten des SUT passen, so ist es sehr
 wahrscheinlich, dass der Test erfolgreich sein wird, ohne dass der eben entwickelte Pfad wirklich komplett getestetet wird.
+\newpage
 
-\subsection{Test ausführen / Testfile generieren}
+\subsection{Tests ausführen \& Testdatei generieren}
 
-In der Testausführung halten wir uns auch relativ nah an die vorgestellte Methode in \textit{Property-based Testing} \cite{property-based-testing}.
-Wir gehen hierbei davon aus, dass eine GraphQL-API die zu testen ist, genau so reagiert wie in $6.5$ vorgestellt.
-Dies bedeutet, dass wir mittels HTTP-POST unsere generierte Query an die zu testende API senden und die Antwort
-im nächsten Schritt untersuchen.
-Eine exakte Umsetzung hierfür existieren in zwei verschiedenen Versionen.
-Einerseits werden on-the-fly die Tests im Programmdurchlauf ausgeführt.
+Bevor wir die Tests ausführen, werden diese im PyTest-Format gespeichert.
+Hierzu wird eine Datei angelegt, die alle nötigen Imports enthält.
+Anschließend wird für jede Query ein eigener Test angelegt und die Auswertung festgeschrieben.
+Dafür existiert die Funktion $generateTestFromQuery$ im Modul Testgenerator.
+Ein so erstellter PyTest ist in Abbildung~\ref{pytestt} dargestellt.
 
-\begin{lstlisting}[language=Python]
-    queryResults = []
-    for testQuery in primePathQueries:
-        r = requests.post(testUrl, json={'query': testQuery})
-        response_as_dict = json.loads(r.text)
-        queryResults.append([testQuery, r, measurement])
-\end{lstlisting}
+\begin{figure}[H]
+    \begin{lstlisting}[language=Python]
+def testQuery6aa8b26(caplog):
+    caplog.set_level(logging.WARNING)
+    response = requests.post(testUrl,json={'query':"{...}")
+    response_as_dict = json.loads(response.text)
+    measurement = queries.compareQueryResults(response_as_dict, "{...}")
+    if measurement["expectedPathLength"] > measurement["pathLengthFromResult"]:
+        logging.warning(" Test hat nicht 100% Abdeckung ")
+    assert response.status_code == 200
+    \end{lstlisting}
+    \caption{PyTest einer Query}
+    \label{pytestt}
+\end{figure}
 
-Andererseits werden die Querys auch in einer $test_graphQL.py$ abgespeichert indem
-wir aus der Query einen Test in $PyTest$ generieren.
+Nachdem mit den PyTests die Querys reproduzierbar gemacht wurden, führen und werten wir diese aus.
+Hierbei nutzen wir den Code aus Abbildung~\ref{testt}.
+Eine Query wird als HTTP-POST an das SUT gestellt, die Antwort wird dann auf ihre Pfadlängen hin untersucht und in
+einer Datei abgespeichert.
 
-\begin{lstlisting}[language=Python]
-for testQuery in primePathQueries:
-    f.write(pytestgenerator.generateTestFromQuery(testQuery, testUrl))
-\end{lstlisting}
-
-Der Test ist so definiert, dass er im Endeffekt auch ein HTTP-POST ausführt und direkt die Testauswertung enthält.
-Zur Testauswertung jedoch im folgenden mehr.
-
-\begin{lstlisting}[language=Python]
-def generateTestFromQuery(testQuery, url):
-    testQueryAsValidString = testQuery.replace('"', '\\"')
-    testString = "def testQuery" + str(uuid.uuid4()).replace('-', '') + "(caplog):" + "\n"
-    testString = testString + "    caplog.set_level(logging.WARNING)" + "\n"
-    testString = testString + "    response = requests.post(\"" + url + "\"," "json={\'query\':\"" + testQueryAsValidString + "\"})" + "\n"
-    testString = testString + "    response_as_dict = json.loads(response.text)"  + "\n"
-    testString = testString + "    measurement = queries.compareQueryResults(response_as_dict, " + "\"" + testQueryAsValidString + "\"" + ")" + "\n"
-    testString = testString + "    if measurement[\"expectedPathLength\"] > measurement[\"pathLengthFromResult\"]:" + "\n"
-    testString = testString + "        logging.warning(\" Test hat nicht 100% Abdeckung \")" + "\n"
-    testString = testString + "    assert response.status_code == 200" + "\n"
-    testString = testString + "\n" + "\n"
-    return testString
-\end{lstlisting}
-
-\subsection{Testauswertung}
-
-Die Testauswertung erfolgt in zweierlei Maß.
-Einerseits werden Tests ad-hoc ausgeführt und ausgeführt andererseits wird ein Datei mit PyTests generiert.
-Diese dient insbesondere dafür, dass etwaiige fehlerhafte Tests zu einem späteren Zeitpunkt mittels PyTest noch einmal ausgeführt werden können.
-Für die Auswertung der Tests halten wir uns in beiden Beispielen an die HTTP-Statuscodes der Antwort sowie an die zuvor vorgestellte Messmethode
-der Pfadlängen.
-
-\subsubsection{Ad-Hoc Tests}
-
-Die Ad-Hoc Testausführung erfolgt durch ein simples HTTP-POST and das SUT.
-Zuerst sammeln wir dann alle Ergebnisse der Tests und werten sie zu einem späteren Zeitpunkt genauer aus.
-
-\begin{lstlisting}[language=Python]
+\begin{figure}[H]
+    \begin{lstlisting}[language=Python]
 queryResults = []
 for testQuery in primePathQueries:
-    r = requests.post(testUrl, json={'query': testQuery})
+    r = requests.post(testUrl, json={'query': testQuery}, headers=HEADERS)
     response_as_dict = json.loads(r.text)
     measurement = queries.compareQueryResults(response_as_dict, testQuery)
     queryResults.append([testQuery, r, measurement])
-\end{lstlisting}
+    f.write(" => ".join([testQuery, r.text]))
+    f.write("\n")
+f.close()
+    \end{lstlisting}
+    \caption{Ausführen einer Testquery}
+    \label{testt}
+\end{figure}
 
-Wir berechnen in Place dann die Pfadlängen von Response und Erwartung.
-Alles wird dann in einer Liste mit den QueryResults gespeichert.
-In der späteren Auswertung sortieren wir die Tests dann in 4 verschiedene Kategorien.
+Um die Tests auszuführen, senden wir alle zuvor generierten Querys an das SUT.
+Die Antworten werden zuerst gespeichert und dann später ausgewertet.
 
-\begin{lstlisting}[language=Python]
+\subsection{Testauswertung}
+
+Die Testauswertung erfolgt, wie zuvor gesehen, in zweierlei Arten.
+Einerseits werden Tests ad-hoc ausgeführt.
+Andererseits wird eine Datei mit PyTests generiert.
+Die Auswertung der Testquerys in der PyTest Datei erfolgt nach PyTest Standard, dabei werden Hinweise geliefert falls etwas abweicht von der Erwartung.
+Eine Auswertung der Testquerys die direkt ausgeführt wurden erfolgt nach einer Kategoriesierung.
+Die Kategoriesierungen sind \textbf{Good\_Test},\textbf{Perfect\_Test},\textbf{malformed\_Test} und \textbf{confirmed\_failed\_Test}.
+Ein \textbf{Good\_Test} ist ein Test, der keinen Fehler erzeugt hat allerdings ist die erwartete Pfadlänge von der Response nicht erfüllt worden, es war also ein Test
+der nicht die komplett gewünschte Abdeckung erreicht hat.
+\textbf{Perfect\_Test} sind Tests, die keinen Fehler erzeugt haben und die erwartete Pfadlänge entspricht der Pfadlänge der Response.
+Eine solche Query hat den Pfad, der zu testen war, ideal abgedeckt.
+\textbf{malformed\_Test} sind Tests, die fehlerhaft sind aber allerdings aufgrund von Generierungsfehler vom Prototypen.
+\textbf{confirmed\_failed\_Test} sind Tests bei denen wir tatsächlich einen Fehler bekommen.
+Die Fehlerhaften Tests werden dann im folgenden Ausgegeben mit der konkreten Fehlerbeschreibung, sodass eine Fehleranalyse möglich wird.
+Um Maß darüber zu halten, wie viele Tests in welcher Kategorie sind wurde eine Auswertung geschrieben welche in Abbildung~\ref{auswert} gezeigt ist.
+
+\begin{figure}
+    \begin{lstlisting}[language=Python]
+successfull = 0
+perfect = 0
+own_failure = 0
+server_failures = 0
+testCount = 0
+
 for queryResult in queryResults:
     testCount = testCount + 1
     if any(substring in queryResult[1].text for substring in ["GRAPHQL_PARSE_FAILED", "GRAPHQL_VALIDATION_FAILED"]):
-    own_failure = own_failure + 1
-    elif "INTERNAL_SERVER_ERROR" in queryResult[1].text or "error" in queryResult[1].text:
-    print(queryResult[1].text)
-    server_failures = server_failures + 1
+        own_failure = own_failure + 1
+    elif "INTERNAL_SERVER_ERROR" in queryResult[1].text or r.StatusCode == 500:
+        server_failures = server_failures + 1
     elif "data" in queryResult[1].text and queryResult[2]["expectedPathLength"] > queryResult[2]["pathLengthFromResult"]:
-    successfull = successfull + 1
+        successfull = successfull + 1
     elif "data" in queryResult[1].text and queryResult[2]["expectedPathLength"] == queryResult[2]["pathLengthFromResult"]:
-    perfect = perfect + 1
-\end{lstlisting}
-
-Die Kategoriesierungen sind $Good\_Test$, $Perfect\_Test$, $malformed\_Test$ und $confirmed\_failed\_Test$
-Ein Good\_Test ist ein Test, der keinen fehler erzeugt hat allerdings die Pfadlänge von Erwartung != Response.
-Perfect\_Tests sind Tests, die keinen Fehler erzeugen und Pfadlänge Erwartung = Response.
-Malformed\_Tests sind Tests, die fehlerhaft sind aber allerdings aufgrund von Generierungsfehler unsererseits.
-Dies sind also Tests die vernachlässigt werden müssen als False-Negatives.
-Confirmed\_Failed\_Tests sind Tests bei denen wir tatsächlich einen Fehler bekommen.
-Die Fehlerhaften Tests werden dann im folgenden Ausgegeben mit der konkreten Fehlerbeschreibung, sodass eine
-Fehleranalyse möglich wird.
-
-
-\subsubsection{PyTest Tests}
-
-Die erstellten Tests werden, wie in 7.2.4 vorgestellt, in einer Datei Namens $test\_GraphQL.py$ abgespeichert.
-Wenn PyTests installiert ist so lassen sich diese alle ausführen mit dem Befehl $pytest$.
-Diese Datei dient insbesondere zur Validierung von Codeänderungen.
-Man stelle sich vor, dass die fehlerhaften Code-Teile ausgebessert wurden.
-Da wir nun mit Random-Argumenten arbeiten können wir jedoch nicht garantieren, dass die selben Tests generiert werden.
-Daher speichern wir sie in der Datei ab um sie später noch einmal nutzen zu können und zu validieren, dass etwaiige Fehlerbehebungen wirksam waren und
-der spezielle Test nicht mehr scheitert.
-
+        perfect = perfect + 1
+    \end{lstlisting}
+    \caption{Auswertung der Antworten}
+    \label{auswert}
+\end{figure}
 \newpage
+
 \section{Zusammenfassung der Implementation}
 
-Die entwickelte Methode lässt sich in folgendem Sequenzdiagramm gut abbilden:
+Der Python Prototyp stellt eine Implementierung der Methode aus Kapitel~\ref{testentwurf} dar.
+Wie wir später sehen werden ist der Prototyp in der Lage reale Fehler in GraphQL-APIs zu finden.
+Die modulare Aufbauweise des Prototypens erlaubt es, dass zukünftige Anpassungen an der Software einfach umsetzbar sind.
+So sind die Module thematisch getrennt und das anpassen sowie auswechseln einzelner Module ist möglich ohne die Funktionsweise
+der anderen zu beeinträchtigen.
 
-\begin{center}
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/sequenz}
-\end{center}
 
-Durch die Generierung der Tests auf zwei Arten erreichen wir, dass einerseits die Tests direkt ausgeführt werden, sodass das
-Tool direkt Feedback zurückgibt. Andererseits verbessern wir die Überprüfbarkeit indem eine Pytest-File generiert wird die sicherstellt,
-dass die Tests erneut ausgeführt werden können.
-Limitierungen der Methode liegen insbesondere in den Argumentgeneratoren.
-Diese haben teilweise eine sehr schlechte Generierungskapazität im allgemeinen.
-Dies liegt daran, dass wir den BlackBox-Testing Ansatz verfolgen und wir somit kein Domänenwissen über die zugrunde liegenden Daten besitzen.
-Insgesamt lässt sich sagen, dass die Methode gut funktioniert und fähig ist, fehler zu finden in GraphQL-APIs.
-Hierzu jedoch im folgenden, insbesondere bei den Experimenten, mehr.

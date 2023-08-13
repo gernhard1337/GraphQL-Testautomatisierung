@@ -30,6 +30,7 @@ genutzt werden können.
 Bevor jedoch ein Abdeckungskriterium genutzt werden kann, muss das GraphQL-Schema in einen Graphen übersetzt werden.
 
 \subsection{GraphQL-Schema in Graph abbilden}
+\label{schemagraph}
 
 Laut GraphQL-Specification~\cite{graphqlspecification} erlaubt ein GraphQL Server, dass Abfragen über die Schemastruktur des
 Servers erlaubt sind \cite[vgl. 4. Introspection]{graphqlspecification}.
@@ -120,6 +121,7 @@ Wenn nun der Eintrag $kind$ den Wert $OBJECT$ trägt, so ist klar, dass unser hi
 Knoten $name$ besitzt.
 
 \subsection{Testpfade ermitteln}
+\label{testpfade}
 
 Da wir nun einen Graphen passend zum Schema ermittelt haben, gilt es, die Testpfade zu ermitteln, welche die PrimePfad-Abdeckung erfüllen.
 Hierzu nutzen wir den in~\cite[Finding Prime Test Paths]{software-testing} vorgestellten Algorithmus.
@@ -177,6 +179,7 @@ Ergebnis des Prozesses ist schließlich eine valide GraphQL-Query.
 In einer konkreten Implementierung ist die Syntax von GraphQL zu beachten, diese ist einsehbar in \cite[2.3 Language Operations]{graphqlspecification}.
 
 \subsection{Querys an SUT senden}
+\label{testf}
 
 Die generierten Querys stellen die konkreten Tests für GraphQL dar.
 Um diese auszuführen, werden alle generierten Querys per \textit{HTTP-POST} an den GraphQL-Server geschickt und die Antworten
@@ -266,34 +269,33 @@ Abschließend wollen wir noch kurz erläutern, wie es möglich wäre, die Tatsä
 Dies geschieht vor allem durch ein anpassen der Zufallsgeneratoren und die Anzahl der Querys.
 
 \subsubsection{Zufallsgeneratoren der Argumente}
+\label{zufallsgen}
 
-Unser zuvor vorgestellte Methode liefert uns einen Hinweis darauf, wie gut unsere Querys tatsächlich geteste haben.
-Dieser Ansatz verfolgt das Ziel die Querys eine bessere tatsächliche Abdeckung zu erreichen.
-Hierbei ist das Anpassen der Generatoren für die Argumente im Fokus.
+Die zuvor vorgestellte Abschätzung liefert uns einen Hinweis darauf, wie gut unsere Querys tatsächlich getestet haben.
+Ein Ansatz der die Querys eine bessere tatsächliche Abdeckung zu erreichen lässt ist das anpassen der Generatoren für die Argumente.
 In der vorgestellten Methode in Kapitel~\ref{pfadquery} erstellen wir komplett zufällig Argumente für die Funktionen.
 Dies bedeutet, dass z.B. der Type $ID$ als String gewertet wird.
-Dieser Type ist meist sehr bedeutend, da dieser häufig als Argument angegeben wird und eine spezielle Struktur hat.
+Dieser Type ist in der Realität jedoch eingeschränkt und gleichzeitig sehr bedeutend, da dieser häufig als Argument angegeben wird und er eine spezielle Struktur hat.
 Es hängt natürlich stark von der eigenen Implementierung der GraphQL-API ab allerdings wenn in der Implementierung
 eine $ID$ definiert ist als Zahlenstring, so kann es sich durchaus lohnen, dass der Argumentgenerator für die ID auch speziell
 auf Zahlenstrings angepasst wird.
 Alternativ kann auch eine Liste aller existenten IDs angegeben werden und zufällig ausgewählt werden.
-Wir erhöhen hierdurch letztendlich einfach die Chance, dass zufällig eine tatsächliche ID gewählt wird die auch
-in den Daten des SUT existent ist.
-Eine exakte Vorgehensweise für diese Methode ist allerdings stark abhängig vom System das zu testen ist und daher stark Fall abhängig.
+Die Anpassung der Argumentgeneratoren an die zugrundeliegenden Daten ist höchst spezifisch und daher kann keine allgemeine
+Vorgehensweise ermittelt werden.
+Ziel der Anpassung ist es, dass die Chance erhöht wird mit der Argumente zufällig generiert werden, die dann tatsächlich zu Zugrunde liegenden Daten passen.
 
 \subsubsection{Anzahl der Querys}
 
-Wir haben bisher eingeführt, dass wir messen können, welche Abdeckung unsere Querys tatsächlich haben und haben festgelegt wie wir diese Verbessern können.
-Da wir zufallsbasiert die Argumente generieren können wir nicht davon ausgehend, dass die erste Query direkt passt und eine ideale Pfadlänge bietet.
-Es kann passieren, muss aber nicht.
-Erhöhen wir jetzt die Anzahl der generierten Querys pro Pfad, so erhöhen wir auch die Wahrscheinlichkeit,
-dass zumindest eine Query die ideale Pfadlänge für diesen Pfad erreicht.
+Die Wahrscheinlichkeit passende Argumente zu generieren steigt außerdem mit der Anzahl an generierten Querys.
+Erhöht man die Anzahl an generierten Querys pro PFad, so erhöht sich auch die Wahrscheinlichkeit, dass zumindest ein Pfad
+eine gute Abdeckung erreicht.
 Hierfür müssen wir die Methode aus Kapitel~\ref{pfadquery} so oft wie gewünscht wiederholen, sodass wir verschiedene Querys mit verschiedenen Argumenten erhalten.
 Bei dieser Methode ist wichtig, dass sich die Argumente der Querys verändern da wir sonst einfach mehrfach die selbe Query stellen mit der
 gleichen zu erwartenden Antwort.
+Zusammen mit den angepassten Argumentgeneratoren kann so das zufallsbasierte Argumentgenerieren ein wenig begrenzt werden
+und es ist wahrscheinlicher, dass gute Tests entstehen.
 
-
-\section{Zusammenfassung der Methode und struktureller Vergleich mit Property-based Testing}
+\section{Zusammenfassung der Methode}
 
 Wir wollen im folgenden die eben vorgestellte Methode noch einmal kurz zusammenfassen damit diese übersichtlicher wird.
 Unsere hier vorgestellte Methode funktioniert so wie in Abbildung~\ref{methodeablauf} gezeigt.
@@ -303,8 +305,8 @@ Wir fügen in unserer Methode den Schritt hinzu, dass wir einen Graphen erstelle
 während in~\cite[Property-based Testing]{property-based-testing} ausgehend vom Query-Type zufällig bis zu einer bestimmten Pfadlänge (dem Rekursionslimit)
 die Pfade gebildet werden, indem immer zufällig Felder hinzugefügt werden.
 Durch unsere Methode erreichen wir, dass Pfade jeder Länge, die durchaus länger sein können als ein definiertes Rekursionslimit, abgedeckt werden und
-somit die Tests eine bessere Coverage erreichen können.
-Unser Ansatz erlaubt es außerdem, verschiedene Coverage-Kriterien zu implementieren.
+somit die Tests eine bessere Abdeckung erreichen können.
+Unser Ansatz erlaubt es außerdem, verschiedene Abdeckungskriterien zu implementieren.
 So ist man nicht gezwungen auf einer Methode zu verharren, sondern kann je nach Implementierung die Pfadgenerierung anpassen nach den individuellen
 Anforderungen ohne, dass in anderen Schritten etwas geändert werden muss.
 Bei der Umwandlung der Pfade in Querys unterscheidet sich unser Ansatz ein wenig von \cite[Property-based Testing]{property-based-testing}.
@@ -314,7 +316,7 @@ In der technischen Umsetzung unterscheiden sich beide Methoden, im Ergebnis beko
 Die Ausführung der Tests hingegen unterscheidet sich überhaupt nicht mehr zum \cite[Property-based Testing]{property-based-testing}.
 Die Einführung der erwarteten gegenüber der tatsächlichen Pfadlänge ist ein neuer Ansatz, der die Qualität der zu testenden Querys
 messbar macht - dies fehlt im~\cite[Property-based Testing]{property-based-testing}.
-Dort ist man im unklaren darüber wie gut die Tests genau getestet haben und ob die erwartete Coverage auch mit der tatsächlichen Übereinstimmt.
+Dort ist man im unklaren darüber wie gut die Tests genau getestet haben und ob die erwartete Abdeckung auch mit der tatsächlichen Übereinstimmt.
 \\
 \\
 Wir haben nun unsere Methode im groben vorgestellt und Unterschiede zum schon bestehenden Ansatz~\cite[Property-based Testing]{property-based-testing} erörtert.
