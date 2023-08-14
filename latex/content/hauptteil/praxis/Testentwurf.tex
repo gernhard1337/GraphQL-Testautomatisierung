@@ -35,7 +35,7 @@ Bevor jedoch ein Abdeckungskriterium genutzt werden kann, muss das GraphQL-Schem
 Laut GraphQL-Specification~\cite{graphqlspecification} erlaubt ein GraphQL Server, dass Abfragen über die Schemastruktur des
 Servers erlaubt sind \cite[vgl. 4. Introspection]{graphqlspecification}.
 Mithilfe einer Introspection-Query \ref{introspection-query} lässt sich das gesamte Schema eines GraphQL-Servers abrufen.
-Die Introspection-Query existiert in verschiedenen Varianten, wir nutzen hier die exakt gleiche Version wie sie auch von \cite[]{property-based-testing} genutzt wird.
+Die Introspection-Query existiert in verschiedenen Varianten, wir nutzen hier die exakt gleiche Version wie sie auch von \cite{property-based-testing} genutzt wird.
 Ergebnis der Introspection Query ist ein JSON-Objekt mit einer Struktur wie in Listing~\ref{introspec} gezeigt.
 
 \begin{lstlisting}[language=json, caption={Schema-Response},captionpos=b]
@@ -191,7 +191,7 @@ Dadurch werden die Tests reproduzierbar und können später verwendet werden um 
 \subsection{Testauswertung}
 
 Die Auswertung der Tests basiert im Grunde auf den selben Annahmen wie Sie in \cite{property-based-testing} getroffen wurden.
-Dabei werden die HTTP-Codes der Antworten und die existierenden Keys in der Response überprüft.
+Dabei werden die HTTP-Codes der Antworten ( im folgenden oft Response) und die existierenden Keys in der Response überprüft.
 Eine Antwort eines GraphQL-Server liefert stets einen Statuscode \textbf{200} wenn kein kritischer Fehler auftrat.
 Kritische Fehler sind stets ein Statuscode \textbf{500} \cite[vgl. 7. Response]{graphqlspecification}.
 Daher wird jede Antwort mit einem Code \textbf{500} als gefundenere Fehler und fehlerhafter Test betrachtet.

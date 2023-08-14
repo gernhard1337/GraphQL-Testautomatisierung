@@ -38,24 +38,29 @@
   \input{content/hauptteil/theorie/Testen}
   \input{content/hauptteil/theorie/Graphüberdeckung}
   \input{content/hauptteil/theorie/graphabdeckgraphql}
+  \input{content/hauptteil/relatedWork/relatedWork}
   \input{content/hauptteil/praxis/Testentwurf}
   \input{content/hauptteil/praxis/praxis}
   \input{content/hauptteil/praxis/auswertung}
-  \input{content/hauptteil/relatedWork/relatedWork}
   \input{content/schluss/futureWork}
   \input{content/schluss/fazit}
-
-
 
   %Anhang
   \backmatter % kennzeichnet den hinteren Teil der Arbeit
   \include{content/glossar/glossar}
   \include{content/glossar/anhang}
   \appendix % Anhang
+  \nocite{*}  % Hier das Kommentarzeichen entfernen, um alle Quellen auszugeben.
+  \cleardoublepage
+  \addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+  \listoffigures
+
+  \cleardoublepage
+  \addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+  \listoftables
 
   \cleardoublepage
   \addcontentsline{toc}{chapter}{Literaturverzeichnis}
-  \nocite{*}  % Hier das Kommentarzeichen entfernen, um alle Quellen auszugeben.
   \printbibliography[title={Literaturverzeichnis}]  % Generiert das Literaturverzeichnis
 
   \vfill
