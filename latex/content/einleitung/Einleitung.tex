@@ -20,7 +20,7 @@ GraphQL-APIs haben leider noch einen Mangel an solchen automatischen Testtools.
 Im Rahmen der internationalen  Konferenz für Automatisierung  von  Softwaretests IEEE/ACM 2021 wurde mit
 \textit{Automatic Property-based Testing of GraphQL APIs}\cite{property-based-testing} eine Methode vorgestellt, die diesen Mangel angehen soll.
 Es wurde eine Methode entwickelt die aus dem GraphQL-Schema, also der Beschreibung der Datenstruktur der API, Tests zufällig generiert und damit versucht Fehler in der Programmierung zu finden.
-Die entwickelte Methode arbeitet nach folgendem Prinzip:
+Die entwickelte Methode arbeitet nach dem in Abbildung~\ref{property-based-method} gezeigten Prinzip.
 
 \begin{figure}[h!]
     \centering
@@ -98,7 +98,7 @@ In diesem Kapitel zeigen wir außerdem, inwiefern die zuvor definierten Übderde
 Bevor wir unsere Methode entwickeln besprechen wir im Kapitel verwandte Arbeiten~\ref{relatedWork} wie der aktuelle Stand der Forschung zum Thema
 automatisiertes Testen von GraphQL ist.
 Mithilfe der zurvor entwickelten Theorie erarbeiten wir dann im Kapitel Testentwurf~\ref{testentwurf} ein Konzept, wie GraphQL automatisiert getestet werden kann.
-Dieses Konzept wird im Kapitel Testautomatisierung~\ref{testautomatisierung} eine praktische Umsetzung in einem Prototyp finden.
+Dieses Konzept wird im Kapitel~\ref{testautomatisierung} eine praktische Umsetzung in einem Prototyp finden.
 Um nachzuweisen, dass der entwickelte Prototyp fähig ist, Fehler zu finden werden einige Experimente ausgeführt und mit
 der \textit{Property-based} Methode~\cite{property-based-testing} verglichen im Kapitel~\ref{experimente}.
 Enden wird die Arbeit mit einem kleinen Ausblick in Kapitel~\ref{futurework} und einem Fazit über unsere erreichten Verbesserungen.
