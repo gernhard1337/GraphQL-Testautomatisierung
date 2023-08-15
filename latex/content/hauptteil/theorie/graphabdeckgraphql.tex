@@ -1,76 +1,75 @@
 \chapter{Graphabdeckung für GraphQL}
 \label{gqlcov}
 
-Ziel dieses Kapitels soll es sein, einen theoretischen Zugang zu schaffen, um die Abdeckungskriterien für Graphen aus Kapitel~\ref{graphueberdeckung} nutzbar zu machen für Testgenerierung.
+Ziel dieses Kapitels ist es, einen theoretischen Zugang zu schaffen, um die Abdeckungskriterien für Graphen aus Kapitel~\ref{graphueberdeckung} nutzbar zu machen für Testgenerierung.
 Grundlage des Zugangs ist die Arbeit aus Kapitel~\ref{graphtheorieQL}.
-Abbildung~\ref{abfrage} stellte den initialen Zugang dar, hierbei waren Knoten die ausgehende Kanten haben als Resolver zugeordnet.
-Ein Resolver ist wie zuvor in Kapitel~\ref{resolver} festgestellt eine Funktion eines Moduls das es zu testen gilt.
-Durch die Graphstruktur eines GraphQL-Schemas wollen wir nun Pfade generieren, die sich später in Tests umwandeln lassen.
+Abbildung~\ref{abfrage} stellte den initialen Zugang dar.
+Hierbei waren Knoten, die ausgehende Kanten haben, als Resolver zugeordnet.
+Ein Resolver ist wie in Kapitel~\ref{resolver} festgestellt eine Funktion eines Moduls, das es zu testen gilt.
+Durch die Graphstruktur eines GraphQL-Schemas sollen Pfade generiert werden, die sich später in Tests umwandeln lassen.
 Der abzudeckende Graph wird durch das GraphQL Schema definiert wobei nach Definition~\ref{defg} festzulegen ist,
 dass die spezielle Menge $N_{0} = \{ Query-Type \}$ ist und $N_{f} = N$ gilt, da jeder Knoten entlang eines Pfades des Graphens eine valide Anfrage ist.
-Im Sinne das Integrationstesten ist es nun wünschenswert, möglichst viele Kombinationen einzelner Module durch diese Pfade abzubilden.
-Wir wollen nun die zuvor eingeführten Abdeckungskriterien dahingehend untersuchen.
+Im Sinne des Integrationstesten ist es wünschenswert, möglichst viele Kombinationen einzelner Module durch diese Pfade abzubilden.
+Die einzelnen Abdeckungskriterien sind dahingehend zu untersuchen.
+
 
 \section{Knotenabdeckung für GraphQL}
 
-Die Knotenabdeckung zielt darauf ab, dass jeder Knoten in mindestens einem Testpfad Berücksichtigung findet.
+Die Knotenabdeckung zielt darauf ab, dass jeder Knoten in mindestens einem Testpfad berücksichtigt ist.
 In GraphQL sind Knoten als Type definiert.
 Jeder Type definiert seinen eigenen Resolver.
-Dadurch wird mit der Knotenabdeckung sichergestellt, dass zumindest jeder Resolver einmal ausgeführt wird.
+Dadurch ist mit der Knotenabdeckung sichergestellt, dass jeder Resolver einmal ausgeführt wird.
 Ein Type hat jedoch ausgehende Kanten welche ihn mit anderen Resolver verbinden.
 Der Graph in Abbildung~\ref{schemg} vom Schema aus Abbildung~\ref{schemdef} wäre abgedeckt durch den Pfad
 $ Query \rightarrow Autor \rightarrow Buch \rightarrow Verlag $
 Dabei wird allerdings die definierte Kante $autor$ ausgelassen welche im Query-Type definiert wurde.
-Diese kann potentiell Fehler aufweisen und soll daher auch getestet werden.
+Diese kann potenziell Fehler aufweisen und soll daher auch getestet werden.
 Gleiches gilt für die Kante $autor$ des Typen $Buch$.
-Wr folgern also, dass dieses Abdeckungskriterium unzureichend ist um Intergrationstest abzubilden.
+Die Folgerung ist, dass dieses Abdeckungskriterium unzureichend ist um Intergrationstest abzubilden.
 
 \section{Kantenabdeckung für GraphQL}
 
-Zuvor wurde deutlich, dass die Abdeckung aller Kanten essenziell ist um GraphQL gut zu testen.
-Mit der Edge-Coverage zielen wir genau darauf ab, dass jede Kante in mindestens einem Testpfad berücksichtigt wird.
-Die Edge-Coverage findet auch Anwendung in \textit{Property-based Testing}\cite[vgl. D-RQ1 ]{property-based-testing}.
-Allerdings sind im Testkontext von GraphQL auch die Kombinationen von Kanten interessant.
+Zuvor wurde deutlich, dass die Abdeckung aller Kanten essenziell ist, um GraphQL gut zu testen.
+Mit der Kantenabdeckung wird darauf geachtet, dass jede Kante in mindestens einem Testpfad berücksichtigt ist.
+Die Kantenabdeckung findet auch Anwendung in \textit{Property-based Testing}\cite[vgl. D-RQ1 ]{property-based-testing}.
+Allerdings sind im Testkontext von GraphQL alle Kombinationen von Kanten interessant.
 Durch Kantenabdeckung wäre der Testpfad $Query \rightarrow Buch \rightarrow Autor \rightarrow Buch \rightarrow Verlag$
-im Graphen aus Abbildung~\ref{schemdef} nicht berücksichtigt, obwohl durchaus interessant wäre, ob der Kreis richtig aufgelöst wurde.
+im Graphen aus Abbildung~\ref{schemdef} nicht berücksichtigt, obwohl dieser interessant wäre, um zu sehen, ob der Kreis richtig aufgelöst wurde.
 In~\cite{property-based-testing} wurde aber gezeigt, dass mithilfe dieses Abdeckungskriteriums Fehler gefunden werden können.
 
 \section{Kanten-Paar Abdeckung für GraphQL}
 
-In der Kanten-Paar Abdeckung betrachten wir alle Kantenpaare.
-Dadurch erlangen wir eine bessere Abdeckung der Funktionen, indem sichergestellt wird, dass jede Kante mit jeder darauffolgenden Kante einmal ausgeführt wird.
-Dieses Kriterium stellt eine Verbesserung der Kantenabdeckung dar, allerdings werden eben nur aufeinanderfolgende Kantenpaare abgedeckt.
-GraphQL kann aber wesentliche tiefere und komplexere Strukturen abbilden.
-Somit ergibt sich, dass die Kanten-Paar Abdeckung noch nicht ausreichend ist da insbesondere stark verschachtelte Anfragen
-hier nicht als Test generiert werden obwohl diese wahrscheinlich besonders interessant für Tests sind.
+In der Kanten-Paar Abdeckung werden alle Kantenpaare betrachtet.
+Dadurch wird eine bessere Abdeckung der Funktion erreicht als bei der Kantenabdeckung.
+Das Kriterium stellt eine Verbesserung der Kantenabdeckung dar, allerdings werden eben nur aufeinanderfolgende Kantenpaare abgedeckt.
+GraphQL kann aber wesentlich tiefere und komplexere Strukturen abbilden.
+Somit ergibt sich, dass die Kanten-Paar Abdeckung noch nicht ausreichend ist, da insbesondere stark verschachtelte Anfragen hier nicht als Test generiert werden,
+obwohl diese wahrscheinlich besonders interessant für Tests sind.
 
 \section{PrimePfad Abdeckung für GraphQL}
 
 Die PrimePfad Abdeckung ermittelt nach Definition~\ref{primecov} die längsten, einfachen Pfade.
-Dadurch, dass die längsten einfachen Pfade ermittelt werden, erreichen wir eine bessere Abdeckung als die Kanten-Paar Abdeckung.
+Dadurch, dass die längsten einfachen Pfade ermittelt werden, wird eine bessere Abdeckung als in der Kanten-Paar Abdeckung erreicht.
 Im Prinzip enthält diese Abdeckung alle möglichen Kantentupel ohne Wiederholungen von Knoten~\cite[vgl. S. 42]{software-testing}.
-Dadurch erreichen wir, dass jede Kombinationsmöglichkeit von Knoten und Kanten mit mindestens einem Test berücksichtigt werden.
-Da GraphQL den Pfad der Anfrage sequentiell abarbeitet limitiert die Länge der Anfrage die Testausführung nicht.
+Dadurch wird erreicht, dass mehr Kombinationsmöglichkeit von Knoten und Kanten mit mindestens einem Test berücksichtigt wird.
+Da GraphQL den Pfad der Anfrage sequentiell abarbeitet, limitiert die Länge der Anfrage die Testausführung nicht.
 
 \section{Vollständige Pfadabdeckung für GraphQL}
 
-Mit der vollständigen Pfadabdeckung haben wir als Ziel, alle Pfade, die möglich sind, zu generieren und in unseren Tests zu berücksichtigen.
-Da GraphQL jedoch Zyklen erlaubt ist die Anzahl an potentiellen Pfaden möglicherweise unendlich.
-Hierdurch folgt, dass auch der Testraum unendlich werden würde mit der vollständigen Pfadabdeckung.
-Somit ist dies nicht umsetztbar da wir im Allgemeinen nicht ausschließen können und wollen, dass GraphQL keine Zyklen haben kann.
+Die vollständige Pfadabdeckung verlangt, dass alle möglichen Pfade abgedeckt werden.
+Da GraphQL jedoch Zyklen erlaubt und das Verbot von Zyklen eine zu starke Einschränkung darstellen würde, ist dieses Kriterium nicht geeignet.
 Sollte das Schema nativ azyklisch sein, so wäre eine Umsetzung dieses Kriteriums denkbar.
+Dies soll jedoch keine Voraussetzung sein.
 
-\section{Fazit}
+\section{Schlussfolgerung}
 \label{fazitcov}
 
-Die beiden geeignetsten Coveragekriterien sind die vollständige Pfadabdeckung und PrimePfad Abdeckung wobei die vollständige Pfadabdeckung im
-Allgemeinen nicht verwendet werden kann da sie zu restriktiv in der Graphstruktur ist.
+Die beiden geeignetsten Abdeckungskriterien sind die vollständige Pfadabdeckung und PrimePfad Abdeckung, wobei die vollständige Pfadabdeckung im
+Allgemeinen nicht verwendet werden kann, da sie zu restriktiv in der Graphstruktur ist.
 In der Praxis hat sich gezeigt, dass der Großteil der GraphQL-Schemas Zyklen hat.
-Dadurch ist die vollständige Pfadabdeckung im Allgemeinen nicht zu nutzen und das nächst schwächere Testkriterium, die PrimePfad Abdeckung, ist zu wählen.
-Wie in Definition~\ref{sort} gezeigt, ist das nächst schwächere die PrimePfad-Abdeckung, dieses erfüllt gleichzeitig alle schwächeren Kriterien.
-Mithilfe dieses Kriteriums wollen wir im folgenden einen Prototypen entwickeln, der Integrationstests für GraphQL automatisiert erstellt.
-
-
+Deswegen ist die vollständige Pfadabdeckung im Allgemeinen nicht zu nutzen und das nächst schwächere Testkriterium, die PrimePfad Abdeckung, ist zu wählen.
+Wie in Definition~\ref{sort} gezeigt, ist das nächst schwächere die PrimePfad-Abdeckung.
+Mithilfe der PrimePfad Abdeckung soll im Folgenden ein Prototyp für GraphQL Integrationstests entwickelt werden.
 
 
 

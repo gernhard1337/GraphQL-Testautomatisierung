@@ -1,13 +1,12 @@
 \chapter{Testprozess}
 \label{testentwurf}
 
-Nachdem wir zuvor festgestellt haben, dass die PrimePfad Abdeckung potenziell das sinnvollste Abdeckungskriterium ist, wollen wir im folgenden
-eine Methodik entiwckeln die es erlaubt, mithilfe dieses Abdeckunskriteriums Tests für GraphQL zu entwerfen.
-Die zu entwickelnde Methodik wird in einigen Teilen stark an der Methode aus~\cite{property-based-testing} orientiert sein, dies wird
-jedoch an den betreffenden Stellen kenntlich gemacht.
-In diesem Kapitel wird die Methodik konzeptionell entwickelt und im folgenden Kapitel~\ref{testautomatisierung} ein Prototyp entwickelt, der
+Nachdem festgestellt wurde, dass die PrimePfad Abdeckung potenziell das sinnvollste Abdeckungskriterium ist, soll im Folgenden eine
+Methodik entwickelt werden, dies erlaubt, mithilfe des Abdeckungskriteriums Tests für GraphQL zu entwerfen.
+Die zu entwickelnde Methodik wird in einigen Teilen stark an der Methode aus~\cite{property-based-testing} orientiert sein, dies ist jedoch an den betreffenden Stellen kenntlich gemacht.
+In diesem Kapitel wird die Methodik konzeptionell erstellt und im folgenden Kapitel~\ref{testautomatisierung} ein Prototyp entwickelt, der
 die Methodik umsetzt und validiert.
-Die zu entwickelnde Methode arbeitet grob nach dem in Abbildung~\ref{methodeablauf} gezeigtem Muster.
+Die zu entwickelnde Methode arbeitet grob nach dem in Abbildung~\ref{methodeablauf} gezeigten Muster.
 
 \begin{figure}[H]
     \centering
@@ -16,16 +15,16 @@ Die zu entwickelnde Methode arbeitet grob nach dem in Abbildung~\ref{methodeabla
     \label{methodeablauf}
 \end{figure}
 
-Wie in Abbildung~\ref{methodeablauf} zu sehen ist der gesamte Testprozess in zwei Teile aufgeteilt.
-Einerseits in den Testentwurf und andererseits in die Testausführung.
+Wie in Abbildung~\ref{methodeablauf} zu sehen, ist der gesamte Testprozess in zwei Teile aufgeteilt.
+Einerseits in den Testentwurf, andererseits in die Testausführung.
 Der Testentwurf basiert auf den zuvor erarbeiteten Theorien und die Testausführung orientiert sich stark am
-Property-based Testing \cite[vgl. Method]{property-based-testing}.
+Property-based Testing~\cite[vgl. Method]{property-based-testing}.
 
 \section{Testentwurf}
 
 Der erste Abschnitt des Testprozesses erarbeitet die Pfadgenerierung nach gewähltem Abdeckungskriterium.
-Wie zuvor ermittelt, wird die PrimePfad Abdeckung im folgenden ermittelt.
-Die Methode erlaubt allerdings auch einen Wechsel des Abdeckungskriteriums da im Endeffekt nur die Pfade für die weiteren Prozesse
+Wie zuvor ermittelt, wird die PrimePfad Abdeckung im Folgenden ermittelt.
+Die Methode erlaubt allerdings auch einen Wechsel des Abdeckungskriteriums, da im Endeffekt nur die Pfade für die weiteren Prozesse
 genutzt werden können.
 Bevor jedoch ein Abdeckungskriterium genutzt werden kann, muss das GraphQL-Schema in einen Graphen übersetzt werden.
 
@@ -33,9 +32,10 @@ Bevor jedoch ein Abdeckungskriterium genutzt werden kann, muss das GraphQL-Schem
 \label{schemagraph}
 
 Laut GraphQL-Specification~\cite{graphqlspecification} erlaubt ein GraphQL Server, dass Abfragen über die Schemastruktur des
-Servers erlaubt sind \cite[vgl. 4. Introspection]{graphqlspecification}.
-Mithilfe einer Introspection-Query \ref{introspection-query} lässt sich das gesamte Schema eines GraphQL-Servers abrufen.
-Die Introspection-Query existiert in verschiedenen Varianten, wir nutzen hier die exakt gleiche Version wie sie auch von \cite{property-based-testing} genutzt wird.
+Servers erlaubt sind~\cite[vgl. 4. Introspection]{graphqlspecification}.
+Mithilfe der Introspection-Query~\ref{introspection-query} lässt sich das gesamte Schema eines GraphQL-Servers abrufen.
+Die Introspection-Query existiert in verschiedenen Varianten.
+Hier wird die exakt gleiche Version genutzt, wie sie auch von~\cite{property-based-testing} verwendet wird.
 Ergebnis der Introspection Query ist ein JSON-Objekt mit einer Struktur wie in Listing~\ref{introspec} gezeigt.
 
 \begin{lstlisting}[language=json, caption={Schema-Response},captionpos=b]
@@ -53,7 +53,7 @@ Ergebnis der Introspection Query ist ein JSON-Objekt mit einer Struktur wie in L
 \label{introspec}
 
 Der Eintrag $queryType$ gibt den Namen des Typens an, der Startpunkt jeder Query ist, so wie in Kapitel\ref{gqlcov} festgelegt.
-Mit dem Eintrag $types$ erhalten wir eine Liste aller Typen wobei jeder Eintrag der Struktur in Listing\ref{typstrukt} entspricht.
+Im Eintrag $types$ ist eine Liste aller Typen enthalten, wobei jeder Eintrag der Struktur im Listing\ref{typstrukt} entspricht.
 
 \begin{lstlisting}[language=json, caption={Type-Field},captionpos=b]
         {
@@ -70,8 +70,8 @@ Mit dem Eintrag $types$ erhalten wir eine Liste aller Typen wobei jeder Eintrag 
 \label{typstrukt}
 
 
-Um nun aus dem Schema einen Graphen zu erstellen, benötigen wir die Felder $kind$, $name$, $fields$.
-$kind$ ist die Angabe, von welchem Typ das Feld ist.
+Um aus dem Schema einen Graphen zu erstellen, werden die Felder $kind$, $name$ und $fields$ benötigt.
+Die Angabe $kind$ gibt an, von welchem Typ das Feld ist.
 Hierbei gibt es 9 Möglichkeiten, die dieses Feld annehmen kann.
 
 \begin{itemize}
@@ -83,13 +83,12 @@ Hierbei gibt es 9 Möglichkeiten, die dieses Feld annehmen kann.
     \item \textbf{EnumTypeDefinition (ENUM):} Ein Skalartyp, der auf eine bestimmte Liste von Werten beschränkt ist.
     \item \textbf{ListTypeDefinition (LIST):} Repräsentiert eine Liste von Werten eines bestimmten Typs.
     \item \textbf{NonNullTypeDefinition (NON\_NULL):} Ein Modifikator, der angibt, dass der angewandte Typ nicht null sein kann.
-    \item \textbf{DirectiveDefinition (DIRECTIVE):} Passt das Verhalten von Feldern oder Typen  Schema an.
+    \item \textbf{DirectiveDefinition (DIRECTIVE):} Passt das Verhalten von Feldern oder Typen des Schema an.
 \end{itemize}
 
-Um einen Graphen aus dem Schema zu entwickeln benötigen wir nur Felder vom Typ $OBJECT$.
-Die Menge aller Objekte vom Typ $OBJECT$ sind die Menge aller Knoten unseres Graphens.
-Um nun die Kanten, also die Beziehungen zwischen diesen einzelnen Knoten zu bekommen müssen wir uns die Defintion
-eines Typens näher ansehen.
+Aus allen Feldern des Typen $OBJECT$ kann ein Graph gebildet werden.
+Die Menge aller Objekte vom Typ $OBJECT$ ist die Menge aller Knoten des Graphens.
+Kanten werden dem Graphen hinzugefügt indem die einzelne Typdefinition näher betrachtet wird.
 Wie in $Type-Field$ gesehen, definiert ein Type immer ein Feld $fields$.
 In diesem Feld $fields$ verbirgt sich die Informationen aller Kanten, die ausgehend von diesem Knoten sind.
 Das Feld $fields$ beeinhaltet Objekte folgender Struktur:
@@ -105,10 +104,10 @@ Das Feld $fields$ beeinhaltet Objekte folgender Struktur:
             }
 \end{lstlisting}
 
-Wobei für die Kantensuche das Feld type besonders wichtig ist.
-Dieses ist wie folgt definiert:
+Wobei für die Ermittlung der Kanten das Feld $type$ besonders wichtig ist.
+Das Feld ist nach Schema aus Listing~\ref{typefiel} definiert.
 
-\begin{lstlisting}[language=json, caption={Type-Field},captionpos=b]
+\begin{lstlisting}[language=json, caption={Type-Field},captionpos=b, label={typefiel}]
     {
         "kind": "",
         "name": "",
@@ -116,49 +115,49 @@ Dieses ist wie folgt definiert:
     }
 \end{lstlisting}
 
-Wenn nun der Eintrag $kind$ den Wert $OBJECT$ trägt, so ist klar, dass unser hier definiertes $OBJECT$ eine Kante zum
-Knoten $name$ besitzt.
+Wenn der Eintrag $kind$ den Wert $OBJECT$ trägt, so ist klar, dass das hier definierte $OBJECT$ eine Kante zum Knoten $name$ besitzt.
 
 \subsection{Testpfade ermitteln}
 \label{testpfade}
 
-Da wir nun einen Graphen passend zum Schema ermittelt haben, gilt es, die Testpfade zu ermitteln, welche die PrimePfad-Abdeckung erfüllen.
-Hierzu nutzen wir den in~\cite[Finding Prime Test Paths]{software-testing} vorgestellten Algorithmus.
+Aus dem zuvor ermittelten Graphen sollen Testpfade ermittelt werden, welche die PrimePfad-Abdeckung erfüllen.
+Hierzu wird der in~\cite[Finding Prime Test Paths]{software-testing} vorgestellte Algorithmus genutzt.
 Dabei werden zuerst die einfachen Pfade ermittelt und dann gefiltert.
-Dies sind Pfade ähnlich zu Definition~\ref{primepfad} mit der Lockerung, dass diese Pfade auch Teilpfad eines längeren Pfades sein können~\cite[vgl. S. 35]{software-testing}.
+Dies sind Pfade ähnlich zu Definition~\ref{primepfad} mit der Lockerung, dass diese Pfade auch Teilpfad eines längeren Pfads sein können~\cite[vgl. S. 35]{software-testing}.
 Der längste einfache Pfad kann maximal so lang sein wie die Anzahl der Knoten des Graphens~\cite[vgl. S.41 ]{software-testing}.
-Nun wird von jedem Knoten aus expandiert und eine Liste über alle Pfade geführt.
+Es wird von jedem Knoten aus expandiert und eine Liste über alle Pfade geführt.
 Pfade werden nicht weiter expandiert, wenn diese einen Knoten doppelt enthalten.
-Endergebnis ist dann eine Liste aller einfachen Pfade.
-Filtert man die einfachen Pfade heraus, die Teil eines anderen Pfades sind erhält man nach Definition~\ref{primecov} die PrimePfad Abdeckung da
-wir alle PrimePfade gefunden haben denn es gilt, dass die Menge der Primepfade eine echte Teilmenge der einfachen Pfade ist~\cite[vgl. S. 35]{software-testing}.
+Das Endergebnis ist dann eine Liste aller einfachen Pfade.
+Diese Liste wird gefiltert, indem alle Pfade, die Teilpfad eines anderen Pfads sind, verworfen werden.
+Nach Definition~\ref{primecov} wird so die PrimePfad-Abdeckung erlangt.
+Dies folgt, da die Menge der PrimePfade eine echte Teilmenge der einfachen Pfade ist~\cite[vgl. S. 35]{software-testing}.
 Mit der Einschränkung von GraphQL, dass valide Querys stets im Query-Knoten starten müssen, muss sichergestellt werden, dass die PrimePfade dort starten.
-Um dies umzusetzen legen wir fest, dass der kürzeste Weg vom Query Knoten zum Startknoten des PrimePfades zu ermitteln ist und an den PrimePfad anzuhängen,
+Um dies umzusetzen, wird festgelegt, dass der kürzeste Weg vom Query Knoten zum Startknoten des PrimePfades zu ermitteln ist und an den PrimePfad anzuhängen,
 sodass aus diesem später eine valide Query generiert werden kann.
 
 \newpage
 \section{Testausführung}
 
-Die ermittelten Pfade werden nun zu validen GraphQL-Querys umgewandelt und dann ausgeführt um den Test zu validieren.
-Die Pfadumwandlung in eine valide Query ist noch methodisch stark abweichend zu \cite{property-based-testing}.
-Die späteren Schritte, also Test ausführen und auswerten sind methodisch gleich zu \cite{property-based-testing}.
+Die ermittelten Pfade werden zu validen GraphQL-Querys umgewandelt und dann ausgeführt um den Test zu validieren.
+Die Pfadumwandlung in eine valide Query ist noch methodisch stark abweichend zu~\cite{property-based-testing}.
+Spätere Schritte, also Test ausführen und auswerten sind methodisch gleich zu~\cite{property-based-testing}.
 
 \subsection{Pfade in Query umwandeln}
 \label{pfadquery}
 
-Einen Pfad wandeln wir in eine konkrete Query um indem wir die Typinformationen aus dem Schema nutzen.
-Beginnend im Query-Knoten wird der Pfad iteriert.
-Das GraphQL-Schema enthält Informationen darüber, welche Informationen nötig sind um zum nächsten adjazenten Knoten des Pfades zu kommen.
-Die Informationen darüber sind im Eintrag $fields$ enthalten wie in Listing~\ref{typstrukt} gesehen.
-Im $fields$ Eintrag steht dann, ob eine Kante Argumente benötigt und welcher Typ das Rückgabeobjekt ist.
-Das Rückgabeobjekt des $fields$ steht dabei aber schon fest da dieser exakt gleich sein muss mit dem nächsten Knoten des Pfades.
+Die Umwandlung eines Pfads in eine Query erfolgt durch die Verwendung der Typinformationen aus dem GraphQL-Schema.
+Der Pfad wird beginnend im Query-Knoten abgelaufen.
+Das GraphQL-Schema enthält Informationen darüber, welche Informationen nötig sind, um zum nächsten adjazenten Knoten des Pfads zu kommen.
+Die Informationen darüber sind im Eintrag $fields$ enthalten, wie in Listing~\ref{typstrukt} gesehen.
+Im $fields$ Eintrag steht, ob eine Kante Argumente benötigt und welchen Typ das Rückgabeobjekt hat.
+Das Rückgabeobjekt des $fields$ steht dabei aber schon fest, da dieser exakt gleich sein muss mit dem nächsten Knoten des Pfads.
 In jedem Schritt der Query-Generierung werden stets alle Felder vom Typ $SCALAR$ hinzugefügt, damit sichergestellt werden kann, dass
 der Typ alle Felder implementiert hat.
-Je nach Implementierung können durch die Feldauswahl weitere Funktionen abgefragt werden, daher inkludieren wir schlichtweg alles.
+Je nach Implementierung können durch die Feldauswahl weitere Funktionen abgefragt werden, daher ist alles zu inkludieren.
 Felder vom Typ $OBJECT$ werden nur zur Query hinzugefügt, wenn der Typ des $OBJECT$ dem nächsten Knoten entspricht.
-Im Allgemeinen lässt sich das Verfahren in diesem Pseudocode darstellen: \\
+Im Allgemeinen lässt sich das Verfahren durch den Pseudocode in Listing~\ref{pfadgen} darstellen. \\
 
-\begin{verbatim}
+\begin{lstlisting}[caption={Pseudocode für Pfadgenerierung},captionpos=b, label={pfadgen}]
     path = (A , B , ..... , Y)
     query = {}
 
@@ -170,33 +169,33 @@ Im Allgemeinen lässt sich das Verfahren in diesem Pseudocode darstellen: \\
         args = checkForEdgeArgs(edge)
         query.addArgs(args)
     return query
-\end{verbatim}
+\end{lstlisting}
 
-Die Argumente die in einer Query verwendet werden, sind stets nur $SCALAR$ Types und somit einfache Datentypen.
-Es gibt verschiedene Arten die Argumentgeneratoren umzusetzen, vorerst werden diese jedoch methodisch exakt wie in \cite{property-based-testing} genutzt.
-Dabei wird der Typ des Arguments genutzt um zufällig ein Argument des entsprechenden Typens zu generieren.
+Die Argumente, die in einer Query verwendet werden, sind stets nur $SCALAR$ Types und somit einfache Datentypen.
+Es gibt verschiedene Arten, die Argumentgeneratoren umzusetzen, vorerst werden diese jedoch methodisch exakt wie in~\cite{property-based-testing} umgesetzt.
+Dabei wird der Typ des Arguments genutzt, um zufällig ein Argument des entsprechenden Datentyps zu generieren.
 Ergebnis des Prozesses ist schließlich eine valide GraphQL-Query.
-In einer konkreten Implementierung ist die Syntax von GraphQL zu beachten, diese ist einsehbar in \cite[2.3 Language Operations]{graphqlspecification}.
+In einer konkreten Implementierung ist die Syntax von GraphQL zu beachten, diese ist einsehbar in~\cite[2.3 Language Operations]{graphqlspecification}.
 
 \subsection{Querys an Server senden}
 \label{testf}
 
 Die generierten Querys stellen die konkreten Tests für den GraphQL-Server dar.
-Im folgenden nennen wir den zu testenden GraphQL-Server vermehrt SUT - System under Test.
-Um diese auszuführen, werden alle generierten Querys per \textit{HTTP-POST} an den GraphQL-Server geschickt und die Antworten
-werden gespeichert, dies ist analog zu \cite{property-based-testing}.
+Im Folgenden wird der GraphQL-Server vermehrt SUT (System under Test) genannt.
+Eine Auswertung der Tests geschieht, indem alle generierten Querys per HTTP-POST an den GraphQL-Server geschickt werden.
+Die gelieferten Antworten sind zu speichern, dies ist analog zu~\cite{property-based-testing}.
 Es ist wünschenswert, dass die generierten Querys in einem Testframework abgebildet und gespeichert werden.
-Dadurch werden die Tests reproduzierbar und können später verwendet werden um etwaige Fehlerbehebungen zu verifizieren.
+Dadurch werden die Tests reproduzierbar und können später verwendet werden, um etwaige Fehlerbehebungen zu verifizieren.
 
 \subsection{Testauswertung}
 
-Die Auswertung der Tests basiert im Grunde auf den selben Annahmen wie Sie in \cite{property-based-testing} getroffen wurden.
+Die Auswertung der Tests basiert auf denselben Annahmen, wie sie in~\cite{property-based-testing} getroffen wurden.
 Dabei werden die HTTP-Codes der Antworten (im folgenden oft Response) und die existierenden Keys in der Response überprüft.
-Eine Antwort eines GraphQL-Server liefert stets einen Statuscode \textbf{200} wenn kein kritischer Fehler auftrat.
-Kritische Fehler sind stets ein Statuscode \textbf{500} \cite[vgl. 7. Response]{graphqlspecification}.
-Daher wird jede Antwort mit einem Code \textbf{500} als gefundenere Fehler und fehlerhafter Test betrachtet.
+Eine Antwort eines GraphQL-Servers liefert stets einen Statuscode \textbf{200}, wenn kein kritischer Fehler auftrat.
+Kritische Fehler sind stets ein Statuscode \textbf{500}~\cite[vgl. 7. Response]{graphqlspecification}.
+Daher wird jede Antwort mit einem Code \textbf{500} als gefundener Fehler und fehlerhafter Test betrachtet.
 Eine Antwort mit einem Statuscode \textbf{200} kann jedoch auch Fehler aufweisen.
-Dies wird ersichtlich durch einen zweiten Haupteintrag $errors$ in einer Antwort, ersichtlich in Listing~\ref{err}
+Dies wird ersichtlich durch einen zweiten Haupteintrag $errors$ in einer Antwort, ersichtlich in Listing~\ref{err}.
 
 \begin{lstlisting}[language=GraphQL, label={err}, caption={fehlerhafte Antwort}]
     {
@@ -205,26 +204,28 @@ Dies wird ersichtlich durch einen zweiten Haupteintrag $errors$ in einer Antwort
     }
 \end{lstlisting}
 
-Hierbei müssen die $errors$ jedoch manuell geprüft werden ob es sich um wirkliche Programmierfehler handelt oder gewünschtem Verhalten,
+Die Einträge in $errors$ müssen jedoch manuell geprüft werden, ob es sich um einen wirklichen Programmierfehler handelt oder gewünschtes Verhalten,
 da die Zufallsargumente teilweise dafür sorgen, dass Konventionen nicht eingehalten werden können.
-Die Zufallsargumente sorgen allerdings auch dafür, dass die errechnete PrimePfad Abdeckung nicht praktisch umgesetzt wird.
-Sehr häufig kommt es vor, dass zufällig generierte Argumente schon in den Anfängen des Pfades nicht passend zu den unterliegenden Daten sind.
-Dadurch folgt, dass ein Großteil der Testpfade die theoretisch eine gute Abdeckung aufweisen, praktisch diese Abdeckung nicht erreichen.
-Um Messen zu können, ob ein Pfad seine theoretische Abdeckung auch praktisch erreicht, führen wir eine Abschätzung darüber ein.
+Die Zufallsargumente sorgen allerdings auch dafür, dass die errechnete PrimePfad Abdeckung nicht praktisch erreicht wird.
+Sehr häufig kommt es vor, dass zufällig generierte Argumente schon in den Anfängen des Pfads nicht passend zu den unterliegenden Daten sind.
+Dadurch folgt, dass ein Großteil der Testpfade, die theoretisch eine gute Abdeckung aufweisen, praktisch diese Abdeckung nicht erreicht.
+Um messen zu können, ob ein Pfad seine theoretische Abdeckung auch praktisch erreicht, wird eine Abschätzung eingeführt.
 
 \subsubsection{Abschätzung der Pfadlängen}
-Diese Methode verbessert zwar nicht die Testergebnisse allerdings gibt Sie uns Informationen darüber wie viel von unserem Pfad in Wirklichkeit
-abgedeckt wurden.
-Dadurch lässt sich der Erfolg der Tests besser abschätzen da wir so messen können, ob die Querys wirklich die Funktionen ausgeführt haben.
-Hierzu wird die Pfadlänge des Pfades der zur Erstellung der Query genutzt wurde als erwartete Pfadlänge angenommen.
+
+Mit einer Abschätzung werden die Testergebnisse nicht besser, allerdings können so Informationen darüber gewonnen werden, wie viel
+vom getesteten Pfad tatsächlich abgedeckt wurde.
+Dadurch lässt sich der Erfolg der Tests besser abschätzen, da so messbar wird, ob die Querys wirklich die Funktionen ausgeführt haben.
+Hierzu wird die Pfadlänge des Pfads, der zur Erstellung der Query genutzt wurde, als erwartete Pfadlänge angenommen.
 Die Pfadlänge der Antwort wird dann als tatsächliche Pfadlänge genommen.
-Der Unterschied zwischen erwarteter und tatsächlicher Pfadlänge ist dann unser Auswertungsmerkmal für diesen speziellen Test.
+Der Unterschied zwischen erwarteter und tatsächlicher Pfadlänge ist dann das Auswertungsmerkmal für diesen speziellen Test.
 Die Pfadlänge der Response ist die maximale Tiefe der JSON-Response verringert um 1.
 
 \[ \text{Tiefe des Pfades} = \text{Tiefe des JSON-Response-Objekts} - 1 \]
 
-Demnach hätte folgende Response eine Tiefe von 2
-\begin{lstlisting}[language=GraphQL, caption={vollständige Response}]
+Demnach hat die Response aus Listing~\ref{resp3} eine Tiefe von 2.
+
+\begin{lstlisting}[language=GraphQL, caption={vollständige Response}, label={resp3}]
     {
         "data": {
             "book": {
@@ -239,9 +240,9 @@ Demnach hätte folgende Response eine Tiefe von 2
     }
 \end{lstlisting}
 
-Und die leere Antwort hätte eine Tiefe von 1
+Eine leere Antwort, wie in Listing~\ref{resp4} gezeigt, hat eine Tiefe von 1.
 
-\begin{lstlisting}[language=GraphQL, caption={mangelhafte Response}]
+\begin{lstlisting}[language=GraphQL, caption={mangelhafte Response}, label={resp4}]
     {
         "data": {
             "book": null
@@ -249,81 +250,68 @@ Und die leere Antwort hätte eine Tiefe von 1
     }
 \end{lstlisting}
 
-Obwohl eine leere Response zulässig ist und nicht auf einen Fehler hindeutet, signalisiert uns der Unterschied zwischen erwarteter und tatsächlicher Länge dann,
+Obwohl eine leere Response zulässig ist und nicht direkt auf einen Fehler hindeutet, signalisiert der Unterschied zwischen erwarteter und tatsächlicher Länge,
 ob die Query tatsächlich alle Resolver ausgeführt hat oder nur einen Teil davon.
-Hierdurch können wir die Tests in ihrer Qualität auswerten.
-Wir können die Pfadlängen aller erwarteten Pfade addieren, das gleiche müssen wir auch mit den tatsächlichen Pfadlängen machen.
-So erreichen wir zwei Zahlen und mit diesen können wir eine prozentuale Einschätzung abgeben, wieviel Prozent unserer Tests
-insgesamt ausgeführt wurden.
-Wir rechnen hierfür:
+Mithilfe der Abschätzung kann die Qualität der Tests ausgewertet werden.
+Hierzu kann die Pfadlänge aller erwarteten Pfade addiert werden.
+Das gleiche wird mit den tatsächlichen Pfadlängen gemacht.
+Beide Zahlen können dann miteinander in Bezug gesetzt werden, um eine prozentuale Einschätzung zu erlangen, wie viel Prozent der Tests
+tatsächlich ausgeführt wurden.
+\begin{definition}
+    \[ \text{Prozent der tatsächlichen Abdeckung} = \frac{\text{tatsächliche Gesamtpfadlänge}}{\text{erwartete Gesamtpfadlänge}} * 100 \]
+\end{definition}
 
-\[ \text{Prozent der tatsächlichen Abdeckung} = \frac{\text{tatsächliche Gesamtpfadlänge}}{\text{erwartete Gesamtpfadlänge}} * 100 \]
-
-Wir sollten einen Wert von 100\% anstreben.
-Dies würde bedeuten, dass unsere generierten Tests auch alle Funktionen getestet haben.
-Andernfalls bedeutet ein Prozentsatz unter 100\% eben, dass nicht alle Funktionen tatsächlich von den Querys überdeckt wurden.
-
+Ein Wert von 100\% ist anzustreben.
+Dies würde bedeuten, dass die generierten Tests auch alle Funktionen getestet haben.
+In der Praxis wird der Wert jedoch sehr wahrscheinlich darunter liegen.
 \\
 \\
 
-Abschließend wollen wir noch kurz erläutern, wie es möglich wäre, die Tatsächliche Abdeckung zu erhöhen.
-Dies geschieht vor allem durch ein anpassen der Zufallsgeneratoren und die Anzahl der Querys.
+Abschließend soll erklärt werden, wie es möglich ist, den Wert der tatsächlichen Abdeckung zu erhöhen.
+Dies geschieht durch zwei verschiedene Methoden.
 
 \subsubsection{Zufallsgeneratoren der Argumente}
 \label{zufallsgen}
 
-Die zuvor vorgestellte Abschätzung liefert uns einen Hinweis darauf, wie gut unsere Querys tatsächlich getestet haben.
-Ein Ansatz der die Querys eine bessere tatsächliche Abdeckung zu erreichen lässt ist das anpassen der Generatoren für die Argumente.
-In der vorgestellten Methode in Kapitel~\ref{pfadquery} erstellen wir komplett zufällig Argumente für die Funktionen.
-Dies bedeutet, dass z.B. der Type $ID$ als String gewertet wird.
-Dieser Type ist in der Realität jedoch eingeschränkt und gleichzeitig sehr bedeutend, da dieser häufig als Argument angegeben wird und er eine spezielle Struktur hat.
-Es hängt natürlich stark von der eigenen Implementierung der GraphQL-API ab allerdings wenn in der Implementierung
-eine $ID$ definiert ist als Zahlenstring, so kann es sich durchaus lohnen, dass der Argumentgenerator für die ID auch speziell
-auf Zahlenstrings angepasst wird.
-Alternativ kann auch eine Liste aller existenten IDs angegeben werden und zufällig ausgewählt werden.
+Die zuvor vorgestellte Abschätzung liefert einen Hinweis darüber, wie gut die Querys tatsächlich getestet wurden.
+Ein Ansatz, der die Querys eine bessere tatsächliche Abdeckung zu erreichen lässt, ist das Anpassen der Generatoren für die Argumente.
+Bei der in Kapitel~\ref{pfadquery} vorgestellten Methode werden Argumente komplett zufällig für den zugrundeliegenden Datentyp erstellt.
+Dies bedeutet, dass zum Beispiel der Type $ID$ als String gewertet wird.
+Eine $ID$ unterliegt jedoch in den allermeisten Implementierungen bestimmten Konventionen.
+So wäre ein Generator für zufällige Strings nicht in der Lage, solche Konventionen zuverlässig abzubilden.
+Ein Anpassen des Argumentgenerators für die $ID$ an die verwendete Konvention des SUT hilft dabei, dass signifikant bessere Ergebnisse erzeugt werden.
+Alternativ kann auch eine Liste aller existenten IDs angegeben werden und zufällig ein Element ausgewählt werden.
 Die Anpassung der Argumentgeneratoren an die zugrundeliegenden Daten ist höchst spezifisch und daher kann keine allgemeine
 Vorgehensweise ermittelt werden.
-Ziel der Anpassung ist es, dass die Chance erhöht wird mit der Argumente zufällig generiert werden, die dann tatsächlich zu Zugrunde liegenden Daten passen.
+Ziel der Anpassung ist es, dass die Chance erhöht wird, dass Argumente zufällig generiert werden, die dann tatsächlich zu den zugrunde liegenden Daten passen.
 
 \subsubsection{Anzahl der Querys}
 
-Die Wahrscheinlichkeit passende Argumente zu generieren steigt außerdem mit der Anzahl an generierten Querys.
-Erhöht man die Anzahl an generierten Querys pro PFad, so erhöht sich auch die Wahrscheinlichkeit, dass zumindest ein Pfad
-eine gute Abdeckung erreicht.
-Hierfür müssen wir die Methode aus Kapitel~\ref{pfadquery} so oft wie gewünscht wiederholen, sodass wir verschiedene Querys mit verschiedenen Argumenten erhalten.
-Bei dieser Methode ist wichtig, dass sich die Argumente der Querys verändern da wir sonst einfach mehrfach die selbe Query stellen mit der
-gleichen zu erwartenden Antwort.
-Zusammen mit den angepassten Argumentgeneratoren kann so das zufallsbasierte Argumentgenerieren ein wenig begrenzt werden
+Die Wahrscheinlichkeit, passende Argumente zu generieren, steigt mit der Anzahl an generierten Querys.
+Erhöht man die Anzahl an generierten Querys pro Pfad, so erhöht sich auch die Wahrscheinlichkeit, dass zumindest ein Pfad eine gute Abdeckung erreicht.
+Hierfür muss die Methode aus Kapitel~\ref{pfadquery} so oft wie gewünscht wiederholt werden.
+In jeder Generierung muss jedoch das Ergebnis sein, dass verschiedene Argumente für die Query generiert wurden.
+Zusammen mit den angepassten Argumentgeneratoren kann so die zufallsbasierte Argumentgeneration begrenzt werden
 und es ist wahrscheinlicher, dass gute Tests entstehen.
+
 
 \section{Zusammenfassung der Methode}
 
-Wir wollen im folgenden die eben vorgestellte Methode noch einmal kurz zusammenfassen damit diese übersichtlicher wird.
-Unsere hier vorgestellte Methode funktioniert so wie in Abbildung~\ref{methodeablauf} gezeigt.
-Wie zu sehen, ist der ganz grobe Ablauf ähnlich zum~\cite[Property-based Testing]{property-based-testing} allerdings unterscheidet sich die
-Methode in einigen Teilen sehr stark vom~\cite[Property-based Testing]{property-based-testing}.
-Wir fügen in unserer Methode den Schritt hinzu, dass wir einen Graphen erstellen welcher die Knoten und Kanten des GraphQL-Schemas repräsentiert
-während in~\cite[Property-based Testing]{property-based-testing} ausgehend vom Query-Type zufällig bis zu einer bestimmten Pfadlänge (dem Rekursionslimit)
-die Pfade gebildet werden, indem immer zufällig Felder hinzugefügt werden.
-Durch unsere Methode erreichen wir, dass Pfade jeder Länge, die durchaus länger sein können als ein definiertes Rekursionslimit, abgedeckt werden und
-somit die Tests eine bessere Abdeckung erreichen können.
-Unser Ansatz erlaubt es außerdem, verschiedene Abdeckungskriterien zu implementieren.
-So ist man nicht gezwungen auf einer Methode zu verharren, sondern kann je nach Implementierung die Pfadgenerierung anpassen nach den individuellen
-Anforderungen ohne, dass in anderen Schritten etwas geändert werden muss.
-Bei der Umwandlung der Pfade in Querys unterscheidet sich unser Ansatz ein wenig von \cite[Property-based Testing]{property-based-testing}.
-In unserer Methode generieren wir aus dem Pfad direkt die Query und generieren die nötigen Argumente ''on-the-fly'' während sie erkannt werden.
-Im Property-based Ansatz wird ein Datenobjekt als ganzes erstellt, dass die Query später generieren kann.
-In der technischen Umsetzung unterscheiden sich beide Methoden, im Ergebnis bekommen Sie jedoch strukturell gleiche Querys.
-Die Ausführung der Tests hingegen unterscheidet sich überhaupt nicht mehr zum \cite[Property-based Testing]{property-based-testing}.
-Die Einführung der erwarteten gegenüber der tatsächlichen Pfadlänge ist ein neuer Ansatz, der die Qualität der zu testenden Querys
-messbar macht - dies fehlt im~\cite[Property-based Testing]{property-based-testing}.
-Dort ist man im unklaren darüber wie gut die Tests genau getestet haben und ob die erwartete Abdeckung auch mit der tatsächlichen Übereinstimmt.
+Die eben entwickelte Methode funktioniert so wie in Abbildung~\ref{methodeablauf} gezeigt.
+Teile der Methode bedienen sich an Methoden die in~\cite{property-based-testing} eingeführt wurden.
+Der komplette Prozess der Testgenerierung wurde in der hier entwickelten Methode jedoch verändert.
+So wurde die Graphstruktur von GraphQL genutzt, um aus dieser Testpfade zu generieren, die dann in GraphQL-Querys umgewandelt werden.
+Auf diese Weise war es möglich, die Limitierung des Rekursionslimits vom \textit{Property-based Testing} zu beseitigen.
+In der Testauswertung wurde sich stark am \textit{Property-based Testing} orientiert.
+Die Einführung der erwarteten Pfadlänge gegenüber der tatsächlichen Pfadlänge ist ein neuer Ansatz, der die Qualität der zu testenden Querys
+messbar macht, dies fehlt im \textit{Property-based Testing} .
 \\
-\\
-Wir haben nun unsere Methode im groben vorgestellt und Unterschiede zum schon bestehenden Ansatz~\cite[Property-based Testing]{property-based-testing} erörtert.
-Im folgenden wollen wir uns der praktischen Umsetzung dieser Methode widmen und einen Prototypen entwickeln.
-Dieser Prototyp soll dann gegen das~\cite[Property-based Testing Tool]{property-based-testing} antreten und möglichst zeigen, dass die eben entwickelte Methode
-eine Verbesserung darstellt.
+
+
+Im Folgenden soll die entwickelte Methode in einem Prototypen umgesetzt werden.
+Dieser Prototyp soll dann in Experimenten zeigen, dass die entwickelte Methode in der Lage ist, Fehler in GraphQL-APIs zu finden.
+Ein Vergleich mit dem Prototypen von \textit{Property-based Testing} soll zeigen, ob die Methode Verbesserungen bringt.
+
 
 
 

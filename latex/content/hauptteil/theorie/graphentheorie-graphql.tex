@@ -2,42 +2,46 @@
 \section{Zusammenhang Graphentheorie und GraphQL}
 \label{graphtheorieQL}
 
-Da wir nun ein grundlegendes Wissen über Graphentheorie und GraphQL erlangt haben, muss noch gezeigt werden,
-dass Graphentheorie auch anwendbar ist auf GraphQL.
-Wir nutzen diese Verknüpfung dann später, um Algorithmen die für Graphen gedacht sind für GraphQL zu nutzen.
+Da ein grundlegendes Wissen über Graphentheorie und GraphQL geschaffen wurde, muss noch gezeigt werden, dass Graphentheorie auch anwendbar ist auf GraphQL.
+Die Verknüpfung wird später genutzt, um Algorithen, die für Graphen gedacht sind, für GraphQL zu nutzen.
 
 \subsection{Schema als Graph}
 
-Das GraphQL-Schema ist wie in Kapitel~\ref{schematypes} gezeigt eine Komposition von Typen.
+Das GraphQL-Schema ist, wie im Kapitel~\ref{schematypes} gezeigt, eine Komposition von Typen.
 Ein Typ definiert Felder in sich.
 Jedes Feld eines Typens zeigt seinerseits wieder auf ein anderes Feld~\cite[vgl. Modelling with GraphQL]{graphqlgraphtheory}.
 Somit wird jedes Feld eines Typens zu einer ausgehenden Kante.
-Definieren wir nun einen simplen Typen $Buch$ welcher nur zwei Skalare Typen hat.
+Es sei ein einfacher Typ $Buch$ mit zwei Feldern vom Typ $SCALAR$ in Abbildung~\ref{kek} definiert.
+Der zugehörige Graph ist dargestellt in Abbildung~\ref{kekl}.
 
 \begin{figure}[ht]
     \centering
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[h]{0.45\textwidth}
         \begin{verbatim}
         type Buch {
             id: Int
             title: String
         }
         \end{verbatim}
+        \caption{Buch-Typ}
+        \label{kek}
     \end{minipage}
     \hfill
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[h]{0.45\textwidth}
         \begin{tikzpicture}
-            \node[circle, draw] (n1) at (1,1) {Book};
+            \node[circle, draw] (n1) at (1,1) {Buch};
             \node[circle, draw] (n2) at (0,0) {id};
             \node[circle, draw] (n3) at (2,0) {title};
             \draw[->] (n1) -- (n2);
             \draw[->] (n1) -- (n3);
         \end{tikzpicture}
+        \caption{Graph des Typ-Buch}
+        \label{kekl}
     \end{minipage}
 \end{figure}
 
-Dann hat der Typ $Buch$ zwei Kanten, zu den jeweils beiden definierten Feldern $id$ und $title$.
-In Kapitel~\ref{schematypes} haben wir festegelegt, dass Skalare Typen keine eigenen Beziehungen haben.
+Der Typ $Buch$ besitzt zwei ausgehende Kanten, zu den jeweils beiden definierten Feldern $id$ und $title$.
+In Kapitel~\ref{schematypes} wurde festgestellt, dass Skalare Typen keine eigenen Beziehungen haben.
 Daher können die Felder $id$ und $title$ selbst keine ausgehenden Kanten haben.
 Das generelle Prinzip der Graphbildung ist:
 
@@ -45,15 +49,15 @@ Das generelle Prinzip der Graphbildung ist:
     \item Erstelle Knoten aus jedem Typen und den definierten Feldern des Knotens
     \item Ziehe für jeden Typ seine Kanten, indem alle Felder des Typens zum entsprechenden Knoten verbunden werden
 \end{enumerate}
-
-Nach diesem Prinzip kann nun aus einem beliebig großen Schema ein gerichteter Graph gebildet werden.
+Nach diesem Prinzip kann aus einem beliebig großen Schema ein gerichteter Graph gebildet werden.
 \newpage
+
 
 \subsection{Abfragen im Graphen}
 \label{abfrgraph}
 
-Wie behandelt GraphQL nun Anfragen intern und wie können wir dies in unserer Graphstruktur visualisieren?
-Für die Erklärung definieren wir zuerst ein Schema als Beispiel:
+Im Folgenden soll geklärt werden, wie GraphQL Anfragen intern behandelt und dies abbildbar in einem Graphen ist.
+Hierfür wird in Abbildung~\ref{schemdef} ein Schema definiert.
 
 \begin{figure}[htb]
     \centering
@@ -84,11 +88,11 @@ type Verlag {
 }
         \end{lstlisting}
     \end{minipage}
-    \label{schemdef}
     \caption{Schemadefinition}
+    \label{schemdef}
 \end{figure}
 
-Dieses Schema wird durch folgenden Graphen repräsentiert: \\
+Das in Abbildung~\ref{schemdef} definierte Schema wird durch den Graphen in Abbildung~\ref{schemg} visualisiert.
 
 \begin{figure}[htb]
     \centering
@@ -97,11 +101,11 @@ Dieses Schema wird durch folgenden Graphen repräsentiert: \\
     \label{schemg}
 \end{figure}
 
-Valide Anfragen an eine GraphQL-API sind nun alle Pfade, die mit Startknoten $Query$ beginnen und mindestens einen Knoten beinhalten,
+Valide Anfragen an eine GraphQL-API sind alle Pfade, die mit Startknoten $Query$ beginnen und mindestens einen Knoten beinhalten,
 der keine ausgehenden Kanten hat (also ein Scalar-Type)~\cite[vgl. Modelling with GraphQL]{graphqlgraphtheory}.
-Auf jeder Ebene des Graphens werden Resolver ausgeführt welche für die Datenbereitstellung verantwortlich sind.
-Wollen wir nun einen GraphQL-Server mit dem zuvor definierten Schema ein Buch mit id, Titel und Verlag mit Verlagsnamen abfragen,
-so können wir diese Query nutzen: \verb+{ buch { id title verleger { name }}}+.
+Auf jeder Ebene des Graphens werden Resolver ausgeführt, welche für die Datenbereitstellung verantwortlich sind.
+Soll von einem GraphQL-Server mit dem zuvor definierten Schema ein Buch mit id, Titel und Verlag mit Verlagsnamen abgefragt werden,
+so kann diese Query genutzt werden: \verb+{ buch { id title verleger { name }}}+.
 
 \begin{figure}[htb]
     \centering
@@ -110,8 +114,7 @@ so können wir diese Query nutzen: \verb+{ buch { id title verleger { name }}}+.
     \label{abfrage}
 \end{figure}
 
-Mit Ausführung dieser Query wird initial der Resolver $getBuch()$ ausgeführt.
-Liefert dieser ein valides Ergebnis zurück, also gibt es ein solches Buch,
-dann wird der nächste Resolver $getVerlag()$ ausgeführt~\cite[vgl. Resolver]{graphqlgraphtheory}.
+Mit Ausführung dieser Query wird zuerst der Resolver $getBuch()$ ausgeführt.
+Liefert dieser ein valides Ergebnis zurück, also gibt es ein solches Buch, dann wird der nächste Resolver $getVerlag()$ ausgeführt~\cite[vgl. Resolver]{graphqlgraphtheory}.
 Dadurch, dass die Typen $Buch$ und $Autor$ aufeinander verweisen, ist der Graph des Schemas zyklisch und die Pfadmenge,
-das heißt die validen Abfragen die gestellt werden können, unendlich.
+das heißt die erlaubten Abfragen, die gestellt werden können, unendlich.

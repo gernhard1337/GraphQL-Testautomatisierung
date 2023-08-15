@@ -1,18 +1,16 @@
 \section{Graphabdeckung}
 \label{graphueberdeckung}
 
-Wie zuvor gesehen, existieren verschiedene Abdeckungskriterien um Testabdeckung zu prüfen.
 Die Graphabdeckung führt verschiedene Kriterien ein, die es ermöglichen, aus Graphen Pfade für Tests zu generieren.
-GraphQL kann, wie in Kapitel~\ref{graphtheorieQL} gesehen, durch einen Graphen repräsentiert werden.
-Hinter jedem Knoten in diesem Graphen steckt ein Resolver der potenziell einem eigenen Modul angehört.
-Anfragen an GraphQL können nun Resolver beliebig miteinander kombinieren.
-Um diese Kombinationen zu testen, wollen wir Graphabdeckungskriterien nutzen, um Tests zu generieren,
-die für eine ausreichende Testabdeckung zu sorgen.
+GraphQL kann, wie im Kapitel~\ref{graphtheorieQL} gesehen, durch einen Graphen repräsentiert werden.
+Hinter jedem Knoten des Graphen steckt ein Resolver, der potenziell einem eigenen Modul angehört.
+Anfragen an GraphQL können Resolver beliebig miteinander kombinieren.
+Um die möglichen Kombinationen zu testen, sollen Graphabdeckungskriterien genutzt werden.
 Da in GraphQL zyklische Graphen erlaubt sind, ist der Testraum potentiell unendlich groß.
 Dieses Problem kann durch die Verwendung von Graphabdeckung gelöst werden.
-Zuerst müssen wir ersteinmal weitere Theorie einführen.
-Um Graphcoverage zu nutzen, verfeinern wir die allgemeine Definition~\ref{gerichtetergraphdef} von gerichteten Graphen.
-Im Testkontext definieren wir einen gerichteten Graphen wie folgt:
+Zuerst wird aber weitere Theorie eingeführt.
+Um Graphcoverage zu nutzen, wird die allgemeine Definition~\ref{gerichtetergraphdef} von gerichteten Graphen erweitert.
+Im Testkontext definiert sich ein gerichteter Graph wie in Definition~\ref{defg} angegeben.
 
 \begin{definition}
     Ein gerichteter Graph G ist definiert als
@@ -20,15 +18,16 @@ Im Testkontext definieren wir einen gerichteten Graphen wie folgt:
         \item[Menge N] von Knoten
         \item[Menge N_{0}] von Anfangsknoten, wobei N_{0} $\subseteq$ N
         \item[Menge N_{f}] von Endknoten, wobei N_{f} $\subseteq$ N
-        \item[Menge E] von Kanten, wobei E $\subseteq$ N x N. Hierbei ist die Menge als init{x} x target{y} definiert.
-    \end{description}~\cite[2.1 Overview]{software-testing}
+        \item[Menge E] von Kanten, wobei E $\subseteq$ N $\times$ N. Dabei ist die Menge als init(x) $\times$ target(y) definiert.
+    \end{description}
+    \caption{\cite[2.1 Overview]{software-testing}}
     \label{defg}
 \end{definition}
 
-Mithilfe dieser Definition können nun zum Beispiel Kontrollflussgraphen abgebildet werden, indem die Einstiegspunkte die Anfangsknoten sind und die Endknoten die Austrittspunkte.
-Ein Pfad innerhalb von eben definierten Graphen der in einem Knoten $x \in N_{0}$ startet und in einem Knoten $y \in N_{f}$ endet, nennt sich Testpfad~\cite[vgl. Def 2.31]{software-testing}
-Ziel ist es nun mithilfe von Abdeckungskriterien Testpfade zu ermitteln die einen Graphen ausreichend abdecken.
-Ein Graph gilt als ausreichend abgedeckt wenn die folgende Definition~\ref{graphcov} gilt.
+Mithilfe dieser Definition können zum Beispiel Kontrollflussgraphen abgebildet werden, indem die Einstiegspunkte die Anfangsknoten sind und die Endknoten die Austrittspunkte~\cite[vgl. S. 46]{software-testing}.
+Ein Pfad innerhalb von eben definierten Graphen der in einem Knoten $x \in N_{0}$ startet und in einem Knoten $y \in N_{f}$ endet, nennt sich Testpfad~\cite[vgl. Def 2.31]{software-testing}.
+Ziel ist es mithilfe von Abdeckungskriterien Testpfade zu ermitteln die einen Graphen ausreichend abdecken.
+Ein Graph gilt als ausreichend abgedeckt wenn die Definition~\ref{graphcov} gilt.
 
 \begin{definition}
     Gegeben sei eine Menge $TR$ von Testanforderungen für ein Graphabdeckungskriterium $C$.
@@ -37,20 +36,21 @@ Ein Graph gilt als ausreichend abgedeckt wenn die folgende Definition~\ref{graph
     \label{graphcov}
 \end{definition}
 
-Hierfür existieren verschiedene Kriterien die wir im folgenden definieren wollen.
+
+Hierfür werden in~\cite{software-testing} verschiedene Kriterien eingeführt.
+Diese sollen im Folgenden definiert und erklärt werden.
 
 \subsection{Graphabdeckungskriterien}
 
-Im folgenden Stellen wir verschiedene Graphabdeckunskriterien vor so wie sie in~\cite{software-testing} definiert werden.
-Dabei ist ein Graphabdeckungskriterium eine Sammlung von Testanforderungen gemäß Definition~\ref{tr} auf Graphen.
-Dieses Kapitel wird zunächst erst einmal sehr theoretisch, später folgt ein Vergleich der einzelnen Kriterien um diese besser einordnen zu können.
+Ein Graphabdeckungskriterium ist eine Sammlung von Testanforderungen gemäß Definition~\ref{tr}, wobei die Anforderungen an Graphen gestellt werden.
+Im Folgenden werden einige Graphabdeckungskriterien vorgestellt, so wie sie in~\cite{software-testing} definiert werden.
 
 \subsubsection{Knotenabdeckung}
 
-Erwartet man, dass beim Testen jede definierte Methode zumindest einmal ausgeführt wird, so handelt es sich hierbei um Knotenabdeckung.
+Wird erwartet, dass beim Testen jede definierte Methode zumindest einmal ausgeführt wird, so handelt es sich hierbei um Knotenabdeckung.
 Diese Kriterium ist weithin geläufig als $Blockabdeckung$ \cite[vgl. 2.2.1]{software-testing}.
-Eine Menge $T$ an Tests erfüllt die Knotenabdeckung wenn gilt, dass jeder erreichbare Knoten durch zumindest einen Test $t \in T$ besucht wird.
-Formal definieren wir dies in Definiton~\ref{nodecov}: 
+Eine Menge $T$ an Tests erfüllt die Knotenabdeckung, wenn gilt, dass jeder erreichbare Knoten durch zumindest einen Test $t \in T$ besucht wird.
+Formal definiert wird dies in Definition~\ref{nodecov}:
 
 \begin{definition}
     \textbf{Knotenabdeckung}: $TR$ enthält jeden erreichbaren Knoten in $G$~\cite[vgl. Criterion 2.1]{software-testing}.
@@ -61,7 +61,7 @@ Formal definieren wir dies in Definiton~\ref{nodecov}:
 \subsubsection{Kantenabdeckung}
 \label{kantenabdeck}
 Eine Granularitätsebene höher ist die Kantenabdeckung.
-In diesem Kriterium wird gefordert, dass jede erreichbare Kante mindestens einmal in einer gegebenen Menge an Test besucht wird.
+In diesem Kriterium wird gefordert, dass jede erreichbare Kante mindestens einmal in einer gegebenen Menge an Tests besucht wird.
 
 \begin{definition}
     \textbf{Kantenabdeckung}: $TR$ enthält jeden erreichbaren Pfad der Länge bis zu 1 (Kanten), in $G$~\cite[vgl. Criterion 2.2]{software-testing}.
@@ -69,51 +69,51 @@ In diesem Kriterium wird gefordert, dass jede erreichbare Kante mindestens einma
 \end{definition}
 
 Dadurch ist eingeschlossen, dass auch jeder Knoten besucht wird.
-Man kann sagen, dass die Kantenabdeckung ein stärkeres Kriterium ist, da dieses die Knotenabdeckung automatisch beinhaltet.
-Diese Gegebenheit wird sich weiterhin fortführen, sodass die Kriterien im generellen stärker, aber auch schwerer zu berechnen, werden.
+Es folgt daher, dass die Kantenabdeckung ein stärkeres Kriterium ist, da dieses die Knotenabdeckung automatisch beinhaltet.
+Diese Gegebenheit wird sich weiterhin fortführen, sodass die Kriterien im Generellen stärker, aber auch schwerer zu berechnen werden.
 
 \subsubsection{Kanten-Paar Abdeckung}
 
 Die Kantenabdeckung betrachtet nur die einzelnen Pfade des Graphens.
 Im Testkontext ist aber durchaus die zuvor ausgeführte Operation auch wichtig und muss im Testprozess berücksichtigt werden.
-Um dem Rechnung zu tragen führen wir die Kanten-Paar Abdeckung ein.
-Diese setzt vorraus, dass eine Menge an Tests $T$ alle möglichen Kantenpaare durch mindestens einen Test abgedeckt hat.
+Um dem Rechnung zu tragen, wird die Kanten-Paar Abdeckung eingeführt.
+Diese setzt voraus, dass eine Menge an Tests $T$ alle möglichen Kantenpaare durch mindestens einen Test abgedeckt hat.
 
 \begin{definition}
     \textbf{Kanten-Paar Abdeckung}: $TR$ enthält jeden erreichbaren Pfad der Länge bis zu 2 (Kanten), in $G$~\cite[vgl. Criterion 2.3]{software-testing}.
     \label{edgepaircov}
 \end{definition}
 
-\subsubsection{PrimePfad Abdeckung:}
+\subsubsection{PrimePfad Abdeckung}
 
-Während die zuvor definierten Kriterien darauf achten, dass Knoten und Kanten(-paare) abgedeckt werden, müssen wir im folgenden auch in Beachtung
-ziehen, dass im Testkontext durchaus alle Pfadkombinationen die existieren relevante Testfälle darstellen können.
-Die Anzahl an allen azyklischen Pfadkombinationen wird jedoch selbst bei kleinen Programmen sehr schnell groß\cite[vgl. S. 35]{software-testing}.
-Gleichzeitig sind viele Pfadkombinationen Teile von längeren Pfaden und somit uninteressant im Testkontext \cite[vgl. S. 35]{software-testing}.
-Um dieses Problem zu lösen wird die PrimePfad Abdeckung eingeführt.
+Während die zuvor definierten Kriterien darauf achten, dass Knoten und Kanten(-paare) abgedeckt werden, muss auch in Beachtung
+bezogen werden, dass im Testkontext durchaus alle Pfadkombinationen die existieren relevante Testfälle darstellen können.
+Die Anzahl an allen azyklischen Pfadkombinationen wird jedoch selbst bei kleinen Programmen schnell groß\cite[vgl. S. 35]{software-testing}.
+Gleichzeitig sind viele Pfadkombinationen Teile von längeren Pfaden und somit uninteressant im Testkontext~\cite[vgl. S. 35]{software-testing}.
+Um dieses Problem zu lösen, wird die PrimePfad Abdeckung in Definition~\ref{primecov} eingeführt.
 
 \begin{definition}
     \textbf{PrimePfad Abdeckung}: $TR$ enthält alle PrimePfade in $G$~\cite[vgl. Criterion 2.4]{software-testing}.
     \label{primecov}
 \end{definition}
 
-und ein PrimePfad ist definiert als:
+Ein PrimePfad ist definiert in Definition~\ref{primepfad}.
 
 \begin{definition}
-    Ein Pfad von $n_{l}$ zu $n_{i}$ ist ein PrimePfad wenn gilt, dass dieser keinen Knoten doppelt enthält (mit ausnahme von Start und Endknoten) und
+    Ein Pfad von $n_{l}$ zu $n_{i}$ ist ein PrimePfad, wenn gilt, dass dieser keinen Knoten doppelt enthält (mit Ausnahme von Start- und Endknoten) und
     der Pfad nicht Teilpfad eines anderen Pfades ist.
     \label{primepfad}
 \end{definition}
 
 Es sollen also die längsten, einfachen Pfade im Graphen abgedeckt werden.
-So wird eine umfassendere Abdeckung als in den vorherigen Abdeckungskriterien gewährleistet da auch längere Pfadkombinationen dabei berücksichtigt werden.
+So wird eine umfassendere Abdeckung als in den vorherigen Abdeckungskriterien gewährleistet, da auch längere Pfadkombinationen dabei berücksichtigt werden.
 
 \subsubsection{Vollständige Pfadabdeckung}
 
 Idealerweise sollten Tests die gesamte Software abdecken.
 Wie jedoch in Kapitel~\ref{abdeck} schon gezeigt ist dies oft nicht möglich.
-Insbesondere wenn der Graph zyklisch ist, ist der Pfadraum unendlich und kann somit nicht erfüllt werden \cite[vgl. S. 36 ]{software-testing}.
-Der Vollständigkeit halber wollen wir dieses Kriterium dennoch hier definieren.
+Insbesondere wenn der Graph zyklisch ist, ist der Pfadraum unendlich und kann somit nicht vollständig abgedeckt werden~\cite[vgl. S. 36 ]{software-testing}.
+Der Vollständigkeit halber soll dieses Kriterium hier dennoch definiert werden.
 
 \begin{definition}
     \textbf{Vollständige Pfadabdeckung}: $TR$ enthält alle Pfade in $G$~\cite[vgl. Criterion 2.7]{software-testing}.
@@ -138,9 +138,9 @@ Ein kurzer Überblick soll hier gegeben werden.
             \hline
             \textbf{Kanten} & Kanten & Minimal \\
             \hline
-            \textbf{Kanten-Paar} & Kantenpaare & abhängig von der Kantenmenge \\
+            \textbf{Kanten-Paar} & Kantenpaare & Abhängig von der Kantenmenge \\
             \hline
-            \textbf{PrimePfad} & Hauptpfade & Komplex aber berechenbar \\
+            \textbf{PrimePfad} & Hauptpfade & Komplex, berechenbar \\
             \hline
             \textbf{vollständige Pfade} & Alle möglichen Pfade & Höchste, teils unberechenbar \\
             \hline
@@ -150,16 +150,16 @@ Ein kurzer Überblick soll hier gegeben werden.
 \end{center}
 \\
 
-Besonders hervorzuheben ist, dass die hier vorgestellten Abdeckunskriterien hierarchisch sind und mit Erfüllung eines höheren Kriteriums automatisch alle tieferen Kriterien auch erfüllt sind \cite[vgl. Figure 2.15]{software-testing}.
-Die Sortierung ist hierbei: \\
+Besonders hervorzuheben ist, dass die hier vorgestellten Abdeckunskriterien hierarchisch sind und mit Erfüllung eines höheren Kriteriums automatisch alle tieferen Kriterien auch erfüllt werden~\cite[vgl. Figure 2.15]{software-testing}.
+Die Sortierung ist in Definition~\ref{sort} festgelegt. \\
 \begin{definition}
     Die Abdeckungskriterien sind wie folgt hierarchisch sortiert: \\
     $ \textbf{Vollständige} > \textbf{PrimePfad} > \textbf{KantenPaar} > \textbf{Kanten} > \textbf{Knoten} $ \\
     Die Sortierung legt fest, dass ein höher sortiertes Kriterium automatisch alle tiefer sortierten Kriterien erfüllt.
-    \caption{Abdeckungskriterien sortiert nach Hierarchie~\cite[vgl. Figure 2.15]{software-testing}}.
+    \cite[vgl. Figure 2.15]{software-testing}.
     \label{sort}
 \end{definition}
 
 Nach Definition~\ref{sort} gilt also, dass zum Beispiel mit Kantenabdeckung automatisch auch Knotenabdeckung gewährleistet ist.
-Der interessierte Leser sei nun an~\cite{software-testing} verwiesen falls die Anwendung von Abdeckungskriterien für Testgenerierung von Code interessant erscheint.
-Im Folgenden erarbeiten wir, wie Abdeckungskriterien für Testgenerierung von GraphQL nutzbar ist.
+Der interessierte Leser sei an~\cite{software-testing} verwiesen, falls die Anwendung von Abdeckungskriterien für Testgenerierung von Code interessant erscheint.
+Im Folgenden wird erarbeitet, wie Abdeckungskriterien für Testgenerierung von GraphQL nutzbar ist.
