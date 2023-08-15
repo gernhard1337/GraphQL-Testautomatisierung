@@ -158,11 +158,16 @@ Ist ein Resolver so implementiert, dann ist ein IndexOutOfBound Fehler sehr wahr
 Mit dem Testtool nach~\cite[Property-based Testing]{property-based-testing} konnten 73\% der Fehler, also 11 der 15 Fehler gefunden  werden.
 Der hier entwickelte Prototyp schaffte auf derselben API auch eine Entdeckung von 11 Fehlern.
 Es konnte also dieselbe Fehlerfindung erreicht werden.
+Mit dem Research-Tool vom Lehrbuch~\cite{software-testing} wurde ermittelt, dass der zugrundeliegende Graph mit PrimePfad Abdeckung 3 Pfade definiert, die es abzudecken gilt.
+Diese sind: $. [Query,Project,User]$, $[Project,User,Project]$ und $[User,Project,User]$.
+Der Prototyp hat diese erfolgreich erkannt.
+Die Generierung der validen GraphQL Anfragen führte zu den Pfaden $[Query, Project, User]$, $[Query, Project, User, Project]$ und $[Query, Project, User, Project, User]$.
+Da eine korrekte GraphQL Anfrage stets im Query-Knoten beginnt, ergibt sich, dass die Pfad hier eine ähnliche Struktur zu beginn haben, da diese stets über die Knoten $Query$ und $Project$ laufen müssen.
 Bemerkenswert hierbei ist allerdings, dass das Property-based Tool hierfür wesentlich mehr Queries benötigte, um eine zufriedenstellende Coverage zu erreichen.
-Das Property-based Tool benötigte 30 Durchläufe, die jeweils bis zu 100\% Edge-Coverage liefen, um alle Fehler zu finden.
-Im Kontrast dazu konnte die hier entwickelte Methode mithilfe von 2 Pfaden eine PrimePfad Abdeckung erreichen.
-Hierzu wurden für jeden Pfad 5 Testquerys entwickelt.
-Es war somit möglich, alle 11 Fehler zu finden.
+Das Property-based Tool benötigte 30 Durchläufe, die jeweils bis zu 100\% Kantenabdeckung liefen, um alle Fehler zu finden.
+Im Kontrast dazu konnte die hier entwickelte Methode mithilfe von 3 Pfaden eine PrimePfad-Abdeckung erreichen.
+Es wurden für jeden Pfad 5 Testquerys entwickelt.
+So war es möglich, alle 11 Fehler zu finden.
 Bemerkenswert war, dass zwei perfekte Querys ermittelt wurden.
 Beide Querys sind in Listing~\ref{q1} und Listing~\ref{q2} gezeigt. \\
 
@@ -181,7 +186,7 @@ und eine tatsächliche Testausführung stattfand und nicht nur ein initialer $nu
 Die 4 nicht gefundenen Fehler sind dieselben Fehler wie diese, die \textit{Property-based Testing}~\cite[vgl. RQ.2]{property-based-testing} nicht finden konnte.
 Es sind die Felder, in denen ein falscher Wert eines Objektes genutzt wurde, um ein anderes Objekt zu erlangen.
 Hierbei verhindert der Black-Box Ansatz, dass der Fehler gefunden wird da eine leere Rückgabe des Feldes eine valide Antwort ist.
-Der Black-Box Ansatz limitiert hierbei das Verhalten des Prototypen da dieser nicht genügen Domänenwissen hat um diesen Fehler zu erkennen.
+Der Black-Box Ansatz limitiert hierbei das Verhalten des Prototypen da dieser nicht genügen Domänenwissen hat, um diesen Fehler zu erkennen.
 In diesem Beispiel hat der Prototyp dieselben Fähigkeiten wie der Prototyp von \textit{Property-based Testing}.
 Die Ergebnisse der Experimente befinden sich im \href{https://github.com/gernhard1337/GraphQL-Testautomatisierung/tree/main/experiment/toy-experiment}{GitHub}.
 
