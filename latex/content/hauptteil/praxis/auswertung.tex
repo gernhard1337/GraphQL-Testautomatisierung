@@ -160,7 +160,7 @@ Der hier entwickelte Prototyp schaffte auf derselben API auch eine Entdeckung vo
 Es konnte also dieselbe Fehlerfindung erreicht werden.
 Bemerkenswert hierbei ist allerdings, dass das Property-based Tool hierfür wesentlich mehr Queries benötigte, um eine zufriedenstellende Coverage zu erreichen.
 Das Property-based Tool benötigte 30 Durchläufe, die jeweils bis zu 100\% Edge-Coverage liefen, um alle Fehler zu finden.
-Im Kontrast dazu konnte die hier entwickelte Methode mithilfe von nur 2 PrimePfaden eine PrimePath Coverage erreichen.
+Im Kontrast dazu konnte die hier entwickelte Methode mithilfe von 2 Pfaden eine PrimePfad Abdeckung erreichen.
 Hierzu wurden für jeden Pfad 5 Testquerys entwickelt.
 Es war somit möglich, alle 11 Fehler zu finden.
 Bemerkenswert war, dass zwei perfekte Querys ermittelt wurden.
@@ -171,7 +171,7 @@ Beide Querys sind in Listing~\ref{q1} und Listing~\ref{q2} gezeigt. \\
 \end{lstlisting}
 
 \begin{lstlisting}[language=GraphQL, caption={Query2}, label={q2}]
-    { userProjects(id: "1") { name owner { id name age projects { name description id } } } }
+    { userProjects(id: "1") { name owner { id name age projects { name description id owner { id name age } } } } }
 \end{lstlisting}
 
 Mithilfe dieser Querys kann jeder der 11 entdeckten Fehler gefunden werden.
