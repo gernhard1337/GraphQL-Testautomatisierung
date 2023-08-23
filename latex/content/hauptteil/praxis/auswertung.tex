@@ -187,7 +187,7 @@ Die Ergebnisse der Experimente befinden sich im \href{https://github.com/gernhar
 
 \subsection{GitLab}
 
-Das Testsystem GitLab wurde schon in Property-based  Testing verwandt, um an einem Industriereifen Projekt die Methode zu evaluieren~\cite[vgl. Experiment]{property-based-testing}.
+Das Testsystem GitLab wurde schon in Property-based  Testing verwendet, um an einem Industriereifen Projekt die Methode zu evaluieren~\cite[vgl. Experiment]{property-based-testing}.
 Die entwickelte Methode soll sich auch an GitLab beweisen.
 GitLab stellt sowohl eine REST als auch GraphQL-API zur Kommunikation  zur  Verfügung.
 Mit GitLab wird ein komplexes Softwareprodukt zur Versionsverwaltung und DevOps-Anwendung getestet.
@@ -242,7 +242,7 @@ In nahezu allen Fällen haben die generierten Tests eine tatsächliche Pfadläng
 Dies begründet sich damit, dass an verschiedenen Stellen des Schemas von GitLab Argumente angegeben werden müssen
 und mit jedem Argument, das zusätzlich generiert wird, steigt die Wahrscheinlichkeit, dass die zufällige Kombination unpassend ist.
 In mehreren Durchläufen zeigte sich, dass im Schnitt nur ungefähr 20 Tests eine ideale Pfadlänge erreichen.
-Die Tests, die das Erreichen sind, im Allgemeinen auch Tests, die einen sehr kurzen Pfad abbilden.
+Die Tests, die das erreichen, sind im Allgemeinen auch Tests, die einen sehr kurzen Pfad abbilden.
 Hierbei verringert sich das Risiko, dass Eingabeargumente generiert werden, die keine zugrundeliegenden Daten haben und somit die Pfadausführung verhindern.
 Ein Beispiel hierfür ist der Pfad $Query -> Project -> MergeRequest -> Time$.
 
@@ -270,7 +270,8 @@ Da hier ähnliche Argumentgeneratoren verwendet wurden wie in Property-based Tes
 Es werden zwar sehr viele Tests entwickelt, die die PrimePfad Abdeckung umsetzen.
 Wenn jedoch die Generierung der Tests auf Zufall basiert, so kann nicht garantiert werden, dass die Eingabeargumente passend sind und ein valides Ergebnis zurückgeben.
 Wird kein Ergebnis zurückgegeben, so folgert GraphQL, dass spätere Funktionen nicht ausgeführt werden müssen und somit werden diese auch nicht getestet.
-Es ist möglich, dieses Problem zu beheben, hierzu jedoch in Kapitel~\ref{futurework} mehr.
+Es ist möglich dieses Problem zu beheben.
+Dazu jedoch in Kapitel~\ref{futurework} mehr.
 
 \section{Schema-Abdeckung}
 
@@ -316,8 +317,8 @@ Im Gegensatz zum Property-based Testing hat der hier entwickelte Prototyp den Vo
 Dadurch ergibt sich, dass die Tests, die vom hier entwickelten Prototyp aufgrund eines stärkeren Abdeckungskriteriums erstellt werden, stets auch die Kantenabdeckung erfüllen.
 Ein einziger Durchlauf reicht aus, um sicherzustellen, dass die gewünschte Abdeckung zumindest theoretisch erreicht ist.
 Natürlich bleibt offen, ob die generierten Tests diese Coverage tatsächlich erreichen jedoch ist dies auch ein Problem im \textit{Property-based Testing}.
-Dort wird nur geprüft, ob die Felder in der Anfrage existieren jedoch nicht, ob die Antwort diese auch enthält.
-Um dies messbar zu machen wurde zuvor die Abschätzund der Pfadlängen eingeführt.
+Dort wird nur geprüft ob die Felder in der Anfrage existieren, jedoch nicht, ob die Antwort diese auch enthält.
+Um dies messbar zu machen wurde zuvor die Abschätzung der Pfadlängen eingeführt.
 Hierdurch konnte gezeigt werden, dass die generierten Querys in Teilen die Abdeckung auch tatsächlich umsetzen.
 
 \subsection{GitLab Schema Coverage}
@@ -326,7 +327,7 @@ Das GitLab Schema ist wesentlich komplexer und zyklischer als das GraphQL-Toy.
 Im Gegensatz zum GraphQL-Toy besteht das GitLab Schema aus 37 Knoten, welche jeweils zahlreiche Kanten hinzufügen.
 Generell lässt sich sagen, dass das Schema sehr komplex und stark rekursiv ist~\cite[vgl. Studied Cases 2]{property-based-testing}.
 Da der Property-based Testing Ansatz ein Rekursionslimit benötigt stellt, sich die Frage inwiefern überhaupt dieses Schema überdeckt werden kann.
-Laut Paper hat sich ein Rekursionslimit von vier als hinreichend ausgezeichnet~\cite[vgl. Table 1 ]{property-based-testing} und wurde auch so im Code übernommen.
+Laut Paper hat sich ein Rekursionslimit von vier als hinreichend ergeben~\cite[vgl. Table 1 ]{property-based-testing} und wurde auch so im Code übernommen.
 Ein Rekusionslimit von vier bedeutet, dass die maximale zu erreichende Pfadlänge des Testpfades vier ist.
 Da das GitLab-Schema aber einen Graphen aufspannt, der durchaus wesentlich längere Pfade als vier hat, ist es fragwürdig wie die 100\% Schema-Coverage in~\cite[Table 1]{property-based-testing} berechnet wurde.
 Es seien hier einige Pfade beispielhaft genannt, die einzigartig sind, bei denen sich keine Kante doppelt und deren Länge 4 stark überschreitet: \\
@@ -346,7 +347,7 @@ Eine komplette Pfadgenerierung auf dem gesamten Graphen hatte als Ergebnis, dass
 Hier zeigt sich auch ein direkter Unterschied.
 Während in Property-based Testing gesagt wird, dass 10.000 Tests mit einem Rekursionslimit von 4 ausreichen, um eine vollständige Kantenabdeckung zu erreichen~\cite[vgl. Table 1]{property-based-testing}
 so wurde gezeigt, dass 10.000 Tests nicht ausreichen können, wenn allein über 40.000 PrimePfade existieren.
-Die Berechnung der Querys geschah auf einem hardwaretechnisch ähnlichem Level wie in Property-based Testing verwandt~\cite[vgl. Experimental Setup]{property-based-testing}.
+Die Berechnung der Querys geschah auf einem hardwaretechnisch ähnlichem Level wie in Property-based Testing angewandt~\cite[vgl. Experimental Setup]{property-based-testing}.
 Hier wurde die Aussage getroffen, dass ein~\textit{Tiefensuchen Ansatz nicht skaliert und deswegen ein iterativer Ansatz zu präferieren ist}~\cite{property-based-testing}.
 Der hier entwickelte Prototyp zeigt das Gegenteil.
 
@@ -358,6 +359,6 @@ wie in~\cite{property-based-testing} behauptet, die Berechnungszeit signifikant 
 Während die theoretische Abdeckung des Graphens erhöht wurde, so zeigte sich, dass die reale Abdeckung nicht mit der theoretischen Abdeckung mithalten kann.
 Die Pfadlänge der generierten PrimePfade ist im Allgemeinen sehr lang und hierdurch steigt die Wahrscheinlichkeit, dass ein Pfad nicht komplett ausgeführt wird.
 Eine Anpassung der Argumentgeneratoren an das jeweilige SUT ist sinnvoll und verbessert die Pfadlängen der Tests.
-Das mangelnde Domänenwissen limitiert die Resolver in derselben Weise wie im \textit{Property-based Testing} wo es heißt: wo es heißt:
+Das mangelnde Domänenwissen limitiert die Resolver in derselben Weise wie im \textit{Property-based Testing} wo es heißt:
 \textit{.. das Domänenwissen von zugrundeliegenden Entitäten eine stärkere Testumgebung erzeugen kann}~\cite[S.8]{property-based-testing}.
 Möglichkeiten, um das Domänenwissen über das SUT zu erhöhen, werden in Kapitel~\ref{futurework} vorgestellt.
