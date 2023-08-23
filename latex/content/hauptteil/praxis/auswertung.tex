@@ -61,7 +61,7 @@ Es wird gezeigt, welche Voraussetzungen nötig sind, um die hier erzielten Ergeb
 
 Wie in Kapitel~\ref{zufallsgen} erwähnt, ist es wichtig, dass GraphQL für jede Funktion einen Wert ungleich $null$ liefert,
 damit der Pfad weitergegangen werden kann und die Funktionen in diesem getestet werden, um die tatsächliche Abdeckung zu erhöhen.
-Um die Wahrscheinlichkeit zu erhöhen, dass Argumentgeneratoren ein Argument zurückliefern, dass zum SUT passt, wurden diese angepasst.
+Um die Wahrscheinlichkeit zu erhöhen, dass Argumentgeneratoren ein Argument zurückliefern die zum SUT passen, wurden diese angepasst.
 Dabei wird die Vergleichbarkeit der Arbeiten nicht verletzt, da diese Anpassungen der Argumentgeneratoren in~\cite{property-based-testing} auch vorgenommen wurden \cite[vgl. Experimental Setup and Method]{property-based-testing}.
 Hierbei sei zum Beispiel erwähnt, dass eine Type $ID$ in GraphQL als String wert definiert ist, häufig in Implementierung jedoch als Zahlenstring genutzt wird.
 Eine Anpassung ist, dass der Generator, für den Type $ID$ so angepasst wird, dass er nur Argumente für $ID$ zurückliefert, die ein Zahlenstring sind.
@@ -129,7 +129,7 @@ Code der zu solch einem Fehler führt ist in Listing~\ref{objfail} dargestellt.
     }
 \end{lstlisting}
 
-Sollte das Feld ein Argument benötigen, so muss dieses passen, sodass auch wirklich ein Objekt abgefragt wird und dann der falsche Type zurückgegeben wird.
+Sollte das Feld ein Argument benötigen, so muss dieses passen, damit auch wirklich ein Objekt abgefragt wird und dann der falsche Type zurückgegeben wird.
 
 \subsubsection{Bug 3 - Typfehler in der Eingabe}
 
@@ -160,7 +160,7 @@ Der hier entwickelte Prototyp schaffte auf derselben API auch eine Entdeckung vo
 Es konnte also dieselbe Fehlerfindung erreicht werden.
 Bemerkenswert hierbei ist allerdings, dass das Property-based Tool hierfür wesentlich mehr Queries benötigte, um eine zufriedenstellende Coverage zu erreichen.
 Das Property-based Tool benötigte 30 Durchläufe, die jeweils bis zu 100\% Edge-Coverage liefen, um alle Fehler zu finden.
-Im Kontrast dazu konnte die hier entwickelte Methode mithilfe von 2 Pfaden eine PrimePfad Abdeckung erreichen.
+Im Gegenteil dazu konnte die hier entwickelte Methode mithilfe von nur 2 PrimePfaden eine PrimePath Coverage erreichen.
 Hierzu wurden für jeden Pfad 5 Testquerys entwickelt.
 Es war somit möglich, alle 11 Fehler zu finden.
 Bemerkenswert war, dass zwei perfekte Querys ermittelt wurden.

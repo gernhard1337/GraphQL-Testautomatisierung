@@ -101,7 +101,8 @@ Der in Beispiel~\ref{exmgr} definierte Graph ist als gerichteter Graph in Abbild
 
 Für die spätere Entwicklung des Testentwurfs ist es wichtig, gewichtete Graphen zu definieren.
 Zuvor wurde eine Kante in Definition~\ref{graphdef} und Definition~\ref{gerichtetergraphdef} als ein Tupel $(x, y)$ eingeführt.
-Ein gewichteter Graph weist jeder Kante ein Kantengewicht zu, dies ist im Allgemeinen eine positive, reelle Zahl~\cite[vgl. S. 251]{graphentheorie3}.
+Ein gewichteter Graph weist jeder Kante ein Kantengewicht zu.
+Dies ist im Allgemeinen eine positive, reelle Zahl~\cite[vgl. S. 251]{graphentheorie3}.
 
 \begin{definition}
     Ein Graph G = (V,E) mit einer Abbildung g : E \textrightarrow $\mathbb{R}_{>0}$ heißt gewichteter Graph.
@@ -113,7 +114,7 @@ Ein gewichteter Graph weist jeder Kante ein Kantengewicht zu, dies ist im Allgem
 \\
 \\
 Für spätere Anwendungszwecke muss die Definition jedoch ein wenig allgemeiner gefasst werden.
-Die Felder eines GraphQL-Typens sollen später als Gewicht genutzt werden, um Tests zu entwerfen.
+Die Felder eines GraphQL-Typens sollen später als Gewicht genutzt werden um Tests zu entwerfen.
 Um dies zu erleichtern, soll die Definition~\ref{gewichtetergraph} verallgemeinert werden durch eine Anpassung der Gewichtsfunktion.
 Die neue Definition soll vorerst \textit{allgemein gewichteter Graph} genannt werden.
 
@@ -133,7 +134,7 @@ Ein Pfad, oft auch Weg genannt, ist eine Sequenz von Knoten, die nachfolgend dur
 \end{definition}
 
 Ein Weg wird oft durch die Folge seiner Knoten beschrieben also $P=x_{0} x_{1} \ldots x_{k}$ \cite[vgl. S.7]{graphentheorie}
-Die Länge eines Weges ist die Anzahl der Kanten, die dieser besucht~\cite[vgl. S. 7]{graphentheorie}.
+Die Länge eines Weges ist die Anzahl der Kanten die dieser besucht~\cite[vgl. S. 7]{graphentheorie}.
 In gewichteten Graphen ist das Gewicht eines Pfads die Summe aller Gewichte der einbezogenen Kanten~\cite[vgl. 7.2 kürzeste Wege]{graphentheorie3}.
 
 \begin{example}

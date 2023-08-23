@@ -4,7 +4,7 @@
 Nach der Einführung der Methode im vorherigen Kapitel soll der entwickelte Prototyp erklärt werden.
 Der entwickelte Prototyp ist im \href{https://github.com/gernhard1337/graphql-primepath-tester}{GitHub} und \href{https://git.informatik.tu-cottbus.de/sst/abschlussarbeiten/master/lorenz_tom/graphql-tester-prototyp}{BTU-GitLab} zu finden.
 Eine Anleitung findet sich in der Readme im Root-Verzeichnis.
-Vorraussetzung zum Ausführen der Anwendung ist Python mit einigen Dritt-Bibliotheken, die in der Readme vermerkt sind.
+Voraussetzung zum Ausführen der Anwendung ist Python mit einigen Dritt-Bibliotheken, die in der Readme vermerkt sind.
 
 \section{Auswahl der Bibliotheken}
 
@@ -41,8 +41,8 @@ G.add_edge("Author", "Book", "book")
 
 Diese wenigen Zeilen reichen aus, um einen Graphen mit allen Knoten und Kanten zu definieren.
 Der Feldbezeichner kann dabei als Kantengewicht angegeben werden.
-So ist möglich, dass sofort geschlussfolgert werden kann, welche Kante genutzt werden muss, um zum nächsten Typ des Pfads zu gelangen.
-Auf diesem Graphen können diverse Alorithmen ausgeführt werden.
+So ist möglich, dass sofort geschlussfolgert werden kann welche Kante genutzt werden muss, um zum nächsten Typ des Pfads zu gelangen.
+Auf diesem Graphen können diverse Algorithmen ausgeführt werden.
 Dabei helfen diverse Hilfsfunktionen, die Effizienz der Programmierung zu erhöhen.
 Hierbei seien insbesondere folgende Hilfsfunktionen genannt:
 
@@ -359,10 +359,11 @@ Die Antworten werden bemessen, gespeichert und später ausgewertet.
 Die Testauswertung erfolgt, wie zuvor gesehen, auf zweierlei Arten.
 Einerseits werden Tests ad-hoc ausgeführt.
 Andererseits wird eine Datei mit PyTests generiert.
-Die Auswertung der Testquerys in der PyTest-Datei erfolgt nach PyTest-Standard. Dabei werden Hinweise geliefert, falls etwas abweicht von der Erwartung.
+Die Auswertung der Testquerys in der PyTest-Datei erfolgt nach PyTest-Standard. Dabei werden Hinweise geliefert, wenn etwas von der Erwartung abweicht.
 Eine Auswertung der Testquerys, die direkt ausgeführt wurden, erfolgt nach einer Kategorisierung.
 Die Kategoriesierungen sind \textbf{Good\_Test},\textbf{Perfect\_Test},\textbf{malformed\_Test} und \textbf{confirmed\_failed\_Test}.
-Ein \textbf{Good\_Test} ist ein Test, der keinen Fehler erzeugt hat, allerdings ist die erwartete Pfadlänge von der Response nicht erfüllt worden, es war also ein Test,
+Ein \textbf{Good\_Test} ist ein Test, der keinen Fehler erzeugt hat.
+Dieser hat allerdings auch nicht die erwartete Pfadlänge von der Response erfüllt, es war also ein Test,
 der nicht die komplett gewünschte Abdeckung erreicht hat.
 \textbf{Perfect\_Test} sind Tests, die keinen Fehler erzeugt haben und die erwartete Pfadlänge entspricht der Pfadlänge der Response.
 Eine solche Query hat den Pfad, der zu testen war, ideal abgedeckt.

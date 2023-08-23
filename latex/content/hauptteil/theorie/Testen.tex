@@ -3,7 +3,7 @@
 \label{test}
 
 Indem technische Geräte und somit auch Software im umfangreichen Maßstab Einzug nehmen in nahezu alle Bereiche des
-Lebens ist es wichtig, die Sicherheit, Qualität und Zuverlässigkeit von Software sicherzustellen~\cite[vgl. Introduction]{software-testing}.
+Lebens, ist es wichtig, die Sicherheit, Qualität und Zuverlässigkeit von Software sicherzustellen~\cite[vgl. Introduction]{software-testing}.
 Um dies sicherzustellen, sind systematische Tests von Software nötig.
 Dabei ist das Ziel, dass die Software bestimmten Anforderungen und Spezifikationen entspricht.
 Hierbei werden diverse Techniken und Ansätze verfolgt, die im Folgenden kurz vorgestellt werden.
@@ -30,7 +30,7 @@ In Kapitel~\ref{graphueberdeckung} wird eine dieser Techniken näher untersuchen
 \subsubsection{Black-Box Testing}
 
 Im Black-Box Testing hat der Tester keinen Zugriff auf interne Funktionsweisen der Software.
-Schwerpunkt des Testens ist es, dass die Software das tut, was in den Anforderungen gefordert ist~\cite[vgl. Specification-Based Testing]{software-testing-craftmans}.
+Schwerpunkt des Testens ist es, dass die Software das tut, was in den Anforderungen gefordert wird~\cite[vgl. Specification-Based Testing]{software-testing-craftmans}.
 Da der Quellcode nicht einsehbar ist, muss man sich darauf verlassen, dass die Anforderungen treffend formuliert wurden~\cite[vgl.]{testmanagment}.
 Das Black-Box Testing hat einen methodischen Bezug zu Property-based Testing~\cite{property-based-testing}.
 
@@ -56,7 +56,7 @@ Die Level sind eng verbunden mit den Entwicklungsaktivitäten einer Software~\ci
     \label{vmodelltest}
 \end{figure}
 
-Die verschiedenen Testebenen sollen schon im Designprozess Beachtung finden, denn die Formulierung von Tests kann dabei helfen, Designfehler zu finden
+Die verschiedenen Testebenen sollen schon im Designprozess beachtet werden, denn die Formulierung von Tests kann dabei helfen, Designfehler zu finden,
 noch bevor die Software entwickelt wird~\cite[vgl. 1.1.1]{software-testing-ana}.
 Die verschiedenen Ebenen der Tests spiegeln auch verschiedene Systemsichten in den Tests.
 In Abbildung~\ref{vmodelltest} sind im V-Modell die verschiedenen Schritte der Softwareentwicklung abgebildet.
@@ -65,11 +65,11 @@ Dazu passend findet sich im Folgenden die Erklärung der einzelnen Ebenen.
 \newpage
 \begin{figure}[h!]
     \begin{description}
-        \item[Akeptanz Test] - Betrachten der Software hinsichtlich der Anforderungen
-        \item[System Test] - Betrachten der Software hinsichtlich der Architektur
-        \item[Integrationstest] - Betrachten der Software hinsichtlich der Teilsysteme
-        \item[Modultest] - Betrachten der Software hinsichtlich detailliertem Design
-        \item[Unit Test] - Betrachten der Software hinsichtlich korrekter Implementierung
+        \item[Akeptanz-Test] - Betrachten der Software hinsichtlich der Anforderungen
+        \item[System-Test] - Betrachten der Software hinsichtlich der Architektur
+        \item[Integrations-Test] - Betrachten der Software hinsichtlich der Teilsysteme
+        \item[Modul-Test] - Betrachten der Software hinsichtlich detailliertem Design
+        \item[Unit-Test] - Betrachten der Software hinsichtlich korrekter Implementierung
     \end{description}\cite[vgl. 1.1.1]{software-testing}
 \end{figure}
 
@@ -109,7 +109,7 @@ Der einzelne Unit-Test konzentriert sich dabei auf eine Funktion oder Methode.
 Er prüft, ob die gegebene Einheit bei bekannten Eingaben die erwartete Ausgabe liefert.
 Für diese Tests werden häufig Testframeworks genutzt, die bei der Entwicklung und Ausführung der Tests helfen~\cite{software-testing}.
 In Abbildung~\ref{unitfkt} wurde eine Funktion definiert und in Abbildung~\ref{unitfkttest} sind drei Unit-Tests mit PyTest~\cite{pytest} definiert.
-Die Tests führen verschiedene Methoden aus und prüfen, dass das Ergebnis mit der Erwartung übereinstimmt.
+Die Tests führen verschiedene Methoden aus und prüfen, ob das Ergebnis mit der Erwartung übereinstimmt.
 Das $assertEqual$ übernimmt dabei die Auswertung.
 
 \subsubsection{Modul-Test}
@@ -178,7 +178,7 @@ def getUser(name):
 
 In Abbildung~\ref{modul1} ist ein Modul definiert, das einen neuen Nutzer erstellen kann.
 Abbildung~\ref{modul2} definiert ein Modul, das Nutzer speichern und finden kann.
-Ein Integrations-Test beider Module sollte testen, ob ein neu angelegter Nutzer ordentlich gespeichert wird und ob die dabei zugewiesenen Daten auch passend bleiben.
+Ein Integrations-Test beider Module sollte testen, ob ein neu angelegter Nutzer ordentlich gespeichert wird und ob die dabei zugewiesenen Daten auch korrekt bleiben.
 In Abbildung~\ref{integtest} ist ein solcher Modultest zu finden.
 
 \begin{figure}[h!]
@@ -207,7 +207,8 @@ Im Vordergrund dieser Testebene steht, dass die Software die Spezifikation, also
 \subsubsection{Akzeptanz-Test}
 
 Die finale Ebene des Testprozesses ist der Akzeptanz-Test.
-Auf dieser Ebene wird die Software aus Sicht des Endnutzers geprüft, oft ist der Endnutzer auch Teil dieses Prozesses~\cite[vgl. S.6]{software-testing}.
+Auf dieser Ebene wird die Software aus Sicht des Endnutzers geprüft.
+Dieser ist oft auch Teil dieses Prozesses~\cite[vgl. S.6]{software-testing}.
 Ziel ist es, zu verifizieren, dass die Analyse und Umsetzung des Problems erfolgreich ist und der Nutzer mit der entwickelten Lösung
 zufrieden ist~\cite[vgl. S.6]{software-testing}.
 
@@ -222,11 +223,11 @@ Ein Ausprobieren aller Kombinationen ist in der heutigen Zeit unmöglich.
 Als Beispiel sei hier eine simple Addition von 2 64-bit Integer genannt.
 Für eine komplette Testung dieser Addition gibt es $2^{64}$ Kombinationen.
 Mit einem 3GHz-Prozessor wäre eine vollständige Testung nach etwa 69 Tagen erledigt.
-Betrachtet man einen Java-Compiler, so ist der Eingaberaum von Programmen, die zum Test stehen, effektiv unendlich und somit nicht testbar~\cite[vgl. 1.3 Coverage Criteria for Testing]{software-testing}.
+Betrachtet man einen Java-Compiler, so ist der Eingaberaum von Programmen die zum Test stehen, effektiv unendlich und somit nicht testbar~\cite[vgl. 1.3 Coverage Criteria for Testing]{software-testing}.
 
 \subsubsection{Abdeckungskriterien}
 
-Da ein vollständiges Testen, also ein Ausprobieren aller Möglichkeiten, unmöglich ist, müssen Kriterien geschaffen werden, die eine hinreichende Testqualität zusichern.
+Da ein vollständiges Testen, also ein Ausprobieren aller Möglichkeiten unmöglich ist, müssen Kriterien geschaffen werden, die eine hinreichende Testqualität zusichern.
 Hierfür werden die Abdeckungskriterien eingeführt.
 Diese liefern einen Ansatz, der dabei hilft, sinnvolle Tests zu entwickeln und abzuschätzen, wann ausreichend getestet wurde.
 Im Folgenden werden die Abdeckungskriterien auch als Testanforderungen~\cite[vgl. 1.3 Coverage Criteria for Testing]{software-testing} gesehen.
@@ -243,7 +244,7 @@ Dabei ist ein Abdeckungskriterium erfüllt, wenn alle seine Testanforderungen er
 \end{definition}
 
 Um eine Aussage darüber zu machen, wie gut eine Menge an Tests das Abdeckungskriterium umsetzt, wird die Abdeckung eingeführt.
-Einerseits ist es manchmal sehr schwierig, ein Abdeckungskriterium vollständig zu erreichen, andererseits kann dann gemessen werden, ob das Kriterium erfüllt wurde~\cite[vgl. S. 18]{software-testing}.
+Einerseits ist es manchmal sehr schwierig ein Abdeckungskriterium vollständig zu erreichen, andererseits kann dann gemessen werden, ob das Kriterium erfüllt wurde~\cite[vgl. S. 18]{software-testing}.
 Durch die Definition~\ref{abd} wird messbar, wie gut eine Menge an Tests das Abdeckungskriterium umsetzt und ob das Kriterium erfüllt ist.
 
 \begin{definition}

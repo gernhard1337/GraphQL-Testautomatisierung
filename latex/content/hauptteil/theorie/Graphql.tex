@@ -102,7 +102,7 @@ Die definierten Anfragen haben, wie jeder Typ, einen eindeutigen Bezeichner, wel
 Wenn das abgefragte Feld vom Typ $SCALAR$ ist, dann wird es direkt ausgegeben.
 Ist das Feld vom Typ $OBJECT$, dann muss definiert werden, welche Felder des $OBJECTS$ gewünscht sind.
 Eine korrekte Anfrage muss stets mindestens ein Feld des Typens $SCALAR$ enthalten.
-Der Query-Type für das Schema aus Abbildung~\ref{buchauthorschema} kann umgesetztet werden durch Abbildung~\ref{minimalquerytype}.
+Der Query-Type für das Schema aus Abbildung~\ref{buchauthorschema} kann umgesetzt werden durch Abbildung~\ref{minimalquerytype}.
 
 \begin{figure}[htb]
     \begin{center}
@@ -160,7 +160,7 @@ Ein Resolver für die Query eines Buches anhand seines Titels mit ApolloServer i
 Es ist zu beachten, dass alle Argumente, die mitgegeben werden, im \verb+args+ Argument gespeichert sind.
 Die Funktion $getBookByID$ gibt ein dem Schema entsprechendes Json-Objekt zurück.
 Da die Resolver konkrete Implementierungen außerhalb von GraphQL sind und die einzelnen Resolver untereinander aufrufen können, bedarf es hier
-einer Reihe an Tests, damit korrekte Funktionsweise des Programmcodes nachgewiesen werden kann.
+einer Reihe an Tests, damit die korrekte Funktionsweise des Programmcodes nachgewiesen werden kann.
 Ein häufiger Fehler in GraphQL ist es, einzelne Attribute in einem Resolver zu vergessen.
 Ein Entwickler sollte für jeden Resolver, der eine Funktion darstellt, einen beziehungsweise mehrere Tests zur Verfügung stellen.
 Da sich die einzelnen Resolver aber auch untereinander aufrufen können, kann sich ein teils riesiger Testraum ergeben.

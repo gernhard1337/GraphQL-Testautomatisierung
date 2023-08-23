@@ -40,7 +40,7 @@ Wird davon ausgegangen, dass das Ziel eine möglichst große Abdeckung des Graph
 Dies folgt, da die benutzte Bibliothek Malli eben keine Pfade als solches kennt, sondern nur zufällige Nachfolger eines Typens.
 Daher wird ein Rekursionslimit zwingend benötigt, weil es anders nicht möglich ist, Zyklen in der Abhängigkeit der Typen aufzulösen.
 Laut dem Paper gilt:\textit{ein größeres und mehr rekursives (GraphQL)-Schema würde nicht skalieren und der (zufällig) iterative Ansatz ist besser als eine Breitensuche}~\cite{property-based-testing}[vgl. 3C].
-Diese Behauptung lässt Zweifeln, es soll im Folgenden gezeigt werden, dass es möglich ist, Algorithmen zu entwickeln, die skalieren und jedes GraphQL abdecken können.
+Diese Behauptung lässt Zweifeln, es soll im Folgenden gezeigt werden, dass es möglich ist Algorithmen zu entwickeln, die skalieren und jedes GraphQL-Schema abdecken können.
 
 \section{Heuristisch suchen basiertes Testen}
 

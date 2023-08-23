@@ -2,8 +2,8 @@
 \label{testentwurf}
 
 Nachdem festgestellt wurde, dass die PrimePfad Abdeckung potenziell das sinnvollste Abdeckungskriterium ist, soll im Folgenden eine
-Methodik entwickelt werden, dies erlaubt, mithilfe des Abdeckungskriteriums Tests für GraphQL zu entwerfen.
-Die zu entwickelnde Methodik wird in einigen Teilen stark an der Methode aus~\cite{property-based-testing} orientiert sein, dies ist jedoch an den betreffenden Stellen kenntlich gemacht.
+Methodik entwickelt werden, die es erlaubt, mithilfe des Abdeckungskriteriums Tests für GraphQL zu entwerfen.
+Die zu entwickelnde Methodik wird in einigen Teilen stark an der Methode aus~\cite{property-based-testing} orientiert sein, das ist jedoch an den betreffenden Stellen kenntlich gemacht.
 In diesem Kapitel wird die Methodik konzeptionell erstellt und im folgenden Kapitel~\ref{testautomatisierung} ein Prototyp entwickelt, der
 die Methodik umsetzt und validiert.
 Die zu entwickelnde Methode arbeitet grob nach dem in Abbildung~\ref{methodeablauf} gezeigten Muster.
@@ -172,7 +172,7 @@ Im Allgemeinen lässt sich das Verfahren durch den Pseudocode in Listing~\ref{pf
 \end{lstlisting}
 
 Die Argumente, die in einer Query verwendet werden, sind stets nur $SCALAR$ Types und somit einfache Datentypen.
-Es gibt verschiedene Arten, die Argumentgeneratoren umzusetzen, vorerst werden diese jedoch methodisch exakt wie in~\cite{property-based-testing} umgesetzt.
+Es gibt verschiedene Arten die Argumentgeneratoren umzusetzen, vorerst werden diese jedoch methodisch exakt wie in~\cite{property-based-testing} umgesetzt.
 Dabei wird der Typ des Arguments genutzt, um zufällig ein Argument des entsprechenden Datentyps zu generieren.
 Ergebnis des Prozesses ist schließlich eine valide GraphQL-Query.
 In einer konkreten Implementierung ist die Syntax von GraphQL zu beachten, diese ist einsehbar in~\cite[2.3 Language Operations]{graphqlspecification}.
@@ -207,7 +207,7 @@ Dies wird ersichtlich durch einen zweiten Haupteintrag $errors$ in einer Antwort
 Die Einträge in $errors$ müssen jedoch manuell geprüft werden, ob es sich um einen wirklichen Programmierfehler handelt oder gewünschtes Verhalten,
 da die Zufallsargumente teilweise dafür sorgen, dass Konventionen nicht eingehalten werden können.
 Die Zufallsargumente sorgen allerdings auch dafür, dass die errechnete PrimePfad Abdeckung nicht praktisch erreicht wird.
-Sehr häufig kommt es vor, dass zufällig generierte Argumente schon in den Anfängen des Pfads nicht passend zu den unterliegenden Daten sind.
+Sehr häufig kommt es vor, dass zufällig generierte Argumente schon in den Anfängen des Pfads nicht passend zu den vorhandenen Daten sind.
 Dadurch folgt, dass ein Großteil der Testpfade, die theoretisch eine gute Abdeckung aufweisen, praktisch diese Abdeckung nicht erreicht.
 Um messen zu können, ob ein Pfad seine theoretische Abdeckung auch praktisch erreicht, wird eine Abschätzung eingeführt.
 
@@ -274,7 +274,7 @@ Dies geschieht durch zwei verschiedene Methoden.
 \label{zufallsgen}
 
 Die zuvor vorgestellte Abschätzung liefert einen Hinweis darüber, wie gut die Querys tatsächlich getestet wurden.
-Ein Ansatz, der die Querys eine bessere tatsächliche Abdeckung zu erreichen lässt, ist das Anpassen der Generatoren für die Argumente.
+Ein Ansatz, der die Querys eine bessere tatsächliche Abdeckung erreichen lässt, ist das Anpassen der Generatoren für die Argumente.
 Bei der in Kapitel~\ref{pfadquery} vorgestellten Methode werden Argumente komplett zufällig für den zugrundeliegenden Datentyp erstellt.
 Dies bedeutet, dass zum Beispiel der Type $ID$ als String gewertet wird.
 Eine $ID$ unterliegt jedoch in den allermeisten Implementierungen bestimmten Konventionen.
@@ -304,7 +304,8 @@ So wurde die Graphstruktur von GraphQL genutzt, um aus dieser Testpfade zu gener
 Auf diese Weise war es möglich, die Limitierung des Rekursionslimits vom \textit{Property-based Testing} zu beseitigen.
 In der Testauswertung wurde sich stark am \textit{Property-based Testing} orientiert.
 Die Einführung der erwarteten Pfadlänge gegenüber der tatsächlichen Pfadlänge ist ein neuer Ansatz, der die Qualität der zu testenden Querys
-messbar macht, dies fehlt im \textit{Property-based Testing} .
+messbar macht.
+Das fehlt im \textit{Property-based Testing} .
 \\
 
 

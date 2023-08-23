@@ -34,7 +34,7 @@ Mit der Kantenabdeckung wird darauf geachtet, dass jede Kante in mindestens eine
 Die Kantenabdeckung findet auch Anwendung in \textit{Property-based Testing}\cite[vgl. D-RQ1 ]{property-based-testing}.
 Allerdings sind im Testkontext von GraphQL alle Kombinationen von Kanten interessant.
 Durch Kantenabdeckung wäre der Testpfad $Query \rightarrow Buch \rightarrow Autor \rightarrow Buch \rightarrow Verlag$
-im Graphen aus Abbildung~\ref{schemdef} nicht berücksichtigt, obwohl dieser interessant wäre, um zu sehen, ob der Kreis richtig aufgelöst wurde.
+im Graphen aus Abbildung~\ref{schemdef} nicht berücksichtigt, obwohl dieser interessant wäre um zu sehen, ob der Kreis richtig aufgelöst wurde.
 In~\cite{property-based-testing} wurde aber gezeigt, dass mithilfe dieses Abdeckungskriteriums Fehler gefunden werden können.
 
 \section{Kanten-Paar Abdeckung für GraphQL}
@@ -66,10 +66,10 @@ Dies soll jedoch keine Voraussetzung sein.
 
 Die beiden geeignetsten Abdeckungskriterien sind die vollständige Pfadabdeckung und PrimePfad Abdeckung, wobei die vollständige Pfadabdeckung im
 Allgemeinen nicht verwendet werden kann, da sie zu restriktiv in der Graphstruktur ist.
-In der Praxis hat sich gezeigt, dass der Großteil der GraphQL-Schemas Zyklen hat.
-Deswegen ist die vollständige Pfadabdeckung im Allgemeinen nicht zu nutzen und das nächst schwächere Testkriterium, die PrimePfad Abdeckung, ist zu wählen.
-Wie in Definition~\ref{sort} gezeigt, ist das nächst schwächere die PrimePfad-Abdeckung.
-Mithilfe der PrimePfad Abdeckung soll im Folgenden ein Prototyp für GraphQL Integrationstests entwickelt werden.
+In der Praxis hat sich gezeigt, dass der Großteil der GraphQL-Schemen Zyklen hat.
+Deswegen ist die vollständige Pfadabdeckung im Allgemeinen nicht zu nutzen und das nächst schwächere Testkriterium, die PrimePfad Abdeckung ist zu wählen.
+Wie in Definition~\ref{sort} gezeigt, ist das nächst schwächere Abdeckungskriterium die PrimePfad-Abdeckung.
+Mithilfe der PrimePfad Abdeckung soll im Folgenden ein Prototyp für Integrationstests von GraphQL-Servern entwickelt werden.
 
 
 
