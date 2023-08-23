@@ -24,6 +24,7 @@ Im Testkontext definiert sich ein gerichteter Graph wie in Definition~\ref{defg}
     \label{defg}
 \end{definition}
 
+Das $target$ aus Definition~\ref{defg} ist gleichzusetzen mit $ter$ aus Definition~\ref{gerichtetergraphdef}.
 Mithilfe dieser Definition können zum Beispiel Kontrollflussgraphen abgebildet werden, indem die Einstiegspunkte die Anfangsknoten sind und die Endknoten die Austrittspunkte~\cite[vgl. S. 46]{software-testing}.
 Ein Pfad innerhalb von eben definierten Graphen der in einem Knoten $x \in N_{0}$ startet und in einem Knoten $y \in N_{f}$ endet, nennt sich Testpfad~\cite[vgl. Def 2.31]{software-testing}.
 Ziel ist es mithilfe von Abdeckungskriterien Testpfade zu ermitteln die einen Graphen ausreichend abdecken.
@@ -32,10 +33,11 @@ Ein Graph gilt als ausreichend abgedeckt wenn die Definition~\ref{graphcov} gilt
 \begin{definition}
     Gegeben sei eine Menge $TR$ von Testanforderungen für ein Graphabdeckungskriterium $C$.
     Eine Menge Tests $T$ erfüllt $C$ auf Graphen $G$ wenn gilt: Jedes Element von $TR$ ist durch mindestens einen Pfad p abgedeckt.
+    Ein Pfad p deckt ein Element von $TR$ ab, wenn das Element von $TR$ ein Teilpfad von p ist.
+    Dabei kann auch gelten, dass das Element von $TR$ = p ist.
     \cite[vgl. Def. 2.32]{software-testing}
     \label{graphcov}
 \end{definition}
-
 
 Hierfür werden in~\cite{software-testing} verschiedene Kriterien eingeführt.
 Diese sollen im Folgenden definiert und erklärt werden.
@@ -62,6 +64,7 @@ Formal definiert wird dies in Definition~\ref{nodecov}:
 \label{kantenabdeck}
 Eine Granularitätsebene höher ist die Kantenabdeckung.
 In diesem Kriterium wird gefordert, dass jede erreichbare Kante mindestens einmal in einer gegebenen Menge an Tests besucht wird.
+Dabei wird die Pfadlänge aus Kapitel~\ref{pfad} benötigt.
 
 \begin{definition}
     \textbf{Kantenabdeckung}: $TR$ enthält jeden erreichbaren Pfad der Länge bis zu 1 (Kanten), in $G$~\cite[vgl. Criterion 2.2]{software-testing}.
@@ -106,6 +109,8 @@ Ein PrimePfad ist definiert in Definition~\ref{primepfad}.
 \end{definition}
 
 Es sollen also die längsten, einfachen Pfade im Graphen abgedeckt werden.
+Ein einfacher Pfad ist ein Pfad, der keinen Knoten doppelt enthält.
+Ausnahme ist hierbei, dass Start und Endknoten gleich sein dürfen.
 So wird eine umfassendere Abdeckung als in den vorherigen Abdeckungskriterien gewährleistet, da auch längere Pfadkombinationen dabei berücksichtigt werden.
 
 \subsubsection{Vollständige Pfadabdeckung}
@@ -124,25 +129,25 @@ Sollte der zu testende Graph azyklisch sein, kann dieses Kriterium jedoch durcha
 
 \subsection{Vergleich der Kriterien}
 
-Die verschiedenen Abdeckungskriterien variieren in ihrer Granularität und Komplexität.
+Die verschiedenen Abdeckungskriterien variieren in ihrer Granularität.
 Ein kurzer Überblick soll hier gegeben werden.
 
 \newcolumntype{C}{>{\centering\arraybackslash}X}
 \begin{center}
     \begin{table}[!ht]
-        \begin{tabularx}{\textwidth}{|C|C|C|}
+        \begin{tabularx}{\textwidth}{|C|C|}
             \hline
-            \textbf{Kriterium} & \textbf{Granularität} & \textbf{Komplexität} \\
+            \textbf{Kriterium} & \textbf{Granularität}  \\
             \hline
-            \textbf{Knoten} & Knoten & Minimal \\
+            \textbf{Knoten} & jeder Knoten in mindestens einem Testpfad  \\
             \hline
-            \textbf{Kanten} & Kanten & Minimal \\
+            \textbf{Kanten} & jede Kante in mindestens einem Testpfad \\
             \hline
-            \textbf{Kanten-Paar} & Kantenpaare & Abhängig von der Kantenmenge \\
+            \textbf{Kanten-Paar} & jedes Kantenpaar in mindestens einem Testpfad  \\
             \hline
-            \textbf{PrimePfad} & Hauptpfade & Komplex, berechenbar \\
+            \textbf{PrimePfad} & jeder PrimePfad in einem Testpfad  \\
             \hline
-            \textbf{vollständige Pfade} & Alle möglichen Pfade & Höchste, teils unberechenbar \\
+            \textbf{vollständige Pfade} & Alle möglichen Pfade \\
             \hline
         \end{tabularx}
         \caption{Vergleich der Graphabdeckungskriterien}
@@ -150,8 +155,9 @@ Ein kurzer Überblick soll hier gegeben werden.
 \end{center}
 \\
 
-Besonders hervorzuheben ist, dass die hier vorgestellten Abdeckunskriterien hierarchisch sind und mit Erfüllung eines höheren Kriteriums automatisch alle tieferen Kriterien auch erfüllt werden~\cite[vgl. Figure 2.15]{software-testing}.
+Mit Ausnahme der PrimePfad-Abdeckung ist festzustellen, dass die hier vorgestellten Abdeckunskriterien hierarchisch sind und mit Erfüllung eines höheren Kriteriums automatisch alle tieferen Kriterien auch erfüllt werden~\cite[vgl. Figure 2.15]{software-testing}.
 Die Sortierung ist in Definition~\ref{sort} festgelegt. \\
+
 \begin{definition}
     Die Abdeckungskriterien sind wie folgt hierarchisch sortiert: \\
     $ \textbf{Vollständige} > \textbf{PrimePfad} > \textbf{KantenPaar} > \textbf{Kanten} > \textbf{Knoten} $ \\
@@ -161,5 +167,11 @@ Die Sortierung ist in Definition~\ref{sort} festgelegt. \\
 \end{definition}
 
 Nach Definition~\ref{sort} gilt also, dass zum Beispiel mit Kantenabdeckung automatisch auch Knotenabdeckung gewährleistet ist.
+Es ist nicht gewährleistet, dass PrimePfad-Abdeckung auch KantenPaar-Abdeckung umsetzt.
+Jedoch lässt sich sagen, dass PrimePfad-Abdeckung im generellen ein stärkeres Abdeckungskriterium ist da Kombinationen
+von längeren Kantenpaaren als 2 beachtet werden für die Generierung der Testpfade.
+Wie in~\cite[vgl. RQ 1]{property-based-testing} erwähnt, sind längere Querys gut für eine hohe Testabdeckung.
+Dies kann mit PrimePath-Abdeckung erreicht werden.
+Daher wird gefolgert, dass die PrimePfad-Abdeckung höher sortiert werden sollte als die KantenPaar-Abdeckung.
 Der interessierte Leser sei an~\cite{software-testing} verwiesen, falls die Anwendung von Abdeckungskriterien für Testgenerierung von Code interessant erscheint.
 Im Folgenden wird erarbeitet, wie Abdeckungskriterien für Testgenerierung von GraphQL nutzbar ist.

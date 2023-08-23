@@ -229,7 +229,7 @@ Alle vom \textit{Property-based Testtool} gefunden Fehler wurden durch den hier 
 Dafür waren die Querys \hyperref[query1]{Query 1}, \hyperref[query2]{Query 2}, \hyperref[query3]{Query 3} und \hyperref[query4]{Query 4} ausreichend.
 Es ist zu beobachten, dass die Querys wesentlich länger sind als jene, die vom \textit{Property-based Testtool} erstellt wurden.
 Dies liegt an den PrimePfaden, welche die längsten einfachen Pfade darstellen.
-Getestet wurde auf dem offiziellen GitLab-Docker Image in der Version 12.6.3
+Getestet wurde auf dem offiziellen GitLab-Docker Image in der Version 12.6.3.
 Damit im GitLab auch Daten verfügbar sind, wurde ein Population-Skript geschrieben, das im GitLab
 50 User anlegt und jedem User einige Projekte, Commit, MergeRequests etc. zuordnet.
 Das Population-Skript kann im~\cite[Github]{populationscript} gefunden werden.
@@ -244,7 +244,7 @@ und mit jedem Argument, das zusätzlich generiert wird, steigt die Wahrscheinlic
 In mehreren Durchläufen zeigte sich, dass im Schnitt nur ungefähr 20 Tests eine ideale Pfadlänge erreichen.
 Die Tests, die das erreichen, sind im Allgemeinen auch Tests, die einen sehr kurzen Pfad abbilden.
 Hierbei verringert sich das Risiko, dass Eingabeargumente generiert werden, die keine zugrundeliegenden Daten haben und somit die Pfadausführung verhindern.
-Ein Beispiel hierfür ist der Pfad $Query -> Project -> MergeRequest -> Time$.
+Ein Beispiel hierfür ist der Pfad $Query \rightarrow Project \rightarrow MergeRequest \rightarrow Time$.
 
 \begin{lstlisting}[language=GraphQL]
 { project(fullPath: "groupx_3/projectx_2_1") {

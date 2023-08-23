@@ -104,6 +104,8 @@ Das in Abbildung~\ref{schemdef} definierte Schema wird durch den Graphen in Abbi
 Valide Anfragen an eine GraphQL-API sind alle Pfade, die mit Startknoten $Query$ beginnen und mindestens einen Knoten beinhalten,
 der keine ausgehenden Kanten hat (also ein Scalar-Type)~\cite[vgl. Modelling with GraphQL]{graphqlgraphtheory}.
 Auf jeder Ebene des Graphens werden Resolver ausgeführt, welche für die Datenbereitstellung verantwortlich sind.
+Es ist wichtig zu betonen, dass der aufgespannte Graph ein gerichteter Graph ist.
+Hierdurch wird ermöglicht, dass die $SCALAR$ Felder stets Endknoten sind da sie selbst keine ausgehenden Kanten besitzen dürfen.
 Soll von einem GraphQL-Server mit dem zuvor definierten Schema ein Buch mit id, Titel und Verlag mit Verlagsnamen abgefragt werden,
 so kann diese Query genutzt werden: \verb+{ buch { id title verleger { name }}}+.
 

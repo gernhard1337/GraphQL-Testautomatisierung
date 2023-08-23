@@ -82,8 +82,8 @@ nx.all_simple_paths(G, source=start_node, target=end_node)
 Die gewählte Argumentgenerierungsbibliothek ist \textit{Faker}~\cite{fakergithub}.
 Mit \textit{16k}~\cite{fakergithub} Sternen auf GitHub ist Faker auch eine beliebte Bibliothek.
 Faker ist eine Bibliothek, die es sehr einfach macht, Daten zu generieren.
-Da im Kontext von GraphQL Argumente nur sehr einfache Datentypen als Argumente benötigt,
-reicht uns dieseBibliothek komplett aus, da sie es schafft, schnell und unkompliziert Daten in genau dem Format zu generieren, wie sie benötigt werden.
+Da im Kontext von GraphQL nur sehr einfache Datentypen als Argumente benötigt werden,
+reicht diese Bibliothek komplett aus, da sie es schafft, schnell und unkompliziert Daten in genau dem Format zu generieren, wie sie benötigt werden.
 Angenommen es wird ein String benötigt der 10 Zeichen lang ist.
 So reicht der Code aus Listing~\ref{randomstr} aus.
 
@@ -134,7 +134,12 @@ Im Allgemeinen funktioniert der Prototyp, so wie in dem Sequenzdiagramm in Abbil
 
 Hierbei sind auch die einzelnen Module zu erkennen.
 Dabei sind die Module $main$, $Graphhandler$, $Querygenerator$ und $Testgenerator$ Teile des Prototypens.
-Das Modul GraphQL API stellt das zu testende System dar und ist extern.
+Das Modul $GraphQL API$ stellt das zu testende System dar und ist extern.
+Die Module $Graphhandler$, $Querygenerator$ und $Testgenerator$ arbeiten chronologisch.
+Hierbei übernimmt der $Graphhandler$ alle Teile des Testentwurfs also alle Teile des Kapitels~\ref{testentw}.
+Der $Querygenerator$ übernimmt die Umsetzung der Methode aus Kapitel~\ref{testentw}.
+Im $Testgenerator$ werden die PyTest-Tests generiert, dies ist ein gewünschtes Feature aus Kapitel~\ref{testf}.
+Die $main$ verwaltet die Zusammenarbeit der einzelnen Module und sorgt für die Umsetzung aller übrigen Funktionen.
 
 \subsection{Schema in Graph abbilden}
 
@@ -207,7 +212,7 @@ paths = graphhandler.generate_prime_paths("Query", graph)
 \end{figure}
 
 Wie im Kapitel~\ref{fazitcov} festgestellt, gilt, dass die PrimePfad-Abdeckung am geeignetsten ist und somit wird diese implementiert.
-Die PrimePfad Abdeckung ist durch die Funktion $generate_prime_paths$ implementiert.
+Die PrimePfad Abdeckung ist durch die Funktion $generate\_prime\_paths$ implementiert.
 Diese Funktion verknüpft dabei zwei andere Funktionen und ist in Listing~\ref{primes} gezeigt.
 
 \begin{lstlisting}[language=Python,caption={valide PrimePfad Generierung}, label={primes}]
@@ -217,39 +222,25 @@ def generate_prime_paths(startknoten, g):
 
 Da PrimePfade nicht im Query Knoten starten müssen, wird zuerst die Funktion $get\_prime\_paths$ aufgerufen.
 Diese gibt eine Liste aller PrimePfade zurück.
-Da jedoch ein Pfad stets im Query-Knoten starten muss, wird anschließend $shortest\_path\_to\_prime$ ausgeführt.
+Da jedoch ein Testpfad stets im Query-Knoten starten muss, wird anschließend $shortest\_path\_to\_prime$ ausgeführt.
 Diese Funktion ermittelt den kürzesten Weg vom Query-Knoten zum Startknoten des PrimePfades.
-So kann sichergestellt werden, dass die generierten Pfade stets korrekte Testpfade sind und alle PrimePfade enthalten.
+So kann sichergestellt werden, dass die generierten PrimePfade stets korrekte Testpfade sind.
 Die Implementierung der Funktion $get\_prime\_paths$ ist im Listing~\ref{primepy} gezeigt.
 
 \begin{lstlisting}[language=Python, caption={PrimePfad Algorithmus}, label={primepy}]
 def get_prime_paths(G, start_node):
-    all_prime_paths = []
-    nodes = list(G.nodes())
-
-    for end_node in nodes:
-        if end_node == start_node:
-            continue
-        simple_paths = list(nx.all_simple_paths(G, source=start_node, target=end_node))
-        # Ein Pfad ist prime, wenn er kein Teilpfad ist
-        prime_paths_for_end_node = []
-        for path in simple_paths:
-            is_prime = True
-            for other_path in simple_paths:
-                if set(path).issubset(set(other_path)) and path != other_path:
-                    is_prime = False
-                    break
-            if is_prime:
-                prime_paths_for_end_node.append(path)
-
-        all_prime_paths.extend(prime_paths_for_end_node)
-    return all_prime_paths
+    startPaths = [(n, ) for n in g.nodes()]
+    simplePaths = []
+    findSimplePath(g, startPaths, simplePaths)
+    primePaths = sorted(simplePaths, key=lambda a: (len(a), a))
+    return primePaths
 \end{lstlisting}
 
-Dabei wird die Gegebenheit beachtet, dass Anfragen zwar stets im Query-Knoten starten müssen, jedoch jeder andere Knoten des Graphens ein potenzieller Endknoten ist.
-Jeder Knoten wird dabei einmal als Endknoten behandelt und die einfachen Pfade vom Query-Knoten zu diesem Knoten werden ermittelt.
+Von jedem Knoten ausgehend werden die einfachen Pfade ermittelt.
 Anschließend werden die Pfade so gefiltert, dass nur die längsten Pfade, die kein Teilpfad eines anderen Pfads sind, zurückgegeben werden.
 Dies entspricht laut Definition~\ref{primepfad} einem PrimePfad und der Algorithmus ist Deckungsgleich mit~\cite[Finding Prime Test Paths S. 39]{software-testing}.
+Für Pfade die keinen Ursprung im Query-Knoten haben wird der kürzeste Weg vom Queryknoten zum Startknoten des Pfades ermittelt.
+So wird die Korrektheit der Testpfade sichergestellt.
 
 \newpage
 \subsection{Querys aus Pfad ermitteln}

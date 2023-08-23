@@ -21,9 +21,9 @@ Der Testentwurf basiert auf den zuvor erarbeiteten Theorien und die Testausführ
 Property-based Testing~\cite[vgl. Method]{property-based-testing}.
 
 \section{Testentwurf}
-
+\label{testentw}
 Der erste Abschnitt des Testprozesses erarbeitet die Pfadgenerierung nach gewähltem Abdeckungskriterium.
-Wie zuvor ermittelt, wird die PrimePfad Abdeckung im Folgenden ermittelt.
+Wie zuvor festgestellt, wird die PrimePfad Abdeckung im Folgenden ermittelt.
 Die Methode erlaubt allerdings auch einen Wechsel des Abdeckungskriteriums, da im Endeffekt nur die Pfade für die weiteren Prozesse
 genutzt werden können.
 Bevor jedoch ein Abdeckungskriterium genutzt werden kann, muss das GraphQL-Schema in einen Graphen übersetzt werden.
@@ -117,7 +117,7 @@ Das Feld ist nach Schema aus Listing~\ref{typefiel} definiert.
 
 Wenn der Eintrag $kind$ den Wert $OBJECT$ trägt, so ist klar, dass das hier definierte $OBJECT$ eine Kante zum Knoten $name$ besitzt.
 
-\subsection{Testpfade ermitteln}
+\subsection{PrimePfade ermitteln}
 \label{testpfade}
 
 Aus dem zuvor ermittelten Graphen sollen Testpfade ermittelt werden, welche die PrimePfad-Abdeckung erfüllen.
@@ -134,6 +134,8 @@ Dies folgt, da die Menge der PrimePfade eine echte Teilmenge der einfachen Pfade
 Mit der Einschränkung von GraphQL, dass valide Querys stets im Query-Knoten starten müssen, muss sichergestellt werden, dass die PrimePfade dort starten.
 Um dies umzusetzen, wird festgelegt, dass der kürzeste Weg vom Query Knoten zum Startknoten des PrimePfades zu ermitteln ist und an den PrimePfad anzuhängen,
 sodass aus diesem später eine valide Query generiert werden kann.
+Es lässt sich also festhalten, dass zuerst die Pfade für eine PrimePfad Abdeckung berechnet werden müssen
+und diese dann zu gültigen Testpfaden erweitert werden müssen, sodass sie GraphQL Konventionen einhalten.
 
 \newpage
 \section{Testausführung}

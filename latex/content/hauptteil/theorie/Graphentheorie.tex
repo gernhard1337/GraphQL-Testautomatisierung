@@ -76,11 +76,22 @@ Daher werden sie hier definiert.
 \end{definition}
 
 Bei einem gerichteten Graphen ist die Sortierung der Kantenpaare wichtig.
-Die Funktionen $init$ und $ter$ können nämlich am einfachsten durch die Sortierung der Elemente eines Kantenpaares umgesetzt werden.
+Die Funktionen $init$ und $ter$ können am einfachsten durch die Sortierung der Elemente eines Kantenpaares umgesetzt werden.
 Hierbei ist das erste Element des Kantenpaares die Anfangsecke und das zweite Element ist die Endecke.
 Die Kanten in einem gerichteten Graphen werden mit einem Pfeil gezeichnet.
 Dabei zeigt der Pfeil stets in Richtung Endecke.
-Der in Beispiel~\ref{exmgr} definierte Graph ist als gerichteter Graph in Abbildung~\ref{graphexample} gezeigt.
+Der in Beispiel~\ref{exmgr} definierte ungerichtete Graph wird in Beispiel~\ref{exmggr} als gerichteter Graph angepasst.
+
+\begin{example}
+    \label{exmggr}
+    Ein Graph sei definiert mit $V = \{ 1, 2, 3 \}$ und $E = \{e1, e2, e3\}$ \\
+    Die Funktionen $init$ und $ter$ sind definiert als: \\
+    $init(e1) = 1$ und $ter(e1) = 1$ \\
+    $init(e2) = 1$ und $ter(e2) = 2$ \\
+    $init(e3) = 1$ und $ter(e3) = 3$ \\
+\end{example}
+
+Nutzt man die Sortierung der Kanten für $init$ und $ter$, so sind $e1 = (1,1)$, $e2 = (1,2)$ und $e3 = (1,3)$.
 
 \begin{figure}[H]
     \begin{center}
@@ -88,9 +99,9 @@ Der in Beispiel~\ref{exmgr} definierte Graph ist als gerichteter Graph in Abbild
             \node[main] (1) {$1$};
             \node[main] (2) [above right of=1] {$2$};
             \node[main] (3) [below right of=1] {$3$};
-            \draw[->] (1) to [out=180,in=270,looseness=5] (1);
-            \draw[->] (1) -- (2);
-            \draw[->] (1) -- (3);
+            \draw[->] (1) to [out=180,in=270,looseness=5] node[midway, above left] {e1} (1);
+            \draw[->] (1) -- node[midway, above left] {e2} (2);
+            \draw[->] (1) -- node[midway, above right] {e3} (3);
         \end{tikzpicture}
     \end{center}
     \caption{ein gerichteter Graph}
@@ -103,9 +114,10 @@ Für die spätere Entwicklung des Testentwurfs ist es wichtig, gewichtete Graphe
 Zuvor wurde eine Kante in Definition~\ref{graphdef} und Definition~\ref{gerichtetergraphdef} als ein Tupel $(x, y)$ eingeführt.
 Ein gewichteter Graph weist jeder Kante ein Kantengewicht zu.
 Dies ist im Allgemeinen eine positive, reelle Zahl~\cite[vgl. S. 251]{graphentheorie3}.
+Das Kantengewicht kann sowohl ungerichteten als auch gerichteten Kanten zugewiesen werden.
 
 \begin{definition}
-    Ein Graph G = (V,E) mit einer Abbildung g : E \textrightarrow $\mathbb{R}_{>0}$ heißt gewichteter Graph.
+    Ein gerichteter/ungerichteter Graph G = (V,E) mit einer Abbildung g : E \textrightarrow $\mathbb{R}_{>0}$ heißt gerichteter/ungerichteter gewichteter Graph.
     Die Abbildung g heißt Gewichtsfunktion. Für $e \in E$ heißt g(e) das Gewicht von e.
     Das Gewicht von G ist die Summer der Gewichte aller Kanten, g(G) = \sum_{e \in G} g(e).\\
     \cite[vgl.~Definition~6.1~S.~251]{graphentheorie3}
@@ -123,13 +135,16 @@ Die neue Definition soll vorerst \textit{allgemein gewichteter Graph} genannt we
     Die Menge X ist frei wählbar.
     \label{allgemeingewichtetergraph}
 \end{definition}
+An dieser Stelle sei verwiesen an Kapitel~\ref{testentwurf} wo diese Definition genutzt wird,
+um Felder eines  GraphQL-Schemas den Kanten eines Graphens zuzuordnen.
 
 \subsection{Pfad}
+\label{pfad}
 
 Ein Pfad, oft auch Weg genannt, ist eine Sequenz von Knoten, die nachfolgend durch Kanten miteinander verbunden sind~\cite[vgl. S. 7 0.3]{graphentheorie}.
 
 \begin{definition}
-    Ein Weg ist ein nicht leerer Graph P = (V,E) der Form $V = {x_{0}, x_{1}, ..., x_{k}}$ und $E = {x_{0}x_{1}, x_{1}x_{2}, \ldots, x_{k-1}x_{k}}$ wobei die $x_{i}$
+    Ein Weg ist ein nicht leerer Graph P = (V,E) der Form $V = \{x_{0}, x_{1}, ..., x_{k}\}$ und $E = \{x_{0}x_{1}, x_{1}x_{2}, \ldots, x_{k-1}x_{k}\}$ wobei die $x_{i}$
     paarweise verschieden sind~\cite[vgl. S. 7]{graphentheorie}.
 \end{definition}
 
@@ -138,7 +153,10 @@ Die Länge eines Weges ist die Anzahl der Kanten die dieser besucht~\cite[vgl. S
 In gewichteten Graphen ist das Gewicht eines Pfads die Summe aller Gewichte der einbezogenen Kanten~\cite[vgl. 7.2 kürzeste Wege]{graphentheorie3}.
 
 \begin{example}
-    Es sei ein Graph G definiert mit V = $\{n1,n2,n3,n4,n5,n6,n7,n8\}$ und E = $\{(n1,n2),(n2,n3),(n3,n4),(n4,n1),(n2,n5),(n3,n6),(n5,n7),(n6,n8)\}$.
+    Es sei ein gerichteter Graph G definiert mit V = $\{n1,n2,n3,n4,n5,n6,n7,n8\}$ und E = $\{(n1,n2),(n2,n3),(n3,n4),(n4,n1),(n2,n5),(n3,n6),(n5,n7),(n6,n8)\}$.
+    Die Sortierung der Elemente von $E$ ist fest.
+    Es gilt, dass $init(x)$ das erste Element des Kantenpaares ist.
+    $ter(x)$ ist das zweite Element des Kantenpaares.
     Ein möglicher Pfad von Knoten $n1$ zu $n8$ ist der Pfad $p = \{(n1, n2), (n2, n3), (n3, n6), (n6, n8)\}$.
     Der Pfad p ist in Abbildung~\ref{pfadbsp} rot markiert \\ \\
 \end{example}
@@ -173,7 +191,7 @@ In gewichteten Graphen ist das Gewicht eines Pfads die Summe aller Gewichte der 
 
 Ein Kreis in einem Graphen ist ein Weg, bei dem gilt: $Anfangsknoten = Endknoten$ \cite[vgl. S. 8]{graphentheorie}
 Die Größe eines Kreises ist die Länge des Wegs, den dieser Kreis bildet.
-Der kürzeste Kreis eines Graphens nennt sich $Tailenweite~g(G)$ und der längste Kreis ist der Umfang~\cite[vgl. S.8]{graphentheorie}.
+Der kürzeste Kreis eines Graphens nennt sich $Taillenweite~g(G)$ und der längste Kreis ist der Umfang~\cite[vgl. S.8]{graphentheorie}.
 Der Graph aus Beispiel~\ref{pfadbsp} hat einen Kreis der Länge 4 und ist in Abbildung~\ref{zyklgraph} rot eingezeichnet.
 
 \begin{figure}[h!]
