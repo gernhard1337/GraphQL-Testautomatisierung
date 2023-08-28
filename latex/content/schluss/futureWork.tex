@@ -2,9 +2,9 @@
 \label{futurework}
 
 Einige bereits angesprochene Punkte bieten Möglichkeiten für eine Erweiterung der hier geleisteten Arbeit.
-Während hier ein erheblicher Beitrag zur theoretischen Testabdeckung von GraphQL-APIs geleistet wurde,
+Während in dieser Arbeit ein erheblicher Beitrag zur theoretischen Testabdeckung von GraphQL-APIs geleistet wurde,
 so ist nicht garantiert, dass die entwickelten Tests tatsächlich die ermittelte Abdeckung erreichen.
-Dies folgert sich aus der zufälligen Argumentgenerierung in den einzelnen Querys.
+Dies folgert sich aus der zufälligen Argumentgenerierung in den einzelnen Queries.
 Ziel ist es nun, den Zufall möglichst weit zu begrenzen oder aber die erlangten Ergebnisse sinnvoller zu nutzen.
 Im Folgenden werden zwei Ansätze vorgestellt, die das Potenzial haben, eine praktische Testausführung zuverlässiger und präziser machen zu können.
 Ziel von weiterführenden Arbeiten sollte es sein, dass die tatsächliche Pfadabdeckung sich der theoretischen Pfadabdeckung annähert.
@@ -30,7 +30,7 @@ Dabei werden sämtliche Argumente sofort generiert.
 Eine adaptive Testgenerierung wäre denkbar, sodass aus einem Testpfad die Query nur in Teilen erstellt wird.
 Dabei wird ein Testpfad erst weiter in der Query abgedeckt, wenn ein Argumentgenerator ein Ergebnis zurückliefert, dass die Pfadlänge tatsächlich erhöht und somit signalisiert, dass der zugrundeliegende Test tatsächlich ausgeführt wird.
 Eine solche Methode könnte nach dem Ablauf, wie in Abbildung~\ref{adaptive} dargestellt, funktionieren.
-Es werden dabei Querys mit Zufallsargumenten erstellt, die einen Teilpfad des Testpfads bilden und erst wenn der Teilpfad des Testpfads tatsächlich abgedeckt ist, wird mit dem nächsten adjazenten Knoten fortgefahren,
+Es werden dabei Queries mit Zufallsargumenten erstellt, die einen Teilpfad des Testpfads bilden und erst wenn der Teilpfad des Testpfads tatsächlich abgedeckt ist, wird mit dem nächsten adjazenten Knoten fortgefahren,
 sodass die tatsächliche Pfadabdeckung mit der theoretischen Pfadabdeckung übereinstimmt.
 
 \begin{figure}[H]

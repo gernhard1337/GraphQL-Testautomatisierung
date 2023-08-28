@@ -50,7 +50,7 @@ Im Folgenden werden einige Graphabdeckungskriterien vorgestellt, so wie sie in~\
 \subsubsection{Knotenabdeckung}
 
 Wird erwartet, dass beim Testen jede definierte Methode zumindest einmal ausgeführt wird, so handelt es sich hierbei um Knotenabdeckung.
-Diese Kriterium ist weithin geläufig als $Blockabdeckung$ \cite[vgl. 2.2.1]{software-testing}.
+Dieses Kriterium ist weithin geläufig als $Blockabdeckung$ \cite[vgl. 2.2.1]{software-testing}.
 Eine Menge $T$ an Tests erfüllt die Knotenabdeckung, wenn gilt, dass jeder erreichbare Knoten durch zumindest einen Test $t \in T$ besucht wird.
 Formal definiert wird dies in Definition~\ref{nodecov}:
 
@@ -128,7 +128,7 @@ Der Vollständigkeit halber soll dieses Kriterium hier dennoch definiert werden.
 Sollte der zu testende Graph azyklisch sein, kann dieses Kriterium jedoch durchaus genutzt werden.
 
 \subsection{Vergleich der Kriterien}
-
+\label{vglkrits}
 Die verschiedenen Abdeckungskriterien variieren in ihrer Granularität.
 Ein kurzer Überblick soll hier gegeben werden.
 
@@ -155,23 +155,22 @@ Ein kurzer Überblick soll hier gegeben werden.
 \end{center}
 \\
 
-Mit Ausnahme der PrimePfad-Abdeckung ist festzustellen, dass die hier vorgestellten Abdeckunskriterien hierarchisch sind und mit Erfüllung eines höheren Kriteriums automatisch alle tieferen Kriterien auch erfüllt werden~\cite[vgl. Figure 2.15]{software-testing}.
-Die Sortierung ist in Definition~\ref{sort} festgelegt. \\
+Die vorgestellten Abdeckungskriterien können hierarchisch sortiert werden.
+Mit Erfüllung eines höher sortierten Kriteriums sind automatisch die tieferen Kriterien auch erfüllt~\cite[vgl. Figure 2.15]{software-testing}.
+Die Hierarchisierung der Abdeckungskriterien ist durch Abbildung~\ref{abdeckhier} dargestellt.
 
-\begin{definition}
-    Die Abdeckungskriterien sind wie folgt hierarchisch sortiert: \\
-    $ \textbf{Vollständige} > \textbf{PrimePfad} > \textbf{KantenPaar} > \textbf{Kanten} > \textbf{Knoten} $ \\
-    Die Sortierung legt fest, dass ein höher sortiertes Kriterium automatisch alle tiefer sortierten Kriterien erfüllt.
-    \cite[vgl. Figure 2.15]{software-testing}.
-    \label{sort}
-\end{definition}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth,keepaspectratio]{img/subsum}
+    \caption{Subsumtion der Abdeckungskriterien}
+    \label{abdeckhier}
+\end{figure}
 
-Nach Definition~\ref{sort} gilt also, dass zum Beispiel mit Kantenabdeckung automatisch auch Knotenabdeckung gewährleistet ist.
+Hierdurch gilt, dass zum Beispiel mit Kantenabdeckung automatisch auch Knotenabdeckung gewährleistet ist.
 Es ist nicht gewährleistet, dass PrimePfad-Abdeckung auch KantenPaar-Abdeckung umsetzt.
-Jedoch lässt sich sagen, dass PrimePfad-Abdeckung im generellen ein stärkeres Abdeckungskriterium ist da Kombinationen
-von längeren Kantenpaaren als 2 beachtet werden für die Generierung der Testpfade.
-Wie in~\cite[vgl. RQ 1]{property-based-testing} erwähnt, sind längere Querys gut für eine hohe Testabdeckung.
-Dies kann mit PrimePath-Abdeckung erreicht werden.
-Daher wird gefolgert, dass die PrimePfad-Abdeckung höher sortiert werden sollte als die KantenPaar-Abdeckung.
-Der interessierte Leser sei an~\cite{software-testing} verwiesen, falls die Anwendung von Abdeckungskriterien für Testgenerierung von Code interessant erscheint.
-Im Folgenden wird erarbeitet, wie Abdeckungskriterien für Testgenerierung von GraphQL nutzbar ist.
+Im Kontext des Integrationstestens sei jedoch gefolgert, dass die PrimePfad-Abdeckung ein stärkeres Abdeckungskriterium ist.
+Dies folgt, weil die PrimePfad-Abdeckung längere Testpfade erzeugt was nach~\cite[vgl. RQ 1]{property-based-testing} für eine höhere Abdeckung sorgt.
+Es sei außerdem angemerkt, dass die PrimePfad-Abdeckung fast, aber nicht vollständig die KantenPaar-Abdeckung umsetzt~\cite[vgl. S. 20]{introductiontosoftwaretestingpptx}.
+Ein Auftreten von Eigenkanten, also Kanten von einem Knoten zu sich selbst, zeigt einen Unterschied zwischen PrimePfad und Kantenpaar-Abdeckung~\cite[vgl. S. 21]{introductiontosoftwaretestingpptx}.
+Da im Sinne des Integrationstests jedoch davon ausgegangen wird, dass die einzelnen Module getestet sind, ist diese Eigenkante kein relevanter Integrationstest da
+das Modul nur mit sich selbst arbeitet und somit keine Kombination von Modulen durch solch eine Kante getestet wird.

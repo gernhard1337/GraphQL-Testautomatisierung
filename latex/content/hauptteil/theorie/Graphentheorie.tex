@@ -2,10 +2,10 @@
 \label{sec:graphentheorie}
 
 Da GraphQL es ermöglicht, dass komplexe Beziehungen innerhalb eines Datenmodells in Form von Graphen modelliert werden~\cite[vgl. Modelling with Graph(QL)]{graphqlgraphtheory}
-benötigt man die Graphentheorie, da diese Methoden liefert, um Graphen zu definieren und zu analysieren.
+wird die Graphentheorie benötigt, da diese Methoden liefert, um Graphen zu definieren und zu analysieren.
 Des Weiteren sind die Testabdeckungskriterien, die später genutzt werden, eng mit der Graphentheorie verbunden.
-Die folgenden Absätze werden eher theoretisch gehalten.
-Die Zusammenhänge zwischen der Graphentheorie und Testen von GraphQL-APIs werden sich jedoch später erschließen.
+Die folgenden Absätze sind eher theoretisch gehalten.
+Die Zusammenhänge zwischen der Graphentheorie und dem Testen von GraphQL-APIs werden sich später erschließen.
 
 \subsection{Ungerichteter Graph}
 
@@ -14,14 +14,14 @@ Es kann dazu verwendet werden, Beziehungen zwischen Objekten darzustellen.
 Nach~\cite{graphentheorie} ist ein ungerichteter Graph wie folgt definiert:
 
 \begin{definition}
-    Ein ungerichteter Graph ist ein Paar $\textrm{G = (V, E)}$ zweier disjunkter Mengen mit E $\subseteq$ V^2
+    Ein ungerichteter Graph ist ein Paar $\textrm{G = (V, E)}$ zweier disjunkter Mengen mit E $\subseteq$ V^2.
     \label{graphdef}
-\end{definition}\cite[vgl. S.2 0.1 Graphen]{graphentheorie}
+\end{definition}\cite[ vgl. S.2 0.1 Graphen]{graphentheorie}
 \\
 \\
 Die Elemente der Menge $V$ heißen Knoten (Vertices).
-Verbindungen zwischen den Knoten sind Elemente der Menge $E$ und diese nennt man Kanten (Edges).
-In dieser Definition spielt die Ordnung der Elemente von E keine Rolle, daher nennt man solche Graphen auch ungerichtete Graphen.
+Verbindungen zwischen den Knoten sind Elemente der Menge $E$ und diese werden Kanten (Edges) genannt.
+In dieser Definition spielt die Ordnung der Elemente von E keine Rolle, daher werden solche Graphen auch ungerichtete Graphen genannt.
 Um Graphen darzustellen, gibt es verschiedene Ansätze.
 Der geläufigste Ansatz ist es, Knoten als Punkte und Kanten als Verbindungslinien zu zeichnen.
 Häufig wird auch eine Adjazenzmatrix genutzt, bei dieser wird mit $0,1$ aufgeschlüsselt, welche Knoten eine Verbindung haben.
@@ -91,7 +91,7 @@ Der in Beispiel~\ref{exmgr} definierte ungerichtete Graph wird in Beispiel~\ref{
     $init(e3) = 1$ und $ter(e3) = 3$ \\
 \end{example}
 
-Nutzt man die Sortierung der Kanten für $init$ und $ter$, so sind $e1 = (1,1)$, $e2 = (1,2)$ und $e3 = (1,3)$.
+Die Sortierung der Kanten für $init$ und $ter$ ergibt für $e1 = (1,1)$, $e2 = (1,2)$ und $e3 = (1,3)$.
 
 \begin{figure}[H]
     \begin{center}

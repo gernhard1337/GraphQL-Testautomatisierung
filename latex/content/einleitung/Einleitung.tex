@@ -2,7 +2,7 @@
 %! Date = 07.12.2022
 \chapter{Einleitung}
 
-In diesem Kapitel wird an das Thema herangeführt und die Motive dargestellt.
+In diesem Kapitel wird an das Thema herangeführt und die Motive werden dargestellt.
 Es wird definiert, welche Ziele in dieser Arbeit verfolgt werden.
 Abschließend folgt eine Übersicht über die Kapitelstruktur.
 
@@ -31,8 +31,8 @@ Die entwickelte Methode arbeitet nach dem in Abbildung~\ref{property-based-metho
 \newpage
 
 Es wird aus einem GraphQL-Schema ein Testgenerator entwickelt.
-Dieser kann aus der Typspezifikation, die GraphQL vorgibt, valide GraphQL-Querys entwickeln und diese mit verschiedenen Argumenten anreichern.
-Die generierten Querys stellen die entwickelten Tests dar.
+Dieser kann aus der Typspezifikation, die GraphQL vorgibt, valide GraphQL-Queries entwickeln und diese mit verschiedenen Argumenten anreichern.
+Die generierten Queries stellen die entwickelten Tests dar.
 Das Besondere an GraphQL ist jedoch, dass es einen Graphen umsetzt.
 Ein einfaches Schema lässt sich in den Graphen aus Abbildung~\ref{schemgg} übersetzen.
 
@@ -67,25 +67,25 @@ Ein einfaches Schema lässt sich in den Graphen aus Abbildung~\ref{schemgg} übe
     \label{schemgg}
 \end{figure}
 
-Generell starten alle GraphQL-Querys im Query-Type.
+Generell starten alle GraphQL-Queries im Query-Type.
 Erlaubte Anfragen sind dann alle Pfade, deren Ursprung im Query Knoten liegt, wobei Limitierungen implementiert werden können.
 Property-based Testing nimmt die definierten Felder im Query-Type und geht die Pfade, welche sich im Graphen ergeben, zufällig ab.
 Nach einer bestimmten Anzahl an zufälligen Iterationen wird die Query aus dem erlangten Pfad generiert und ausgeführt.
-Wird jedoch ein wesentlich größeres Schema, zum Beispiel die GraphQL-API von GitLab~\cite{gitlab} genutzt, so erkennt man schnell, dass
+Wird jedoch ein wesentlich größeres Schema, zum Beispiel die GraphQL-API von GitLab~\cite{gitlab} genutzt, so ist schnell zu erkennen, dass
 der Graph so komplex wird, dass eine zufällige Pfadgenerierung zu unzuverlässig und ineffizient ist, um
 eine große Struktur zuverlässig zu testen.
-Einen ähnlichen Sachverhalt findet man in der Testgenerierung für Programmcode.
+Ein ähnlicher Sachverhalt findet sich in der Testgenerierung für Programmcode.
 Dieser kann sehr komplex werden und es müssen Strategien gefunden werden, um diese effizient und zuverlässig zu testen.
 Ein häufig verwendeter Ansatz ist es, den Code in einen Kontrollflussgraphen zu überführen, bei dem die Knoten Anweisungen oder Operationen darstellen
 und die Kanten den möglichen Pfaden entsprechen, die während der Ausführung des Programms genommen werden können.
-Hierbei wurde schon erhebliche Arbeit geleistet und diverse Kriterien entwickelt, wie man eine gute Testabdeckung erreicht.
+Hierbei wurde schon erhebliche Arbeit geleistet und diverse Kriterien entwickelt, wie eine gute Testabdeckung erreicht wird.
 An dieser Stelle sei insbesondere an \textit{Introduction to Software Testing}~\cite{software-testing} verwiesen.
-In ~\cite{software-testing} wird die Graphenabdeckung erarbeitet und praktisch gezeigt, wie sie helfen kann, um Tests zu generieren.
+In ~\cite{software-testing} wird die Graphabdeckung erarbeitet und praktisch gezeigt, wie sie helfen kann, um Tests zu generieren.
 Es werden verschiedene Kriterien vorgestellt, die den Graphen auf unterschiedliche Art und Weise betrachten.
 Ziel ist es, zu zeigen, dass das in~\cite{software-testing} erarbeitete Wissen nicht nur für die Testentwicklung von Programmcode zielführend ist,
-sondern auch für die Testgenerierung von anderen Graphstrukturen verwandt werden kann, in diesem Fall für die Testgenerierung für GraphQL-APIs.
+sondern auch für die Testgenerierung von anderen Graphstrukturen verwendet werden kann, in diesem Fall für die Testgenerierung für GraphQL-APIs.
 Der Fokus wird sich auf die PrimePfad-Abdeckung~\cite[vgl. Criterion 2.4]{software-testing} richten, da zu vermuten ist, dass diese
-Abdeckung einen guten Mittelweg zwischen Testgenauigkeit, Fehlerfindung und Effizienz bietet
+Abdeckung einen guten Mittelweg zwischen Testgenauigkeit, Fehlerfindung und Effizienz bietet.
 
 \section{Umsetzung}
 

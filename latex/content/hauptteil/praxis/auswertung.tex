@@ -24,6 +24,7 @@ Der hier entwickelte Prototyp soll in exakt dem gleichen Umfeld seine Tests gene
 Es ist zu erwarten, dass die selben Fehler gefunden werden wie in der Methode des \textit{Property-based Testings}.
 Ideal wäre es, neue Fehler zu finden.
 Beide Forschungsfragen werden im Folgenden noch einmal näher erläutert, da diese speziell sind und Wissen über die Methode wichtig ist, um die Ergebnisse korrekt einordnen zu können.
+Die Ergebnisse der Experimente sind im~\href{https://git.informatik.tu-cottbus.de/sst/abschlussarbeiten/master/lorenz_tom/graphql-integrationstest-ma/-/tree/main/experiment/toy-experiment}{GitLab} zu finden.
 
 \subsection{Fehlerfindungskapazität}
 
@@ -95,7 +96,7 @@ Eine Liste aller eingebauten Bugs findet sich im Anhang unter \textit{GraphQL-To
 Diverse Syntaxfehler wurden an verschiedenen Stellen eingebaut.
 Dies bedeutet, dass jeder Funktionsaufruf dieser Funktion garantiert scheitern wird.
 Somit kann jede Request diesen Fehlerfall entdecken, solange die Request auch das Feld hinter der Funktion mit dem Syntaxfehler abfragt.
-Ein einfacher Syntaxfehler findet sich in Listing~\ref{synfe} \\
+Ein einfacher Syntaxfehler findet sich in Listing~\ref{synfe}. \\
 
 \begin{lstlisting}[language=javascript, caption={Ein Syntaxfehler}, label={synfe}]
     const resolvers = {
@@ -158,13 +159,13 @@ Ist ein Resolver so implementiert, dann ist ein IndexOutOfBound Fehler sehr wahr
 Mit dem Testtool nach~\cite[Property-based Testing]{property-based-testing} konnten 73\% der Fehler, also 11 der 15 Fehler gefunden  werden.
 Der hier entwickelte Prototyp schaffte auf derselben API auch eine Entdeckung von 11 Fehlern.
 Es konnte also dieselbe Fehlerfindung erreicht werden.
-Bemerkenswert hierbei ist allerdings, dass das Property-based Tool hierfür wesentlich mehr Queries benötigte, um eine zufriedenstellende Coverage zu erreichen.
+Bemerkenswert ist, dass das Property-based Tool wesentlich mehr Queries benötigte, um eine zufriedenstellende Coverage zu erreichen.
 Das Property-based Tool benötigte 30 Durchläufe, die jeweils bis zu 100\% Edge-Coverage liefen, um alle Fehler zu finden.
 Im Gegenteil dazu konnte die hier entwickelte Methode mithilfe von nur 2 PrimePfaden eine PrimePath Coverage erreichen.
-Hierzu wurden für jeden Pfad 5 Testquerys entwickelt.
+Hierzu wurden für jeden Pfad 5 Testqueries entwickelt.
 Es war somit möglich, alle 11 Fehler zu finden.
-Bemerkenswert war, dass zwei perfekte Querys ermittelt wurden.
-Beide Querys sind in Listing~\ref{q1} und Listing~\ref{q2} gezeigt. \\
+Dabei wurden zwei perfekte Queries ermittelt.
+Beide Queries sind in Listing~\ref{q1} und Listing~\ref{q2} gezeigt. \\
 
 \begin{lstlisting}[language=GraphQL, caption={Query 1}, label={q1}]
     { project(id: "2", ) {  id  name  description   owner {  id  name  age   }  }  }
@@ -174,9 +175,9 @@ Beide Querys sind in Listing~\ref{q1} und Listing~\ref{q2} gezeigt. \\
     { userProjects(id: "1") { name owner { id name age projects { name description id owner { id name age } } } } }
 \end{lstlisting}
 
-Mithilfe dieser Querys kann jeder der 11 entdeckten Fehler gefunden werden.
+Mithilfe dieser Queries kann jeder der 11 entdeckten Fehler gefunden werden.
 Dies liegt auch daran, dass der Argumentgenerator entsprechend angepasst wurde und nur valide IDs produziert hat.
-So war es sehr wahrscheinlich, dass eine ID, die generiert wird, mindestens in einer der 5 erstellten Querys zur zugrundeliegenden Datenstruktur gepasst hat
+So war es sehr wahrscheinlich, dass eine ID, die generiert wird, mindestens in einer der 5 erstellten Queries zur zugrundeliegenden Datenstruktur gepasst hat
 und eine tatsächliche Testausführung stattfand und nicht nur ein initialer $null$-Wert, der die Query sofort vorzeitig beendet, zurückgegeben wurde.
 Die 4 nicht gefundenen Fehler sind dieselben Fehler wie diese, die \textit{Property-based Testing}~\cite[vgl. RQ.2]{property-based-testing} nicht finden konnte.
 Es sind die Felder, in denen ein falscher Wert eines Objektes genutzt wurde, um ein anderes Objekt zu erlangen.
@@ -207,7 +208,7 @@ Das \textit{Property-based Testtool} fand insgesamt 4 Fehler, die im Query-Berei
 Alle Fehler waren Fehler in der Validierung von Eingabevariablen.
 Hierbei lag der Fehler darin, dass die Resolver einen Fehler verursachten, wenn als Eingabe ein String mit leerem Zeichen kam.
 Dies bedeutet, ein leerer String \verb+""+ wird richtig behandelt (außer in Fehler 4) aber ein String mit leerem Zeichen \verb+e\u0000\+ führt zum Fehler.
-Die Fehler wurden gefunden durch die Querys aus Listing~\ref{i1},~\ref{i2},~\ref{i3} und~\ref{i4}.
+Die Fehler wurden gefunden durch die Queries aus Listing~\ref{i1},~\ref{i2},~\ref{i3} und~\ref{i4}.
 
 \begin{lstlisting}[language=GraphQL, caption={Fehler 1\cite{issue1}}, label={i1}]
 {project(fullPath: "root/test-project") {sentryDetailedError(id: "") {count}}}
@@ -226,14 +227,14 @@ Die Fehler wurden gefunden durch die Querys aus Listing~\ref{i1},~\ref{i2},~\ref
 \end{lstlisting}
 
 Alle vom \textit{Property-based Testtool} gefunden Fehler wurden durch den hier entwickelten Prototypen ebenfalls gefunden.
-Dafür waren die Querys \hyperref[query1]{Query 1}, \hyperref[query2]{Query 2}, \hyperref[query3]{Query 3} und \hyperref[query4]{Query 4} ausreichend.
-Es ist zu beobachten, dass die Querys wesentlich länger sind als jene, die vom \textit{Property-based Testtool} erstellt wurden.
+Dafür waren die Queries \hyperref[query1]{Query 1}, \hyperref[query2]{Query 2}, \hyperref[query3]{Query 3} und \hyperref[query4]{Query 4} ausreichend.
+Es ist zu beobachten, dass die Queries wesentlich länger sind als jene, die vom \textit{Property-based Testtool} erstellt wurden.
 Dies liegt an den PrimePfaden, welche die längsten einfachen Pfade darstellen.
 Getestet wurde auf dem offiziellen GitLab-Docker Image in der Version 12.6.3.
 Damit im GitLab auch Daten verfügbar sind, wurde ein Population-Skript geschrieben, das im GitLab
 50 User anlegt und jedem User einige Projekte, Commit, MergeRequests etc. zuordnet.
 Das Population-Skript kann im~\cite[Github]{populationscript} gefunden werden.
-Da die Querygenerierung stets im Query-Knoten beginnt und die PrimePaths gefunden werden sollen, ergeben sich in diesem speziellen Schema sehr viele ähnliche Querys.
+Da die Querygenerierung stets im Query-Knoten beginnt und die PrimePaths gefunden werden sollen, ergeben sich in diesem speziellen Schema sehr viele ähnliche Queries.
 Diese unterscheiden sich insbesondere am Ende der jeweiligen Query.
 Der zuvor vorgestellte Algorithmus errechnet für das Schema von GitLab eine Pfadanzahl von 41744 für eine PrimePath-Coverage des Schemas.
 Eine genaue Auflistung aller Pfade findet sich im~\cite[GitHub]{gitlabpaths}.
@@ -290,7 +291,7 @@ Der wesentliche Unterschied beider Methoden ist, dass \textit{Property-based Tes
 und hierbei werden mehrere Iterationen benötigt, um diese zu erreichen.
 Der Ansatz der PrimePfad-Abdeckung im hier entwickelten Prototypen stellt sicher, dass die generierten Pfade PrimePfade sind.
 Somit ist zugesichert, dass die Abdeckung erfüllt ist.
-Die PrimePfad Abdeckung wird auf unbeschnittenen Graphen ausgeführt und ist auch im Allgemeinen ein stärkeres Kriterium nach Definition~\ref{sort}.
+Die PrimePfad-Abdeckung wird auf unbeschnittenen Graphen ausgeführt.
 Es kann also gefolgert werden, dass die hier entwickelte Methode eine Verbesserung der theoretischen Abdeckung erzielt hat.
 Ein praktischer Nachweis hierfür folgt in den nächsten Abschnitten.
 Die Limitierung der zufälligen Argumentgeneratoren behindert eine tatsächliche Umsetzung der theoretischen Abdeckung.
@@ -300,7 +301,7 @@ Allerdings ist diese Limitierung potenziell lösbar, hierzu in Kapitel~\ref{futu
 \subsection{GraphQL-Toy Schema Coverage}
 
 Wie eingeführt in \textit{Property-based Testing}~\cite{property-based-testing} muss für eine zufriedenstellende Abdeckung
-die Defintion~\ref{defedgecov} erfüllt sein, dass jedes Paar von \verb+(Type, objectField)+ berücksichtigt ist.
+die Definition~\ref{defedgecov} erfüllt sein, dass jedes Paar von \verb+(Type, objectField)+ berücksichtigt ist.
 Dies bedeutet für das Schema, dass die folgenden Tupel abgedeckt sein müssen, um Kantenabdeckung zu erfüllen.
     \begin{itemize}
         \item \verb+(Query, project)+
@@ -311,7 +312,7 @@ Dies bedeutet für das Schema, dass die folgenden Tupel abgedeckt sein müssen, 
     \end{itemize}
 
 Da nur die beiden initialen Felder aus dem Query-Type Eingabeargumente benötigen, ist die Querygenerierung simpel.
-Es kann keine Aussage darüber gemacht werden, ob die generierten Querys von \textit{Property-based Testing}~\cite{property-based-testing} diese Abdeckung erfüllen, denn bei der Querygenerierung spielt es keine Rolle, ob dieses Kriterium erreicht wird.
+Es kann keine Aussage darüber gemacht werden, ob die generierten Queries von \textit{Property-based Testing}~\cite{property-based-testing} diese Abdeckung erfüllen, denn bei der Querygenerierung spielt es keine Rolle, ob dieses Kriterium erreicht wird.
 Es gibt lediglich eine Messung die zeigt, dass der Prototyp mit hinreichender Wahrscheinlichkeit in der Lage ist, durch zufällige Querygenerierung Tests zu generieren, die Kantenabdeckung erfüllen~\cite[vgl. D.Results RQ1 ]{property-based-testing}.
 Im Gegensatz zum Property-based Testing hat der hier entwickelte Prototyp den Vorteil, dass die Pfadgenerierung nicht zufällig ist.
 Dadurch ergibt sich, dass die Tests, die vom hier entwickelten Prototyp aufgrund eines stärkeren Abdeckungskriteriums erstellt werden, stets auch die Kantenabdeckung erfüllen.
@@ -319,7 +320,7 @@ Ein einziger Durchlauf reicht aus, um sicherzustellen, dass die gewünschte Abde
 Natürlich bleibt offen, ob die generierten Tests diese Coverage tatsächlich erreichen jedoch ist dies auch ein Problem im \textit{Property-based Testing}.
 Dort wird nur geprüft ob die Felder in der Anfrage existieren, jedoch nicht, ob die Antwort diese auch enthält.
 Um dies messbar zu machen wurde zuvor die Abschätzung der Pfadlängen eingeführt.
-Hierdurch konnte gezeigt werden, dass die generierten Querys in Teilen die Abdeckung auch tatsächlich umsetzen.
+Hierdurch konnte gezeigt werden, dass die generierten Queries in Teilen die Abdeckung auch tatsächlich umsetzen.
 
 \subsection{GitLab Schema Coverage}
 
@@ -347,7 +348,7 @@ Eine komplette Pfadgenerierung auf dem gesamten Graphen hatte als Ergebnis, dass
 Hier zeigt sich auch ein direkter Unterschied.
 Während in Property-based Testing gesagt wird, dass 10.000 Tests mit einem Rekursionslimit von 4 ausreichen, um eine vollständige Kantenabdeckung zu erreichen~\cite[vgl. Table 1]{property-based-testing}
 so wurde gezeigt, dass 10.000 Tests nicht ausreichen können, wenn allein über 40.000 PrimePfade existieren.
-Die Berechnung der Querys geschah auf einem hardwaretechnisch ähnlichem Level wie in Property-based Testing angewandt~\cite[vgl. Experimental Setup]{property-based-testing}.
+Die Berechnung der Queries geschah auf einem hardwaretechnisch ähnlichem Level wie in Property-based Testing angewandt~\cite[vgl. Experimental Setup]{property-based-testing}.
 Hier wurde die Aussage getroffen, dass ein~\textit{Tiefensuchen Ansatz nicht skaliert und deswegen ein iterativer Ansatz zu präferieren ist}~\cite{property-based-testing}.
 Der hier entwickelte Prototyp zeigt das Gegenteil.
 

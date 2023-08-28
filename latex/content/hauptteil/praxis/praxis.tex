@@ -133,7 +133,7 @@ Im Allgemeinen funktioniert der Prototyp, so wie in dem Sequenzdiagramm in Abbil
 \end{figure}
 
 Hierbei sind auch die einzelnen Module zu erkennen.
-Dabei sind die Module $main$, $Graphhandler$, $Querygenerator$ und $Testgenerator$ Teile des Prototypens.
+Dabei sind die Module $main$ (main.py), $Graphhandler$ (graphhandler.py), $Querygenerator$ (querygenerator.py) und $Testgenerator$ (pytestgenerator.py) Teile des Prototypens.
 Das Modul $GraphQL API$ stellt das zu testende System dar und ist extern.
 Die Module $Graphhandler$, $Querygenerator$ und $Testgenerator$ arbeiten chronologisch.
 Hierbei übernimmt der $Graphhandler$ alle Teile des Testentwurfs also alle Teile des Kapitels~\ref{testentw}.
@@ -146,7 +146,7 @@ Die $main$ verwaltet die Zusammenarbeit der einzelnen Module und sorgt für die 
 Wie in der Vorstellung der Methode im Kapitel~\ref{schemagraph} erwähnt, muss das GraphQL-Schema in einem Graphen abgebildet werden.
 Der Graph wird in einem gerichteten NetworkX-Graphen abgebildet.
 In einem ersten Schritt wird jedoch die Introspection-Query~\ref{introspection-query} ausgeführt, um Informationen über das Schema des SUT zu erlangen.
-Es sei angemerkt, dass einige GraphQL APIs so eine Introspection-Query verbieten, sei es einerseits durch direktes Unterbinden oder ein Tiefenlimit in den Querys.
+Es sei angemerkt, dass einige GraphQL APIs so eine Introspection-Query verbieten, sei es einerseits durch direktes Unterbinden oder ein Tiefenlimit in den Queries.
 Das SUT muss in jedem Fall die Introsepction-Query unterstützen, da sonst keine Informationen über das GraphQL-Schema erlangt werden können.
 Die Query wird mit einem simplen HTTP-POST an die zu testende URL gesendet.
 
@@ -211,7 +211,7 @@ paths = graphhandler.generate_prime_paths("Query", graph)
     \caption{$paths$ als Liste von Pfaden für ein Abdeckungskriterium}
 \end{figure}
 
-Wie im Kapitel~\ref{fazitcov} festgestellt, gilt, dass die PrimePfad-Abdeckung am geeignetsten ist und somit wird diese implementiert.
+Wie im Kapitel~\ref{fazitcov} festgestellt, gilt, dass die PrimePfad-Abdeckung am geeignetsten ist und somit wird diese umgesetzt.
 Die PrimePfad Abdeckung ist durch die Funktion $generate\_prime\_paths$ implementiert.
 Diese Funktion verknüpft dabei zwei andere Funktionen und ist in Listing~\ref{primes} gezeigt.
 
@@ -243,14 +243,14 @@ Für Pfade die keinen Ursprung im Query-Knoten haben wird der kürzeste Weg vom 
 So wird die Korrektheit der Testpfade sichergestellt.
 
 \newpage
-\subsection{Querys aus Pfad ermitteln}
+\subsection{Queries aus Pfad ermitteln}
 
-Aus den entwickelten Pfaden sollen Querys entwickelt werden, sodass diese an die GraphQL-API gestellt werden können.
+Aus den entwickelten Pfaden sollen Queries entwickelt werden, sodass diese an die GraphQL-API gestellt werden können.
 Eine Query beginnt in GraphQL immer im Query-Knoten und so beginnt jeder Pfad in diesem Knoten.
-Um die Wahrscheinlichkeit zu erhöhen, dass ein Pfad gut abgedeckt wird, werden pro Pfad mehrere Querys entwickelt.
-Hierfür wurde die Variable $testPerPath$ angelegt, diese legt fest, wieviele Querys pro Pfad generiert werden sollen.
+Um die Wahrscheinlichkeit zu erhöhen, dass ein Pfad gut abgedeckt wird, werden pro Pfad mehrere Queries entwickelt.
+Hierfür wurde die Variable $testPerPath$ angelegt, diese legt fest, wieviele Queries pro Pfad generiert werden sollen.
 Standardmäßig gilt: $testPerPath = 5$.
-Die Generierung der Querys übernimmt die Methode $pathToQuery$ vom Modul $Querygenerator$.
+Die Generierung der Queries übernimmt die Methode $pathToQuery$ vom Modul $Querygenerator$.
 In der Methode $pathToQuery$ wird ein Pfad mithilfe eines Typedict und dem Graphen zu einer validen GraphQL-Query umgewandelt.
 Die Funktion $pathToQuery$ entfernt den Startknoten Query und reichert den Pfad an.
 Ihre Implementierung ist in Listing~\ref{querp} dargestellt.
@@ -262,7 +262,7 @@ def pathToQuery(path, typedict, graph):
     return query
 \end{lstlisting}
 
-Die Funktion erstellt eine Query, indem der angegebene Pfad abgelaufen wird und mit Argumenten angereichert, falls nötig.
+Die Funktion erstellt eine Query, indem der angegebene Pfad abgelaufen und mit Argumenten angereichert wird.
 Das Ablaufen des Pfads und die Anreichung mit Argumenten übernimmt die rekursive Funktion \\
 $resolvePathTillOnlyScalarTypesOrEnd(path, typedict, graph, query="")$ die in Listing~\ref{respath} dargestellt ist.
 
@@ -322,7 +322,7 @@ def testQuery6aa8b26(caplog):
     assert response.status_code == 200
 \end{lstlisting}
 
-Nachdem mit den PyTests die Querys reproduzierbar gemacht wurden, werden die Querys ausgeführt.
+Nachdem mit den PyTests die Queries reproduzierbar gemacht wurden, werden die Queries ausgeführt.
 Hierbei setzt der Code aus Listing~ref{testt} die Ausführung um.
 
 
@@ -342,7 +342,7 @@ for testQuery in primePathQueries:
 f.close()
 \end{lstlisting}
 
-Um die Tests auszuführen, werden alle generierten Querys an das SUT gesendet.
+Um die Tests auszuführen, werden alle generierten Queries an das SUT gesendet.
 Die Antworten werden bemessen, gespeichert und später ausgewertet.
 
 \subsection{Testauswertung}
@@ -350,8 +350,8 @@ Die Antworten werden bemessen, gespeichert und später ausgewertet.
 Die Testauswertung erfolgt, wie zuvor gesehen, auf zweierlei Arten.
 Einerseits werden Tests ad-hoc ausgeführt.
 Andererseits wird eine Datei mit PyTests generiert.
-Die Auswertung der Testquerys in der PyTest-Datei erfolgt nach PyTest-Standard. Dabei werden Hinweise geliefert, wenn etwas von der Erwartung abweicht.
-Eine Auswertung der Testquerys, die direkt ausgeführt wurden, erfolgt nach einer Kategorisierung.
+Die Auswertung der Testqueries in der PyTest-Datei erfolgt nach PyTest-Standard. Dabei werden Hinweise geliefert, wenn etwas von der Erwartung abweicht.
+Eine Auswertung der Testqueries, die direkt ausgeführt wurden, erfolgt nach einer Kategorisierung.
 Die Kategoriesierungen sind \textbf{Good\_Test},\textbf{Perfect\_Test},\textbf{malformed\_Test} und \textbf{confirmed\_failed\_Test}.
 Ein \textbf{Good\_Test} ist ein Test, der keinen Fehler erzeugt hat.
 Dieser hat allerdings auch nicht die erwartete Pfadlänge von der Response erfüllt, es war also ein Test,

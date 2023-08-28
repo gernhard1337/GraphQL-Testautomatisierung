@@ -8,8 +8,9 @@ Hierbei waren Knoten, die ausgehende Kanten haben, als Resolver zugeordnet.
 Ein Resolver ist wie in Kapitel~\ref{resolver} festgestellt eine Funktion eines Moduls, das es zu testen gilt.
 Durch die Graphstruktur eines GraphQL-Schemas sollen Pfade generiert werden, die sich später in Tests umwandeln lassen.
 Der abzudeckende Graph wird durch das GraphQL Schema definiert wobei nach Definition~\ref{defg} festzulegen ist,
-dass die spezielle Menge $N_{0} = \{ Query-Type \}$ ist und $N_{f} = N$ (N ohne Query-Type) gilt, da jeder Knoten entlang eines Pfades des Graphens eine valide Anfrage ist insofern der letzte
-Knoten des Pfades ein $SCALAR$ Knoten ist.
+dass die spezielle Menge $N_{0} = \{ Query-Type \}$ ist und $N_{f} = N$ (N ohne Query-Type) gilt.
+Dies folgt, da jeder Knoten entlang eines Pfades des Graphens eine valide Anfrage darstellt.
+Einzige Bedingung ist hierbei, dass der Endknoten eines Pfades stets ein $SCALAR$ Knoten sein muss.
 Im Sinne des Integrationstesten ist es wünschenswert, möglichst viele Kombinationen einzelner Module durch diese Pfade abzubilden.
 Die einzelnen Abdeckungskriterien sind dahingehend zu untersuchen.
 
@@ -48,7 +49,7 @@ obwohl diese wahrscheinlich besonders interessant für Tests sind.
 
 \section{PrimePfad Abdeckung für GraphQL}
 
-Die PrimePfad Abdeckung ermittelt nach Definition~\ref{primecov} die längsten, einfachen Pfade.
+Die PrimePfad-Abdeckung ermittelt nach Definition~\ref{primecov} die längsten, einfachen Pfade.
 Dadurch, dass die längsten einfachen Pfade ermittelt werden, wird eine andere Abdeckung als in der Kanten-Paar Abdeckung erreicht.
 Im Prinzip enthält diese Abdeckung alle möglichen Kantentupel ohne Wiederholungen von Knoten~\cite[vgl. S. 42]{software-testing}.
 Dadurch wird erreicht, dass andere Kombinationsmöglichkeit von Knoten und Kanten mit mindestens einem Test berücksichtigt werden.
@@ -67,9 +68,9 @@ Dies soll jedoch keine Voraussetzung sein.
 Die beiden geeignetsten Abdeckungskriterien sind die vollständige Pfadabdeckung und PrimePfad Abdeckung, wobei die vollständige Pfadabdeckung im
 Allgemeinen nicht verwendet werden kann, da sie im Fall von Zyklen im Graphen unberechenbar wird.
 In der Praxis hat sich gezeigt, dass der Großteil der GraphQL-Schemen Zyklen hat.
-Deswegen ist die vollständige Pfadabdeckung im Allgemeinen nicht zu nutzen und das nächst schwächere Testkriterium, die PrimePfad Abdeckung ist zu wählen.
-Wie in Definition~\ref{sort} gezeigt, ist das nächst schwächere Abdeckungskriterium die PrimePfad-Abdeckung.
-Mithilfe der PrimePfad Abdeckung soll im Folgenden ein Prototyp für Integrationstests von GraphQL-Servern entwickelt werden.
+Deswegen ist die vollständige Pfadabdeckung im Allgemeinen nicht zu nutzen und das nächst schwächere Testkriterium ist zu nutzen.
+Wie in Kapitel~\ref{vglkrits} gezeigt gilt, dass die PrimePfad-Abdeckung besser geeignet ist für die Entwicklung von Integrationstests als die KantenPaar-Abdeckung.
+Mithilfe der PrimePfad-Abdeckung soll im Folgenden ein Prototyp für Integrationstests von GraphQL-Servern entwickelt werden.
 
 
 
