@@ -2,7 +2,7 @@
 
 \section*{GraphQL-Toy Implementation mit Bugs}
 \label{graphql-toy-code}
-\begin{lstlisting}[language=javascript]
+\begin{lstlisting}
 
 const {ApolloServer, gql, ApolloError} = require('apollo-server');
 
@@ -156,7 +156,7 @@ server.listen().then(({url}) => {
 
 \section*{Introspection-Query}
 \label{introspection-query}
-\begin{lstlisting}[language=elixir]
+\begin{lstlisting}
     query IntrospectionQuery {
   __schema {
     queryType {
@@ -262,7 +262,7 @@ fragment TypeRef on __Type {
 
 \section*{minimale Schema Response}
 \label{minimal-schema-response}
-\begin{lstlisting}[language=json]
+\begin{lstlisting}
 {
   "data": {
     "__schema": {
@@ -523,7 +523,7 @@ fragment TypeRef on __Type {
 
 \section*{Query1}
 \label{query1}
-\begin{lstlisting}[language=elixir]
+\begin{lstlisting}
 {
   group(fullPath: "e\u0000") {
     avatarUrl
@@ -652,7 +652,7 @@ fragment TypeRef on __Type {
 
 \section*{Query2}
 \label{query2}
-\begin{lstlisting}[language=elixir]
+\begin{lstlisting}
 {
   namespace(fullPath: "e\u0000") {
     description
@@ -760,7 +760,7 @@ fragment TypeRef on __Type {
 
 \section*{Query 3}
 \label{query3}
-\begin{lstlisting}[language=elixir]
+\begin{lstlisting}
 {
   project(fullPath: "e\u0000") {
     archived
@@ -872,7 +872,7 @@ fragment TypeRef on __Type {
 
 \section*{Query 4}
 \label{query4}
-\begin{lstlisting}[language=elixir]
+\begin{lstlisting}
 {
   project(fullPath: "groupx_3/projectx_32_6") {
     archived

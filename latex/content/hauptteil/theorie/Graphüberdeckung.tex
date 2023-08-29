@@ -129,31 +129,6 @@ Sollte der zu testende Graph azyklisch sein, kann dieses Kriterium jedoch durcha
 
 \subsection{Vergleich der Kriterien}
 \label{vglkrits}
-Die verschiedenen Abdeckungskriterien variieren in ihrer Granularität.
-Ein kurzer Überblick soll hier gegeben werden.
-
-\newcolumntype{C}{>{\centering\arraybackslash}X}
-\begin{center}
-    \begin{table}[!ht]
-        \begin{tabularx}{\textwidth}{|C|C|}
-            \hline
-            \textbf{Kriterium} & \textbf{Granularität}  \\
-            \hline
-            \textbf{Knoten} & jeder Knoten in mindestens einem Testpfad  \\
-            \hline
-            \textbf{Kanten} & jede Kante in mindestens einem Testpfad \\
-            \hline
-            \textbf{Kanten-Paar} & jedes Kantenpaar in mindestens einem Testpfad  \\
-            \hline
-            \textbf{PrimePfad} & jeder PrimePfad in einem Testpfad  \\
-            \hline
-            \textbf{vollständige Pfade} & Alle möglichen Pfade \\
-            \hline
-        \end{tabularx}
-        \caption{Vergleich der Graphabdeckungskriterien}
-    \end{table}
-\end{center}
-\\
 
 Die vorgestellten Abdeckungskriterien können hierarchisch sortiert werden.
 Mit Erfüllung eines höher sortierten Kriteriums sind automatisch die tieferen Kriterien auch erfüllt~\cite[vgl. Figure 2.15]{software-testing}.
